@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:views="clr-namespace:CheckListMaker.ViewModels"
+    xmlns:resources="clr-namespace:CheckListMaker.Resources"
+    x:Class="CheckListMaker.Views.SettingsView"
+    x:DataType="views:SettingsViewModel"
+    Title="{x:Static resources:AppResource.AppShell_Label_SettingsText}"
+    Shell.TabBarIsVisible="False">
+
+    <Grid
+        ColumnDefinitions="*, 70"
+        RowDefinitions="30,15"
+        Padding="15">
+
+        <Label Grid.Column="0" Grid.Row="0"
+            VerticalOptions="Center"
+            FontSize="Medium"
+            Text="{x:Static resources:AppResource.Settings_Label_Save}" />
+
+        <Switch Grid.Column="1" Grid.Row="0"
+            IsToggled="{Binding RequiresSave, Mode=TwoWay}">
+            <Switch.Behaviors>
+                <toolkit:EventToCommandBehavior
+                        Command="{Binding ChangeRequiresSaveCommand}"
+                        EventName="Toggled"/>
+            </Switch.Behaviors>
+        </Switch>
+
+        <Label Grid.Column="0" Grid.Row="1"
+            VerticalOptions="Center"
+            FontSize="Caption"
+            Text="{x:Static resources:AppResource.Settings_Label_Annotation1}" />
+
+    </Grid>
+
+</ContentPage>

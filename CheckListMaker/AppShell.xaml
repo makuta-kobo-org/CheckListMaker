@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="CheckListMaker.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:CheckListMaker.ViewModels"
+    xmlns:local="clr-namespace:CheckListMaker.Views"
+    xmlns:helpers="clr-namespace:CheckListMaker.Helpers"
+    xmlns:controls="clr-namespace:CheckListMaker.Controls"
+    xmlns:resources="clr-namespace:CheckListMaker.Resources"
+    Shell.FlyoutBehavior="Flyout">
+
+    <Shell.FlyoutHeader>
+        <controls:FlyoutHeader />
+    </Shell.FlyoutHeader>
+
+    <Shell.ItemTemplate>
+        <DataTemplate>
+            <Grid ColumnDefinitions="0.2*,0.8*">
+                <Image
+                    Source="{Binding FlyoutIcon}"
+                    WidthRequest="25"
+                    HeightRequest="35"
+                       Margin="10" />
+                <Label Grid.Column="1"
+                       Text="{Binding Title}"
+                       FontFamily="MPLUS1p-Bold"
+                       VerticalTextAlignment="Center" />
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup Name="CommonStates">
+                        <VisualState Name="Normal"></VisualState>
+                        <VisualState Name="Selected">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor" Value="{StaticResource Gray200}"></Setter>
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateManager.VisualStateGroups>
+            </Grid>
+        </DataTemplate>
+    </Shell.ItemTemplate>
+
+    <Shell.MenuItemTemplate>
+        <DataTemplate>
+            <Grid ColumnDefinitions="0.2*,0.8*">
+                <Image
+                    Source="{Binding Icon}"
+                    WidthRequest="25"
+                    HeightRequest="35"
+                       Margin="10" />
+                <Label Grid.Column="1"
+                       Text="{Binding Text}"
+                       FontFamily="MPLUS1p-Bold"
+                       VerticalTextAlignment="Center" />
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup Name="CommonStates">
+                        <VisualState Name="Normal"></VisualState>
+                        <VisualState Name="Selected">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor" Value="{StaticResource Gray200}"></Setter>
+                            </VisualState.Setters>
+                        </VisualState>
+                        
+                    </VisualStateGroup>
+                </VisualStateManager.VisualStateGroups>
+            </Grid>
+        </DataTemplate>
+    </Shell.MenuItemTemplate>
+
+    <FlyoutItem Route="MainMenu" FlyoutDisplayOptions="AsMultipleItems">
+
+        <ShellContent
+            Title="Home"
+            ContentTemplate="{DataTemplate local:MainView}"
+            Route="MainView" >
+            <ShellContent.Icon>
+                <FontImageSource
+                    FontFamily="fontello"
+                    Color="{StaticResource PrimaryDarkText}"
+                    Glyph="{x:Static helpers:IconFontManager.IconHome}" />
+            </ShellContent.Icon>
+        </ShellContent>
+
+    </FlyoutItem>
+
+    <MenuItem
+        Text="{x:Static resources:AppResource.AppShell_Label_SettingsText}"
+        Command="{Binding GoSettingsViewCommand}">
+        <MenuItem.IconImageSource>
+            <FontImageSource
+                FontFamily="fontello"
+                Color="{StaticResource PrimaryDarkText}"
+                Glyph="{x:Static helpers:IconFontManager.IconSettings}" />
+        </MenuItem.IconImageSource>
+    </MenuItem>
+
+    <MenuItem
+        Text="{x:Static resources:AppResource.AppShell_Label_AppinfoText}"
+        Command="{Binding GoAboutViewCommand}">
+        <MenuItem.IconImageSource>
+            <FontImageSource
+                FontFamily="fontello"
+                Color="{StaticResource PrimaryDarkText}"
+                Glyph="{x:Static helpers:IconFontManager.IconInfo}" />
+        </MenuItem.IconImageSource>
+    </MenuItem>
+
+</Shell>
