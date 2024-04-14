@@ -409,3 +409,4 @@ FodyWeavers.xsd
 *.drawio.bkp
 
 /CheckListMaker/CheckListMaker.xml
+/CheckListMaker/appsettings.Development.json

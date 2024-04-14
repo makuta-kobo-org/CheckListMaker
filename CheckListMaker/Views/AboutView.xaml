@@ -42,7 +42,7 @@
                 Margin="15, 0"
                 FontSize="Medium"
                 Text="{x:Static resources:AppResource.About_Label_Help}"
-                Url="https://www.neputa-note.net/p/onethird.html" />
+                Url="https://www.makuta-kobo.net/products/checklistmaker/help" />
 
         </HorizontalStackLayout>
 

@@ -7,6 +7,7 @@ using CheckListMaker.Views;
 using CommunityToolkit.Maui;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Plugin.MauiMTAdmob;
 
 namespace CheckListMaker;
 
@@ -20,6 +21,7 @@ public static class MauiProgram
         builder
             .UseMauiApp<App>()
             .UseMauiCommunityToolkit()
+            .UseMauiMTAdmob()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("MPLUS1p-Regular.ttf", "MPLUS1p-Regular");

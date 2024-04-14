@@ -1,0 +1,142 @@
+trigger: none  
+pr: none  
+
+stages: 
+- stage: Build
+  # Android ManifestのXMLファイル処理のためWindowsを使用
+  pool:
+    vmImage: 'windows-latest'
+
+  jobs:
+  - job: GenerateAab
+    workspace:
+      clean: all
+    variables:
+    # Libraryに登録したVariable groupを呼び出し
+    - group: ForMauiRelease 
+    # メジャー＆マイナーバージョンコードを定義
+    - name: appVersion
+      value: '1.0'
+    - name: androidNdkPath
+      value: 'C:\Microsoft\AndroidNDK64\android-ndk-r16b'
+
+    steps:
+
+    # .NET SDKのインストール
+    - task: UseDotNet@2
+      displayName: Install .NET SDK
+      inputs:
+        packageType: sdk
+        version: $(DotnetVersion)
+        includePreviewVersions: false
+
+    # Java SDKのインストール
+    - task: JavaToolInstaller@0
+      displayName: Install Java SDK
+      inputs:
+        versionSpec: 11
+        jdkArchitectureOption: x64
+        jdkSourceOption: PreInstalled
+
+    # Install the MAUI workload
+    - task: CmdLine@2
+      displayName: Install .NET SDK Android Workload
+      inputs:
+        script: 'dotnet workload install maui'
+
+    # Update appsettings.json via FileTransform task.
+    - task: FileTransform@2
+      displayName: File transformation appsettings.Production.json
+      inputs:
+        folderPath: '$(System.DefaultWorkingDirectory)/CheckListMaker'
+        jsonTargetFiles: 'appsettings.Production.json'
+        xmlTransformationRules: ''
+
+    # Android ManifestのVersionCodeおよびVersionNameを置換する
+    # VersionCodeは年月日時、VersionNameは最初に定義したappVersion.VersionCode
+    - task: PowerShell@2
+      displayName: 'Updating Version Code and Name in Android Manifest'
+      inputs:
+        targetType: 'inline'
+        script: |
+          [string] $sourcePath = "$(System.DefaultWorkingDirectory)\CheckListMaker\Platforms\Android\AndroidManifest.xml"
+          [string] $appVersionName = "$(AppVersion).$(Build.BuildId)"
+          [string] $appVersionCode = Get-Date -Format "yyMMddHH"
+
+          [xml] $androidManifestXml = Get-Content -Path $sourcePath
+
+          Write-Host "Original Manifest:"
+          Get-Content $sourcePath | Write-Host
+
+          $VersionName= Select-Xml -xml $androidManifestXml  -Xpath "/manifest/@android:versionName" -namespace @{android = "http://schemas.android.com/apk/res/android" }
+
+          $oldVersionName= $VersionName.Node.Value;
+
+          Write-Host " (i) Original Version Name: $oldVersionName"  
+
+          $VersionName.Node.Value = $appVersionName 
+
+          Write-Host " (i) New Package Name: $appVersionName"
+
+          $VersionCode= Select-Xml -xml $androidManifestXml  -Xpath "/manifest/@android:versionCode" -namespace @{android = "http://schemas.android.com/apk/res/android" }
+
+          $oldVersionCode = $VersionCode.Node.Value;
+
+          Write-Host " (i) Old Version Code: $oldVersionCode"
+
+          $VersionCode.Node.Value = $appVersionCode 
+
+          Write-Host " (i) New App Name: $appVersionCode " 
+
+          $androidManifestXml.Save($sourcePath)
+
+          Write-Host "Final Manifest:"
+          Get-Content $sourcePath | Write-Host
+
+    # LibraryからKeystoreファイルをダウンロード
+    - task: DownloadSecureFile@1
+      displayName: 'Download keystore'
+      name: keystore
+      inputs:
+        secureFile: 'upload_keystore.jks'
+
+    # リストア
+    - task: NuGetCommand@2
+      inputs:
+        command: 'restore'
+        restoreSolution: '**/**.sln'
+        feedsToUse: 'select'
+
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'restore'
+        projects: '**/**.sln'
+        feedsToUse: 'select'
+
+    # MAUI ProjectのBuildとPublish
+    - task: DotNetCoreCLI@2
+      displayName: 'Build and Publish aab'
+      inputs:
+        command: publish
+        publishWebProjects: false
+        projects: '**/CheckListMaker.csproj'
+        arguments: >-
+          -c Release
+          -f net8.0-android
+          -o $(Build.BinariesDirectory)
+          --no-restore
+          -p:ApplicationId=$(ApplicationId)
+          -p:AndroidKeyStore=True
+          -p:AndroidSigningKeyStore=$(keystore.secureFilePath)
+          -p:AndroidSigningStorePass=$(KeystorePassword)
+          -p:AndroidSigningKeyAlias=$(KeystoreAlias)
+          -p:AndroidSigningKeyPass=$(KeystorePassword)
+        zipAfterPublish: false
+        modifyOutputPath: false
+
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publishing aab artifacts'
+      inputs:          
+        targetPath: '$(Build.BinariesDirectory)'
+        artifact: AndroidAabPackage
+        publishLocation: 'pipeline'

@@ -3,7 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34601.278
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckListMaker", "CheckListMaker\CheckListMaker.csproj", "{80EE9F01-FD36-463E-8DB3-A4313B59D882}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CheckListMaker", "CheckListMaker\CheckListMaker.csproj", "{80EE9F01-FD36-463E-8DB3-A4313B59D882}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ソリューション項目", "ソリューション項目", "{98364F0E-B2C8-4F39-93E7-FA3310D7ACD8}"
+	ProjectSection(SolutionItems) = preProject
+		azure-pipelines-android.yml = azure-pipelines-android.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -31,6 +31,9 @@ internal partial class MainViewModel : BaseViewModel
     [ObservableProperty]
     private bool _isToggled = true;
 
+    // [ObservableProperty]
+    // private string _bannerId = App.AdMobConstants.bannerId;
+
     /// <summary> Constructor </summary>
     public MainViewModel(
         IMediaService mediaService,
