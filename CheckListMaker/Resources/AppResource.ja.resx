@@ -138,6 +138,9 @@
   <data name="Settings_Label_Annotation1" xml:space="preserve">
     <value>※パフォーマンスが低下する場合があります。</value>
   </data>
+  <data name="Settings_Label_IsDark" xml:space="preserve">
+    <value>ダークモードにする</value>
+  </data>
   <data name="Settings_Label_Save" xml:space="preserve">
     <value>前回状態を保存する</value>
   </data>

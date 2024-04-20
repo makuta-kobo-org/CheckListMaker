@@ -16,7 +16,7 @@ stages:
     - group: ForMauiRelease 
     # メジャー＆マイナーバージョンコードを定義
     - name: appVersion
-      value: '1.0'
+      value: '1.1'
     - name: androidNdkPath
       value: 'C:\Microsoft\AndroidNDK64\android-ndk-r16b'
 

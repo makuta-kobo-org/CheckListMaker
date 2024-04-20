@@ -12,24 +12,38 @@
 
     <Grid
         ColumnDefinitions="*, 70"
-        RowDefinitions="30,15"
+        RowDefinitions="50,50,15"
         Padding="15">
 
         <Label Grid.Column="0" Grid.Row="0"
             VerticalOptions="Center"
             FontSize="Medium"
-            Text="{x:Static resources:AppResource.Settings_Label_Save}" />
+            Text="{x:Static resources:AppResource.Settings_Label_IsDark}" />
 
         <Switch Grid.Column="1" Grid.Row="0"
-            IsToggled="{Binding RequiresSave, Mode=TwoWay}">
+            IsToggled="{Binding IsDark, Mode=TwoWay}">
             <Switch.Behaviors>
                 <toolkit:EventToCommandBehavior
-                        Command="{Binding ChangeRequiresSaveCommand}"
+                        Command="{Binding ChangedIsDarkCommand}"
                         EventName="Toggled"/>
             </Switch.Behaviors>
         </Switch>
 
         <Label Grid.Column="0" Grid.Row="1"
+            VerticalOptions="Center"
+            FontSize="Medium"
+            Text="{x:Static resources:AppResource.Settings_Label_Save}" />
+
+        <Switch Grid.Column="1" Grid.Row="1"
+            IsToggled="{Binding RequiresSave, Mode=TwoWay}">
+            <Switch.Behaviors>
+                <toolkit:EventToCommandBehavior
+                        Command="{Binding ChangedRequiresSaveCommand}"
+                        EventName="Toggled"/>
+            </Switch.Behaviors>
+        </Switch>
+
+        <Label Grid.Column="0" Grid.Row="2"
             VerticalOptions="Center"
             FontSize="Caption"
             Text="{x:Static resources:AppResource.Settings_Label_Annotation1}" />

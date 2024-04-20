@@ -138,6 +138,9 @@
   <data name="Settings_Label_Annotation1" xml:space="preserve">
     <value>*Performance may be degraded.</value>
   </data>
+  <data name="Settings_Label_IsDark" xml:space="preserve">
+    <value>Dark mode</value>
+  </data>
   <data name="Settings_Label_Save" xml:space="preserve">
     <value>Save previous state</value>
   </data>
