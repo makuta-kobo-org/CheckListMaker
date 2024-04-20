@@ -31,7 +31,7 @@
                         <VisualState Name="Normal"></VisualState>
                         <VisualState Name="Selected">
                             <VisualState.Setters>
-                                <Setter Property="BackgroundColor" Value="{StaticResource Gray200}"></Setter>
+                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"></Setter>
                             </VisualState.Setters>
                         </VisualState>
                     </VisualStateGroup>
@@ -57,7 +57,7 @@
                         <VisualState Name="Normal"></VisualState>
                         <VisualState Name="Selected">
                             <VisualState.Setters>
-                                <Setter Property="BackgroundColor" Value="{StaticResource Gray200}"></Setter>
+                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"></Setter>
                             </VisualState.Setters>
                         </VisualState>
                         
@@ -76,7 +76,7 @@
             <ShellContent.Icon>
                 <FontImageSource
                     FontFamily="fontello"
-                    Color="{StaticResource PrimaryDarkText}"
+                    Color="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource White}}"
                     Glyph="{x:Static helpers:IconFontManager.IconHome}" />
             </ShellContent.Icon>
         </ShellContent>
@@ -89,7 +89,7 @@
         <MenuItem.IconImageSource>
             <FontImageSource
                 FontFamily="fontello"
-                Color="{StaticResource PrimaryDarkText}"
+                Color="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource White}}"
                 Glyph="{x:Static helpers:IconFontManager.IconSettings}" />
         </MenuItem.IconImageSource>
     </MenuItem>
@@ -100,7 +100,7 @@
         <MenuItem.IconImageSource>
             <FontImageSource
                 FontFamily="fontello"
-                Color="{StaticResource PrimaryDarkText}"
+                Color="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource White}}"
                 Glyph="{x:Static helpers:IconFontManager.IconInfo}" />
         </MenuItem.IconImageSource>
     </MenuItem>

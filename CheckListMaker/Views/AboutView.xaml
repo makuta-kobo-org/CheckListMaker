@@ -33,7 +33,7 @@
                 <Image.Source>
                     <FontImageSource
                         FontFamily="fontello"
-                        Color="{StaticResource PrimaryDarkText}"
+                        Color="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource White}}"
                         Glyph="{x:Static helpers:IconFontManager.IconHelp}" />
                 </Image.Source>
             </Image>
@@ -41,6 +41,7 @@
             <controls:HyperlinkLabel
                 Margin="15, 0"
                 FontSize="Medium"
+                TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource White}}"
                 Text="{x:Static resources:AppResource.About_Label_Help}"
                 Url="https://www.makuta-kobo.net/products/checklistmaker/help" />
 

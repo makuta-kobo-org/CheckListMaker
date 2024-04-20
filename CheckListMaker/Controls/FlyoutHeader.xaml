@@ -12,7 +12,7 @@
             VerticalOptions="Center"/>
 
         <Border Grid.Row="1"
-            BackgroundColor="{StaticResource Secondary}"
+            BackgroundColor="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource Gray300}}"
             HeightRequest="5"
             StrokeThickness="0"/>
     </Grid>

@@ -124,6 +124,15 @@ namespace CheckListMaker.Resources {
         }
         
         /// <summary>
+        ///   Dark mode に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Settings_Label_IsDark {
+            get {
+                return ResourceManager.GetString("Settings_Label_IsDark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Save previous state に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string Settings_Label_Save {
