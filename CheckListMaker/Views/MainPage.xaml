@@ -8,6 +8,7 @@
     xmlns:views="clr-namespace:CheckListMaker.ViewModels"
     xmlns:models="clr-namespace:CheckListMaker.Models"
     xmlns:resources="clr-namespace:CheckListMaker.Resources"
+    xmlns:ads="clr-namespace:Plugin.MauiMTAdmob.Controls;assembly=Plugin.MauiMTAdmob"
     x:Class="CheckListMaker.Views.MainView"
     x:Name="MainViewContainer"
     x:DataType="views:MainViewModel"
@@ -50,12 +51,12 @@
     </Shell.TitleView>
 
     <Grid
-        RowDefinitions="*,Auto"
-        Padding="15"
+        RowDefinitions="*,Auto,Auto"
         HorizontalOptions="Fill"
         VerticalOptions="Fill">
 
         <CollectionView Grid.Row="0"
+            Margin="10"
             ItemsSource="{Binding Items}"
             SelectionMode="None">
 
@@ -150,27 +151,37 @@
             </CollectionView.Footer>
         </CollectionView>
 
-        <Grid
-            ColumnDefinitions="45, 60, *" Grid.Row="1" >
+        <Grid Grid.Row="1"
+            ColumnDefinitions="Auto, Auto, *"
+            Margin="10, 20">
 
             <Button Grid.Column="0"
+                SemanticProperties.Description="Camera button"
                 CornerRadius="30"
+                Padding="0"
+                WidthRequest="50"
+                HeightRequest="50"
                 Command="{Binding CreateListWithCapturedImageCommand}">
                 <Button.ImageSource>
                     <FontImageSource
                         FontFamily="fontello"
+                        Size="25"
                         Color="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource White}}"
                         Glyph="{x:Static helpers:IconFontManager.IconCamera}" />
                 </Button.ImageSource>
             </Button>
 
             <Button Grid.Column="1"
-                Margin="15, 0, 0, 0"
+                SemanticProperties.Description="Image selection button"
+                Margin="12, 0, 0, 0"
+                Padding="0"
+                WidthRequest="50"
                 CornerRadius="30"
                 Command="{Binding CreateListWithSelectedImageCommand}">
                 <Button.ImageSource>
                     <FontImageSource
                         FontFamily="fontello"
+                        Size="25"
                         Color="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource White}}"
                         Glyph="{x:Static helpers:IconFontManager.IconPicture}" />
                 </Button.ImageSource>
@@ -178,6 +189,7 @@
 
 
             <Entry Grid.Column="2"
+                SemanticProperties.Description="Item addition input form"
                 Margin="15, 0, 0, 0"
                 Placeholder="{x:Static resources:AppResource.Main_Entry_Placeholder}"
                 Text="{Binding InputText}"
@@ -192,5 +204,14 @@
 
         </Grid>
 
+        <!-- AD Banner -->
+        <ads:MTAdView
+            Grid.Row="2"
+            x:Name="myAds"
+            AdsId="{Binding BannerId}"
+            AdSize="AnchoredAdaptive"
+            IsVisible="true"/>
+
     </Grid>
+
 </ContentPage>

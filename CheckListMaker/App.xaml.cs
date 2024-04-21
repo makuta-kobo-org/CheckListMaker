@@ -2,6 +2,7 @@ using CheckListMaker.Messengers;
 using CheckListMaker.ViewModels;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Configuration;
+using Plugin.MauiMTAdmob;
 
 namespace CheckListMaker;
 
@@ -17,11 +18,11 @@ public partial class App : Application
         InitializeComponent();
 
         // AdMob global preferences
-        // CrossMauiMTAdmob.Current.ComplyWithFamilyPolicies = true;
-        // CrossMauiMTAdmob.Current.UseRestrictedDataProcessing = true;
+        CrossMauiMTAdmob.Current.ComplyWithFamilyPolicies = true;
+        CrossMauiMTAdmob.Current.UseRestrictedDataProcessing = true;
 
-        // AdMobConstants =
-        //     config.GetRequiredSection("AdMob").Get<AdMobConstantsRecord>();
+        AdMobConstants =
+            config.GetRequiredSection("AdMob").Get<AdMobConstantsRecord>();
 
         RequiresSave = Preferences.Default.Get("requires_save", false);
 
@@ -36,16 +37,18 @@ public partial class App : Application
         get => _requiresSave;
         set
         {
-            if (_requiresSave != value)
+            if (_requiresSave == value)
             {
-                _requiresSave = value;
-                Preferences.Default.Set("requires_save", RequiresSave);
+                return;
+            }
 
-                // Trueなら現在のCheckListアイテムを保存
-                if (RequiresSave)
-                {
-                    WeakReferenceMessenger.Default.Send(new SaveSettingsChangedMessage(null));
-                }
+            _requiresSave = value;
+            Preferences.Default.Set("requires_save", _requiresSave);
+
+            // Trueなら現在のCheckListアイテムを保存
+            if (_requiresSave)
+            {
+                WeakReferenceMessenger.Default.Send(new SaveSettingsChangedMessage(null));
             }
         }
     }
@@ -56,12 +59,14 @@ public partial class App : Application
         get => _isDark;
         set
         {
-            if (_isDark != value)
+            if (_isDark == value)
             {
-                _isDark = value;
-                Current.UserAppTheme = _isDark ? AppTheme.Dark : AppTheme.Light;
-                Preferences.Default.Set("is_dark", IsDark);
+                return;
             }
+
+            _isDark = value;
+            Current.UserAppTheme = _isDark ? AppTheme.Dark : AppTheme.Light;
+            Preferences.Default.Set("is_dark", _isDark);
         }
     }
 
