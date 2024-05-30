@@ -132,6 +132,9 @@
   <data name="Main_Label_Switch" xml:space="preserve">
     <value>2列</value>
   </data>
+  <data name="Main_Snackbar_Done" xml:space="preserve">
+    <value>作成完了！</value>
+  </data>
   <data name="Main_String_DeleteMessage" xml:space="preserve">
     <value>削除しました</value>
   </data>

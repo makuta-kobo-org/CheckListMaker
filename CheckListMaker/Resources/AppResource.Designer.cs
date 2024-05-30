@@ -106,6 +106,15 @@ namespace CheckListMaker.Resources {
         }
         
         /// <summary>
+        ///   Completed! に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Main_Snackbar_Done {
+            get {
+                return ResourceManager.GetString("Main_Snackbar_Done", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Item deleted に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string Main_String_DeleteMessage {

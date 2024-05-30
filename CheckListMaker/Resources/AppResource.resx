@@ -132,6 +132,9 @@
   <data name="Main_Label_Switch" xml:space="preserve">
     <value>2 columns</value>
   </data>
+  <data name="Main_Snackbar_Done" xml:space="preserve">
+    <value>Completed!</value>
+  </data>
   <data name="Main_String_DeleteMessage" xml:space="preserve">
     <value>Item deleted</value>
   </data>

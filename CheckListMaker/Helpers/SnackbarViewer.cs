@@ -9,8 +9,9 @@ internal static class SnackbarViewer
     private static readonly SnackbarOptions _snackbarOptions = new()
     {
         CornerRadius = new CornerRadius(10),
-        Font = Microsoft.Maui.Font.SystemFontOfSize(14),
-        ActionButtonFont = Microsoft.Maui.Font.SystemFontOfSize(14),
+        BackgroundColor = Colors.SlateGray,
+        Font = Microsoft.Maui.Font.SystemFontOfSize(16),
+        ActionButtonFont = Microsoft.Maui.Font.SystemFontOfSize(16),
     };
 
     /// <summary> Snackbarを表示する </summary>

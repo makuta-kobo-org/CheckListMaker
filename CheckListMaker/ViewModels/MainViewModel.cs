@@ -128,14 +128,14 @@ internal partial class MainViewModel : BaseViewModel
 
         try
         {
+            _popupService.ShowPopup(popup);
+
             var imagePath = await _mediaService.DoCapturePhoto();
 
             if (imagePath == null)
             {
                 return;
             }
-
-            _popupService.ShowPopup(popup);
 
             await CreateCheckItems(imagePath);
         }
@@ -146,6 +146,8 @@ internal partial class MainViewModel : BaseViewModel
         finally
         {
             _popupService.ClosePopup(popup);
+
+            await SnackbarViewer.Show(AppResource.Main_Snackbar_Done);
         }
     }
 
@@ -156,14 +158,14 @@ internal partial class MainViewModel : BaseViewModel
 
         try
         {
+            _popupService.ShowPopup(popup);
+
             var imagePath = await _mediaService.DoPickPhoto();
 
             if (imagePath == null)
             {
                 return;
             }
-
-            _popupService.ShowPopup(popup);
 
             await CreateCheckItems(imagePath);
         }
@@ -174,6 +176,8 @@ internal partial class MainViewModel : BaseViewModel
         finally
         {
             _popupService.ClosePopup(popup);
+
+            await SnackbarViewer.Show(AppResource.Main_Snackbar_Done);
         }
     }
 
