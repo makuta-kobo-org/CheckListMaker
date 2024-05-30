@@ -138,6 +138,8 @@ internal partial class MainViewModel : BaseViewModel
             }
 
             await CreateCheckItems(imagePath);
+
+            await SnackbarViewer.Show(AppResource.Main_Snackbar_Done);
         }
         catch (Exception ex)
         {
@@ -146,8 +148,6 @@ internal partial class MainViewModel : BaseViewModel
         finally
         {
             _popupService.ClosePopup(popup);
-
-            await SnackbarViewer.Show(AppResource.Main_Snackbar_Done);
         }
     }
 
@@ -168,6 +168,8 @@ internal partial class MainViewModel : BaseViewModel
             }
 
             await CreateCheckItems(imagePath);
+
+            await SnackbarViewer.Show(AppResource.Main_Snackbar_Done);
         }
         catch (Exception ex)
         {
@@ -176,8 +178,6 @@ internal partial class MainViewModel : BaseViewModel
         finally
         {
             _popupService.ClosePopup(popup);
-
-            await SnackbarViewer.Show(AppResource.Main_Snackbar_Done);
         }
     }
 
