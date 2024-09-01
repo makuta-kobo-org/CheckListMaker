@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               Color="Transparent"
+               VerticalOptions="Fill"
+               HorizontalOptions="Fill"
+               CanBeDismissedByTappingOutsideOfPopup="False"
+               x:Class="CheckListMaker.Controls.LoadingPopup">
+
+    <Grid Background="Gray" Opacity="0.8">
+        <VerticalStackLayout
+            VerticalOptions="CenterAndExpand"
+            HorizontalOptions="CenterAndExpand" >
+
+            <ActivityIndicator Color="White" IsRunning="True" />
+
+            <Label Text="Loading..." TextColor="White" />
+
+        </VerticalStackLayout>
+    </Grid>
+</toolkit:Popup>

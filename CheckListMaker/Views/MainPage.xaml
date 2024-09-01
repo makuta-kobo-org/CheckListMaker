@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:helpers="clr-namespace:CheckListMaker.Helpers"
+    xmlns:converter="clr-namespace:CheckListMaker.Converters"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:views="clr-namespace:CheckListMaker.ViewModels"
+    xmlns:models="clr-namespace:CheckListMaker.Models"
+    xmlns:resources="clr-namespace:CheckListMaker.Resources"
+    xmlns:ads="clr-namespace:Plugin.MauiMTAdmob.Controls;assembly=Plugin.MauiMTAdmob"
+    x:Class="CheckListMaker.Views.MainView"
+    x:Name="MainViewContainer"
+    x:DataType="views:MainViewModel"
+    Shell.TabBarIsVisible="False">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converter:BoolToColorConverter x:Key="BoolToColor" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Shell.TitleView>
+        <Grid
+            ColumnDefinitions="*, *"
+            Padding="0, 0, 10, 0">
+
+            <Label Grid.Column="0"
+                Text="Home"
+                FontSize="Title"
+                FontAttributes="Bold"
+                VerticalOptions="Center"
+                HorizontalOptions="Start"/>
+
+            <HorizontalStackLayout Grid.Column="1" HorizontalOptions="End">
+
+                <Label VerticalOptions="Center" Text="{x:Static resources:AppResource.Main_Label_Switch}" />
+
+                <Switch
+                    IsToggled="{Binding IsToggled, Mode=TwoWay}">
+                    <Switch.Behaviors>
+                        <toolkit:EventToCommandBehavior
+                        Command="{Binding ChangeNumberOfColumnsCommand}"
+                        EventName="Toggled"/>
+                    </Switch.Behaviors>
+                </Switch>
+            </HorizontalStackLayout>
+
+        </Grid>
+
+    </Shell.TitleView>
+
+    <Grid
+        RowDefinitions="*,Auto,Auto"
+        HorizontalOptions="Fill"
+        VerticalOptions="Fill">
+
+        <CollectionView Grid.Row="0"
+            Margin="10"
+            ItemsSource="{Binding Items}"
+            SelectionMode="None">
+
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout
+                    Orientation="Vertical"
+                    Span="{Binding NumberOfColumns}" />
+            </CollectionView.ItemsLayout>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <VerticalStackLayout>
+                        <Border
+                            Margin="5"
+                            x:DataType="models:CheckItem"
+                            Padding="5, 15"
+                            StrokeShape="RoundRectangle 10"
+                            BackgroundColor="{Binding IsTapped, Converter={StaticResource BoolToColor}}"
+                            HorizontalOptions="FillAndExpand"
+                            VerticalOptions="FillAndExpand">
+
+                            <Grid ColumnDefinitions="*, 35">
+
+                                <!--  Text  -->
+                                <Label Grid.Column="0"
+                                    x:Name="CheckItemText"
+                                    HorizontalOptions="FillAndExpand"
+                                    FontSize="Body"
+                                    Text="{Binding ItemText}"
+                                    VerticalTextAlignment="Center" />
+
+                                <!--  Delete Icon  -->
+                                <Image Grid.Column="1" VerticalOptions="Center" WidthRequest="25">
+
+                                    <Image.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                    Command="{Binding BindingContext.DeleteItemCommand, Source={x:Reference MainViewContainer}}"
+                                    CommandParameter="{Binding .}"
+                                            />
+                                    </Image.GestureRecognizers>
+
+                                    <Image.Source>
+                                        <FontImageSource
+                                            FontFamily="fontello"
+                                            Color="{StaticResource Tertiary}"
+                                            Glyph="{x:Static helpers:IconFontManager.IconDelete}" />
+                                    </Image.Source>
+
+                                </Image>
+                            </Grid>
+
+                            <Border.GestureRecognizers>
+
+                                <TapGestureRecognizer
+                                    Command="{Binding BindingContext.ItemTappedCommand, Source={x:Reference MainViewContainer}}"
+                                    CommandParameter="{Binding}" />
+
+                                <DragGestureRecognizer
+                                    CanDrag="True"
+                                    DragStartingCommand="{Binding BindingContext.ItemDraggedCommand, Source={x:Reference MainViewContainer}}"
+                                    DragStartingCommandParameter="{Binding}" />
+
+                                <DropGestureRecognizer
+                                    AllowDrop="True"
+                                    DragLeaveCommand="{Binding BindingContext.ItemDragLeaveCommand, Source={x:Reference MainViewContainer}}"
+                                    DragLeaveCommandParameter="{Binding}"
+                                    DragOverCommand="{Binding BindingContext.ItemDraggedOverCommand, Source={x:Reference MainViewContainer}}"
+                                    DragOverCommandParameter="{Binding}"
+                                    DropCommand="{Binding BindingContext.ItemDroppedCommand, Source={x:Reference MainViewContainer}}"
+                                    DropCommandParameter="{Binding}" />
+
+                            </Border.GestureRecognizers>
+
+                        </Border>
+
+                        <Border
+                            x:DataType="models:CheckItem"
+                            InputTransparent="False"
+                            HeightRequest="10"
+                            BackgroundColor="{StaticResource Gray300}"
+                            HorizontalOptions="FillAndExpand"
+                            IsVisible="{Binding IsBeingDraggedOver}"
+                            VerticalOptions="FillAndExpand" />
+
+                    </VerticalStackLayout>
+
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.Footer>
+                <Border HeightRequest="40"
+                        StrokeThickness="0"/>
+            </CollectionView.Footer>
+        </CollectionView>
+
+        <Grid Grid.Row="1"
+            ColumnDefinitions="Auto, Auto, *"
+            Margin="10, 20">
+
+            <Button Grid.Column="0"
+                SemanticProperties.Description="Camera button"
+                CornerRadius="30"
+                Padding="0"
+                WidthRequest="50"
+                HeightRequest="50"
+                Command="{Binding CreateListWithCapturedImageCommand}">
+                <Button.ImageSource>
+                    <FontImageSource
+                        FontFamily="fontello"
+                        Size="25"
+                        Color="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource White}}"
+                        Glyph="{x:Static helpers:IconFontManager.IconCamera}" />
+                </Button.ImageSource>
+            </Button>
+
+            <Button Grid.Column="1"
+                SemanticProperties.Description="Image selection button"
+                Margin="12, 0, 0, 0"
+                Padding="0"
+                WidthRequest="50"
+                CornerRadius="30"
+                Command="{Binding CreateListWithSelectedImageCommand}">
+                <Button.ImageSource>
+                    <FontImageSource
+                        FontFamily="fontello"
+                        Size="25"
+                        Color="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource White}}"
+                        Glyph="{x:Static helpers:IconFontManager.IconPicture}" />
+                </Button.ImageSource>
+            </Button>
+
+
+            <Entry Grid.Column="2"
+                SemanticProperties.Description="Item addition input form"
+                Margin="15, 0, 0, 0"
+                Placeholder="{x:Static resources:AppResource.Main_Entry_Placeholder}"
+                Text="{Binding InputText}"
+                ClearButtonVisibility="WhileEditing"
+                Keyboard="Text">
+                <Entry.Behaviors>
+                    <toolkit:EventToCommandBehavior
+                        EventName="Completed"
+                        Command="{Binding AddItemCommand}"/>
+                </Entry.Behaviors>
+            </Entry>
+
+        </Grid>
+
+        <!-- AD Banner -->
+        <ads:MTAdView
+            Grid.Row="2"
+            x:Name="myAds"
+            AdsId="{Binding BannerId}"
+            AdSize="AnchoredAdaptive"
+            IsVisible="true"/>
+
+    </Grid>
+
+</ContentPage>

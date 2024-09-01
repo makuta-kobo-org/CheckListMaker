@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="CheckListMaker.Views.AboutView"
+    xmlns:views="clr-namespace:CheckListMaker.ViewModels"
+    xmlns:controls="clr-namespace:CheckListMaker.Controls"
+    xmlns:helpers="clr-namespace:CheckListMaker.Helpers"
+    xmlns:resources="clr-namespace:CheckListMaker.Resources"
+    x:DataType="views:AboutViewModel"
+    Title="{x:Static resources:AppResource.AppShell_Label_AppinfoText}"
+    Shell.TabBarIsVisible="False">
+
+    <VerticalStackLayout Padding="15">
+
+        <Grid HeightRequest="50">
+            <Label 
+                Text="{Binding AppName}"
+                FontSize="Medium"
+                VerticalOptions="Center" 
+                HorizontalOptions="Start" />
+
+            <Label
+                Text="{Binding Path=AppVersion, StringFormat='Ver.{0}'}"
+                VerticalOptions="Center"
+                HorizontalOptions="End" />
+        </Grid>
+
+        <HorizontalStackLayout
+            Margin="0, 15">
+
+            <Image>
+                <Image.Source>
+                    <FontImageSource
+                        FontFamily="fontello"
+                        Color="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource White}}"
+                        Glyph="{x:Static helpers:IconFontManager.IconHelp}" />
+                </Image.Source>
+            </Image>
+
+            <controls:HyperlinkLabel
+                Margin="15, 0"
+                FontSize="Medium"
+                TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource White}}"
+                Text="{x:Static resources:AppResource.About_Label_Help}"
+                Url="https://www.makuta-kobo.net/products/checklistmaker/help" />
+
+        </HorizontalStackLayout>
+
+    </VerticalStackLayout>
+</ContentPage>

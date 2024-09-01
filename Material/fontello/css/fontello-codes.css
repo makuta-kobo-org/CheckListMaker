@@ -1,0 +1,9 @@
+
+.icon-camera:before { content: '\e800'; } /* '' */
+.icon-picture:before { content: '\e801'; } /* '' */
+.icon-cog:before { content: '\e802'; } /* '' */
+.icon-home:before { content: '\e803'; } /* '' */
+.icon-delete:before { content: '\e804'; } /* '' */
+.icon-2columns:before { content: '\e805'; } /* '' */
+.icon-help-circled:before { content: '\e806'; } /* '' */
+.icon-info-circled:before { content: '\e807'; } /* '' */

@@ -1,0 +1,30 @@
+カメラでメモを撮影します。
+
+撮影した画像を保存
+
+チェックリスト完成！
+
+テキスト入力でアイテムを追加。
+
+並び替えたり、
+
+不要なアイテムは×ボタンで削除。
+
+アイテムをタップしてチェック作業。
+
+ぜひ使ってみてください！
+
+Take a picture of your note with the camera icon.
+
+Checklist completed!
+
+Add items by entering text.
+
+Rearrange them,
+
+Delete unnecessary items with X button.
+
+Tap an item to check it off.
+
+Please try it!
+
