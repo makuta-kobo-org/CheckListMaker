@@ -37,7 +37,6 @@
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 		<NeutralLanguage>en</NeutralLanguage>
-	  <UserSecretsId>0ca6f062-1dc8-45bc-a2c0-98b9c08790f5</UserSecretsId>
   </PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
@@ -107,6 +106,10 @@
 	  <EmbeddedResource Include="appsettings.Production.json" />
 	</ItemGroup>
 
+	<ItemGroup Condition="'$(Configuration)'=='Debug'">
+	  <EmbeddedResource Include="appsettings.Development.json" />
+	</ItemGroup>
+
 	<ItemGroup>
 	  <Compile Update="Resources\AppResource.Designer.cs">
 	    <DesignTime>True</DesignTime>
@@ -143,4 +146,4 @@
 	  </MauiXaml>
 	</ItemGroup>
 
-</Project>
+  </Project>

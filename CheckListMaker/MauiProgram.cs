@@ -30,14 +30,14 @@ public static class MauiProgram
 
         // appsettings.json
 #if DEBUG
-        using var appsettings = Assembly
-            .GetExecutingAssembly()
-            .GetManifestResourceStream("CheckListMaker.appsettings.Development.json");
+        var env = "Development";
 #else
+        var env = "Production";
+#endif
         using var appsettings = Assembly
             .GetExecutingAssembly()
-            .GetManifestResourceStream("CheckListMaker.appsettings.Production.json");
-#endif
+            .GetManifestResourceStream($"CheckListMaker.appsettings.{env}.json");
+
         var configBuilder = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonStream(appsettings)
