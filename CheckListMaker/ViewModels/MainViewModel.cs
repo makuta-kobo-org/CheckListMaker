@@ -55,7 +55,7 @@ internal partial class MainViewModel : BaseViewModel
     }
 
     /// <summary> CheckListItem のコレクション  </summary>
-    public ObservableCollection<CheckItem> Items { get; set; } = [];
+    public CheckItems Items { get; set; }
 
     [RelayCommand]
     private static void ItemDragLeave(CheckItem item)
@@ -66,7 +66,7 @@ internal partial class MainViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    private static void ItemTapped(CheckItem item) => item.IsTapped = !item.IsTapped;
+    private static void ItemTapped(CheckItem item) => item.IsChecked = !item.IsChecked;
 
     /// <summary> CheckList Items をローカルのjson fileに保存する </summary>
     private async Task SaveItems()
@@ -78,7 +78,7 @@ internal partial class MainViewModel : BaseViewModel
 
         try
         {
-            string json = JsonSerializer.Serialize<IEnumerable<CheckItem>>(Items.AsEnumerable());
+            string json = JsonSerializer.Serialize<CheckItems>(Items);
 
             var jsonPath = Path.Combine(FileSystem.Current.AppDataDirectory, JsonFileName);
 
@@ -96,7 +96,7 @@ internal partial class MainViewModel : BaseViewModel
     private void ChangeNumberOfColumns()
         => NumberOfColumns = IsToggled ? 2 : 1;
 
-    /// <summary> ローカルに保存していたjson failから前回の状態を復帰する </summary>
+    /// <summary> ローカルに保存していたjson fileから前回の状態を復帰する </summary>
     private void ReadItems()
     {
         try
@@ -110,10 +110,7 @@ internal partial class MainViewModel : BaseViewModel
 
             var json = File.ReadAllText(jsonPath);
 
-            var items = JsonSerializer.Deserialize<IEnumerable<CheckItem>>(json);
-
-            Items.Clear();
-            Items = new ObservableCollection<CheckItem>(items);
+            Items = JsonSerializer.Deserialize<CheckItems>(json);
         }
         catch (Exception ex)
         {
@@ -183,9 +180,7 @@ internal partial class MainViewModel : BaseViewModel
 
     private async Task CreateCheckItems(string imagePath)
     {
-        var items = await _computerVisionService.GetCheckItems(imagePath);
-        Items.Clear();
-        Items = new ObservableCollection<CheckItem>(items);
+        Items = await _computerVisionService.GetCheckItems(imagePath);
 
         OnPropertyChanged(nameof(Items));
 
@@ -203,7 +198,7 @@ internal partial class MainViewModel : BaseViewModel
 
             if (!string.IsNullOrEmpty(InputText))
             {
-                Items.Add(new CheckItem() { ItemText = InputText });
+                Items.Items.Add(new CheckItem() { ItemText = InputText });
                 InputText = string.Empty;
             }
 
@@ -226,7 +221,7 @@ internal partial class MainViewModel : BaseViewModel
 
         try
         {
-            Items.Remove(item);
+            Items.Items.Remove(item);
 
             await SaveItems();
 
@@ -276,12 +271,12 @@ internal partial class MainViewModel : BaseViewModel
                 return;
             }
 
-            int insertAtIndex = Items.IndexOf(itemToInsertBefore);
+            int insertAtIndex = Items.Items.IndexOf(itemToInsertBefore);
 
-            if (insertAtIndex >= 0 && insertAtIndex < Items.Count)
+            if (insertAtIndex >= 0 && insertAtIndex < Items.Items.Count)
             {
-                Items.Remove(itemToMove);
-                Items.Insert(insertAtIndex, itemToMove);
+                Items.Items.Remove(itemToMove);
+                Items.Items.Insert(insertAtIndex, itemToMove);
                 itemToMove.IsBeingDragged = false;
                 itemToInsertBefore.IsBeingDraggedOver = false;
             }

@@ -10,7 +10,7 @@ internal partial class CheckItem : ObservableObject
     private string _itemText;
 
     [ObservableProperty]
-    private bool _isTapped;
+    private bool _isChecked = false;
 
     [ObservableProperty]
     private bool _isBeingDragged;
