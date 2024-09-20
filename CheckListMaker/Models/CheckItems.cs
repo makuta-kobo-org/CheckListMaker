@@ -10,5 +10,5 @@ internal partial class CheckItems : ObservableObject
     private DateTimeOffset _createdDateTime = DateTimeOffset.Now;
 
     [ObservableProperty]
-    private ObservableCollection<CheckItem> _items;
+    private ObservableCollection<CheckItem> _items = [];
 }

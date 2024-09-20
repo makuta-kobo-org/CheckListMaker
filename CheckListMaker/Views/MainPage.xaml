@@ -57,7 +57,7 @@
 
         <CollectionView Grid.Row="0"
             Margin="10"
-            ItemsSource="{Binding Items}"
+            ItemsSource="{Binding CurrentItems.Items}"
             SelectionMode="None">
 
             <CollectionView.ItemsLayout>
@@ -74,7 +74,7 @@
                             x:DataType="models:CheckItem"
                             Padding="5, 15"
                             StrokeShape="RoundRectangle 10"
-                            BackgroundColor="{Binding IsTapped, Converter={StaticResource BoolToColor}}"
+                            BackgroundColor="{Binding IsChecked, Converter={StaticResource BoolToColor}}"
                             HorizontalOptions="FillAndExpand"
                             VerticalOptions="FillAndExpand">
 

@@ -55,7 +55,7 @@ internal partial class MainViewModel : BaseViewModel
     }
 
     /// <summary> CheckListItem のコレクション  </summary>
-    public CheckItems Items { get; set; }
+    public CheckItems CurrentItems { get; set; } = new CheckItems();
 
     [RelayCommand]
     private static void ItemDragLeave(CheckItem item)
@@ -68,7 +68,7 @@ internal partial class MainViewModel : BaseViewModel
     [RelayCommand]
     private static void ItemTapped(CheckItem item) => item.IsChecked = !item.IsChecked;
 
-    /// <summary> CheckList Items をローカルのjson fileに保存する </summary>
+    /// <summary> CheckList CurrentItems をローカルのjson fileに保存する </summary>
     private async Task SaveItems()
     {
         if (!App.RequiresSave)
@@ -78,7 +78,7 @@ internal partial class MainViewModel : BaseViewModel
 
         try
         {
-            string json = JsonSerializer.Serialize<CheckItems>(Items);
+            string json = JsonSerializer.Serialize<CheckItems>(CurrentItems);
 
             var jsonPath = Path.Combine(FileSystem.Current.AppDataDirectory, JsonFileName);
 
@@ -110,7 +110,7 @@ internal partial class MainViewModel : BaseViewModel
 
             var json = File.ReadAllText(jsonPath);
 
-            Items = JsonSerializer.Deserialize<CheckItems>(json);
+            CurrentItems = JsonSerializer.Deserialize<CheckItems>(json);
         }
         catch (Exception ex)
         {
@@ -180,9 +180,9 @@ internal partial class MainViewModel : BaseViewModel
 
     private async Task CreateCheckItems(string imagePath)
     {
-        Items = await _computerVisionService.GetCheckItems(imagePath);
+        CurrentItems = await _computerVisionService.GetCheckItems(imagePath);
 
-        OnPropertyChanged(nameof(Items));
+        OnPropertyChanged(nameof(CurrentItems));
 
         await SaveItems();
     }
@@ -198,7 +198,7 @@ internal partial class MainViewModel : BaseViewModel
 
             if (!string.IsNullOrEmpty(InputText))
             {
-                Items.Items.Add(new CheckItem() { ItemText = InputText });
+                CurrentItems.Items.Add(new CheckItem() { ItemText = InputText });
                 InputText = string.Empty;
             }
 
@@ -221,7 +221,7 @@ internal partial class MainViewModel : BaseViewModel
 
         try
         {
-            Items.Items.Remove(item);
+            CurrentItems.Items.Remove(item);
 
             await SaveItems();
 
@@ -271,12 +271,12 @@ internal partial class MainViewModel : BaseViewModel
                 return;
             }
 
-            int insertAtIndex = Items.Items.IndexOf(itemToInsertBefore);
+            int insertAtIndex = CurrentItems.Items.IndexOf(itemToInsertBefore);
 
-            if (insertAtIndex >= 0 && insertAtIndex < Items.Items.Count)
+            if (insertAtIndex >= 0 && insertAtIndex < CurrentItems.Items.Count)
             {
-                Items.Items.Remove(itemToMove);
-                Items.Items.Insert(insertAtIndex, itemToMove);
+                CurrentItems.Items.Remove(itemToMove);
+                CurrentItems.Items.Insert(insertAtIndex, itemToMove);
                 itemToMove.IsBeingDragged = false;
                 itemToInsertBefore.IsBeingDraggedOver = false;
             }

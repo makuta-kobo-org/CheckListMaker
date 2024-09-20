@@ -10,6 +10,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ソリューション項目
 		azure-pipelines-android.yml = azure-pipelines-android.yml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckListMakerTest.Tests", "CheckListMakerTest.Tests\CheckListMakerTest.Tests.csproj", "{CCB62A97-B090-448E-B2C9-7DDF26A533FA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,6 +24,10 @@ Global
 		{80EE9F01-FD36-463E-8DB3-A4313B59D882}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{80EE9F01-FD36-463E-8DB3-A4313B59D882}.Release|Any CPU.Build.0 = Release|Any CPU
 		{80EE9F01-FD36-463E-8DB3-A4313B59D882}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{CCB62A97-B090-448E-B2C9-7DDF26A533FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCB62A97-B090-448E-B2C9-7DDF26A533FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCB62A97-B090-448E-B2C9-7DDF26A533FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCB62A97-B090-448E-B2C9-7DDF26A533FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
