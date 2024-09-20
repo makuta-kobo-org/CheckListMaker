@@ -2,6 +2,7 @@ using CheckListMaker.Models;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace CheckListMaker.Services;
 
@@ -10,14 +11,14 @@ internal sealed class ComputerVisionService : IComputerVisionService
 {
     private const int NumberOfCharsInOperationId = 36;
     private static readonly object _lockObject = new();
-    private static IComputerVisionService _instance = null;
+    private static ComputerVisionService _instance = null;
     private readonly CVConstants _constants;
 
     private ComputerVisionService(IConfiguration config) =>
         _constants = config.GetRequiredSection("ComputerVision").Get<CVConstants>();
 
     /// <summary> Instanceを返す </summary>
-    public static IComputerVisionService GetInstance(IConfiguration config)
+    public static ComputerVisionService GetInstance(IConfiguration config)
     {
         if (_instance == null)
         {
@@ -31,52 +32,56 @@ internal sealed class ComputerVisionService : IComputerVisionService
     }
 
     /// <summary>
-    /// パラメータの画像ファイルをComputer VisionでOCR処理し、
-    /// CheckItemのListを生成して返す</summary>
+    /// パラメータの画像ファイルをComputer VisionでOCR処理し、CheckItemのListを生成して返す
+    /// </summary>
     public async Task<CheckItems> GetCheckItems(string localFile)
     {
-        using var client = new ComputerVisionClient(
-            new ApiKeyServiceClientCredentials(_constants.Key))
-        {
-            Endpoint = _constants.EndPoint,
-        };
+        using var client = CreateComputerVisionClient();
+        var operationId = await StartOcrOperation(client, localFile);
+        var results = await WaitForOcrResults(client, operationId);
 
-        Console.WriteLine("[ComputerVisionService] Read file from url");
+        return ExtractCheckItems(results.AnalyzeResult);
+    }
 
-        // Read text from URL
+    private ComputerVisionClient CreateComputerVisionClient() =>
+    new(new ApiKeyServiceClientCredentials(_constants.Key))
+    {
+        Endpoint = _constants.EndPoint,
+    };
+
+    private async Task<string> StartOcrOperation(ComputerVisionClient client, string localFile)
+    {
         var textHeaders = await client.ReadInStreamAsync(File.OpenRead(localFile));
+        return textHeaders.OperationLocation[^NumberOfCharsInOperationId..];
+    }
 
-        // After the request, get the operation location (operation ID)
-        string operationLocation = textHeaders.OperationLocation;
-
-        var operationId = operationLocation[^NumberOfCharsInOperationId..];
-
-        // Extract the text
+    private async Task<ReadOperationResult> WaitForOcrResults(ComputerVisionClient client, string operationId)
+    {
         ReadOperationResult results;
-
-        Console.WriteLine($"[ComputerVisionService] Reading text from  {Path.GetFileName(localFile)}...");
-
         do
         {
             results = await client.GetReadResultAsync(Guid.Parse(operationId));
+            await Task.Delay(1000); // 1秒ごとにステータス確認
         }
         while (results.Status == OperationStatusCodes.Running ||
-            results.Status == OperationStatusCodes.NotStarted);
+               results.Status == OperationStatusCodes.NotStarted);
 
-        Console.WriteLine("[ComputerVisionService] Read text from result");
+        return results;
+    }
 
-        var textUrlFileResults = results.AnalyzeResult.ReadResults;
+    private CheckItems ExtractCheckItems(AnalyzeResults analyzeResults)
+    {
         var items = new CheckItems();
 
-        foreach (ReadResult page in textUrlFileResults)
+        foreach (var page in analyzeResults.ReadResults)
         {
-            foreach (Line line in page.Lines)
+            foreach (var line in page.Lines)
             {
-                var text = line.Text[0] == '·'
+                var text = line.Text.StartsWith('·')
                     ? line.Text.Remove(0, 1).Trim()
                     : line.Text.Trim();
 
-                items.Items.Add(new CheckItem() { ItemText = text });
+                items.Items.Add(new CheckItem { ItemText = text });
             }
         }
 
