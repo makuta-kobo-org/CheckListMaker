@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Text.Json;
 using CheckListMaker.Controls;
+using CheckListMaker.Exceptions;
 using CheckListMaker.Helpers;
 using CheckListMaker.Messengers;
 using CheckListMaker.Models;
@@ -68,6 +70,9 @@ internal partial class MainViewModel : BaseViewModel
     [RelayCommand]
     private static void ItemTapped(CheckItem item) => item.IsChecked = !item.IsChecked;
 
+    private static bool IsGranted(PermissionStatus status)
+        => status == PermissionStatus.Granted || status == PermissionStatus.Limited;
+
     /// <summary> CheckList CurrentItems をローカルのjson fileに保存する </summary>
     private async Task SaveItems()
     {
@@ -127,6 +132,15 @@ internal partial class MainViewModel : BaseViewModel
         {
             _popupService.ShowPopup(popup);
 
+            var cameraStatus = await CheckPermissions<Permissions.Camera>();
+
+            if (!IsGranted(cameraStatus))
+            {
+                throw new NoPermissionsException(AppResource.Exception_NoPermissions_Camera);
+            }
+
+            Debug.WriteLine(cameraStatus.ToString());
+
             var imagePath = await _mediaService.DoCapturePhoto();
 
             if (imagePath == null)
@@ -137,6 +151,14 @@ internal partial class MainViewModel : BaseViewModel
             await CreateCheckItems(imagePath);
 
             await SnackbarViewer.Show(AppResource.Main_Snackbar_Done);
+        }
+        catch (NoPermissionsException ex)
+        {
+            await ShowAlert("Error", ex.Message);
+        }
+        catch (NoCheckItemsException ex)
+        {
+            await ShowAlert("Error", ex.Message);
         }
         catch (Exception ex)
         {
@@ -157,6 +179,15 @@ internal partial class MainViewModel : BaseViewModel
         {
             _popupService.ShowPopup(popup);
 
+            var mediaStatus = await CheckPermissions<Permissions.Media>();
+
+            if (!IsGranted(mediaStatus))
+            {
+                throw new NoPermissionsException(AppResource.Exception_NoPermissions_Media);
+            }
+
+            Debug.WriteLine(mediaStatus.ToString());
+
             var imagePath = await _mediaService.DoPickPhoto();
 
             if (imagePath == null)
@@ -168,6 +199,14 @@ internal partial class MainViewModel : BaseViewModel
 
             await SnackbarViewer.Show(AppResource.Main_Snackbar_Done);
         }
+        catch (NoPermissionsException ex)
+        {
+            await ShowAlert("Error", ex.Message);
+        }
+        catch (NoCheckItemsException ex)
+        {
+            await ShowAlert("Error", ex.Message);
+        }
         catch (Exception ex)
         {
             await ShowAlert("Error", ex.Message);
@@ -176,15 +215,6 @@ internal partial class MainViewModel : BaseViewModel
         {
             _popupService.ClosePopup(popup);
         }
-    }
-
-    private async Task CreateCheckItems(string imagePath)
-    {
-        CurrentItems = await _computerVisionService.GetCheckItems(imagePath);
-
-        OnPropertyChanged(nameof(CurrentItems));
-
-        await SaveItems();
     }
 
     [RelayCommand]
@@ -289,5 +319,32 @@ internal partial class MainViewModel : BaseViewModel
         {
             Console.WriteLine(ex.Message);
         }
+    }
+
+    private async Task CreateCheckItems(string imagePath)
+    {
+        var results = await _computerVisionService.GetCheckItems(imagePath);
+
+        if (results == null || results.Items.Count < 1)
+        {
+            throw new NoCheckItemsException();
+        }
+
+        OnPropertyChanged(nameof(CurrentItems));
+
+        await SaveItems();
+    }
+
+    private async Task<PermissionStatus> CheckPermissions<TPermission>()
+        where TPermission : Permissions.BasePermission, new()
+    {
+        PermissionStatus status = await Permissions.CheckStatusAsync<TPermission>();
+
+        if (status != PermissionStatus.Granted)
+        {
+            status = await Permissions.RequestAsync<TPermission>();
+        }
+
+        return status;
     }
 }

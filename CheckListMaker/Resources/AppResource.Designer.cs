@@ -88,6 +88,42 @@ namespace CheckListMaker.Resources {
         }
         
         /// <summary>
+        ///   Could not retrieve the list. Please run it again after a while or try another photo. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Exception_NoCheckItems {
+            get {
+                return ResourceManager.GetString("Exception_NoCheckItems", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Please enable the following permissions and run again. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Exception_NoPermissions {
+            get {
+                return ResourceManager.GetString("Exception_NoPermissions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Camera に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Exception_NoPermissions_Camera {
+            get {
+                return ResourceManager.GetString("Exception_NoPermissions_Camera", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Media に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Exception_NoPermissions_Media {
+            get {
+                return ResourceManager.GetString("Exception_NoPermissions_Media", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Add item に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string Main_Entry_Placeholder {

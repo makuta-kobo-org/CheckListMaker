@@ -147,4 +147,16 @@
   <data name="Settings_Label_Save" xml:space="preserve">
     <value>前回状態を保存する</value>
   </data>
+  <data name="Exception_NoPermissions" xml:space="preserve">
+    <value>次の許可を有効にしてから再度実行してください</value>
+  </data>
+  <data name="Exception_NoPermissions_Camera" xml:space="preserve">
+    <value>カメラ</value>
+  </data>
+  <data name="Exception_NoPermissions_Media" xml:space="preserve">
+    <value>メディア</value>
+  </data>
+  <data name="Exception_NoCheckItems" xml:space="preserve">
+    <value>リストを取得できませんでした。しばらくしてから再度実行するか、別の写真を試してください。</value>
+  </data>
 </root>

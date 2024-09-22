@@ -147,4 +147,16 @@
   <data name="Settings_Label_Save" xml:space="preserve">
     <value>Save previous state</value>
   </data>
+  <data name="Exception_NoPermissions" xml:space="preserve">
+    <value>Please enable the following permissions and run again.</value>
+  </data>
+  <data name="Exception_NoPermissions_Camera" xml:space="preserve">
+    <value>Camera</value>
+  </data>
+  <data name="Exception_NoPermissions_Media" xml:space="preserve">
+    <value>Media</value>
+  </data>
+  <data name="Exception_NoCheckItems" xml:space="preserve">
+    <value>Could not retrieve the list. Please run it again after a while or try another photo.</value>
+  </data>
 </root>
