@@ -34,13 +34,14 @@ internal partial class MainViewModel : BaseViewModel
     private bool _isToggled = true;
 
     [ObservableProperty]
-    private string _bannerId = App.AdMobConstants.bannerId;
+    private string _bannerId;
 
     /// <summary> Constructor </summary>
     public MainViewModel(
         IMediaService mediaService,
         IComputerVisionService computerVisionService,
-        IMyPopupService popupService)
+        IMyPopupService popupService,
+        AdMobConstants adMobConstants)
     {
         _mediaService = mediaService;
         _computerVisionService = computerVisionService;
@@ -51,6 +52,8 @@ internal partial class MainViewModel : BaseViewModel
         {
             ReadItems();
         }
+
+        BannerId = adMobConstants.BannerId;
 
         WeakReferenceMessenger.Default.Register<SaveSettingsChangedMessage>(
             this, async (r, m) => await SaveItems());

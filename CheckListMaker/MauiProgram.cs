@@ -1,6 +1,8 @@
 using System.ComponentModel;
+using System.Net.Security;
 using System.Reflection;
 using CheckListMaker.Controls;
+using CheckListMaker.Models;
 using CheckListMaker.Services;
 using CheckListMaker.ViewModels;
 using CheckListMaker.Views;
@@ -8,6 +10,7 @@ using CommunityToolkit.Maui;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Plugin.MauiMTAdmob;
+using static CheckListMaker.App;
 
 namespace CheckListMaker;
 
@@ -60,6 +63,10 @@ public static class MauiProgram
         IServiceCollection services,
         IConfiguration config)
     {
+        // Constants
+        services.AddSingleton<AdMobConstants>(
+            options => config.GetRequiredSection("AdMob").Get<AdMobConstants>());
+
         // Services
         services.AddTransient<IMediaService, MediaService>();
         services.AddSingleton<IComputerVisionService>(

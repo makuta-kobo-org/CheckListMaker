@@ -21,9 +21,6 @@ public partial class App : Application
         CrossMauiMTAdmob.Current.ComplyWithFamilyPolicies = true;
         CrossMauiMTAdmob.Current.UseRestrictedDataProcessing = true;
 
-        AdMobConstants =
-            config.GetRequiredSection("AdMob").Get<AdMobConstantsRecord>();
-
         _requiresSave = Preferences.Default.Get("requires_save", false);
 
         _isDark = Preferences.Default.Get("is_dark", false);
@@ -70,12 +67,6 @@ public partial class App : Application
             Preferences.Default.Set("is_dark", _isDark);
         }
     }
-
-    /// <summary> Adomobの広告IDを格納するConstants </summary>
-    public static AdMobConstantsRecord AdMobConstants { get; private set; }
-
-    /// <summary> Adomobの広告IDを格納するレコード </summary>
-    public record AdMobConstantsRecord(string bannerId, string interstitialId);
 
     private static void SetTheme(bool isDark) => Current.UserAppTheme = isDark ? AppTheme.Dark : AppTheme.Light;
 }
