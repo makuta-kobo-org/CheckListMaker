@@ -6,3 +6,4 @@ using System.Runtime.InteropServices;
 // アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
 [assembly: InternalsVisibleTo("CheckListMakerTest.Tests")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

@@ -7,13 +7,13 @@ using System.Reflection;
 
 namespace CheckListMakerTest.Tests.MauiApps.Services;
 
-public class ComputerVisionServiceTest
+public class ComputerVisionServiceTests
 {
     private readonly ITestOutputHelper _output;
     private readonly ComputerVisionService _service;
 
     /// <summary> Setup </summary>
-    public ComputerVisionServiceTest(ITestOutputHelper output)
+    public ComputerVisionServiceTests(ITestOutputHelper output)
     {
         _output = output;
 

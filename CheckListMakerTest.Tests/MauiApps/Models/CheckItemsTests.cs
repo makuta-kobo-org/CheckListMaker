@@ -3,7 +3,7 @@ using Xunit.Abstractions;
 
 namespace CheckListMakerTest.Tests.MauiApps.Models;
 
-public class CheckItemsTest(ITestOutputHelper output)
+public class CheckItemsTests(ITestOutputHelper output)
 {
     [Fact]
     public void CreateNew_IsDefaultValue_Correct()
