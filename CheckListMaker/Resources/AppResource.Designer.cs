@@ -88,6 +88,42 @@ namespace CheckListMaker.Resources {
         }
         
         /// <summary>
+        ///   Add に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Button_Text_Add {
+            get {
+                return ResourceManager.GetString("Button_Text_Add", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Camera に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Button_Text_Camera {
+            get {
+                return ResourceManager.GetString("Button_Text_Camera", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Histroy に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Button_Text_Histroy {
+            get {
+                return ResourceManager.GetString("Button_Text_Histroy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Image に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Button_Text_Image {
+            get {
+                return ResourceManager.GetString("Button_Text_Image", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Could not retrieve the list. Please run it again after a while or try another photo. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string Exception_NoCheckItems {

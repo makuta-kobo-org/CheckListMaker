@@ -159,4 +159,16 @@
   <data name="Exception_NoCheckItems" xml:space="preserve">
     <value>Could not retrieve the list. Please run it again after a while or try another photo.</value>
   </data>
+  <data name="Button_Text_Camera" xml:space="preserve">
+    <value>Camera</value>
+  </data>
+  <data name="Button_Text_Image" xml:space="preserve">
+    <value>Image</value>
+  </data>
+  <data name="Button_Text_Add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="Button_Text_Histroy" xml:space="preserve">
+    <value>Histroy</value>
+  </data>
 </root>

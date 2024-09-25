@@ -159,4 +159,16 @@
   <data name="Exception_NoCheckItems" xml:space="preserve">
     <value>リストを取得できませんでした。しばらくしてから再度実行するか、別の写真を試してください。</value>
   </data>
+  <data name="Button_Text_Camera" xml:space="preserve">
+    <value>カメラ</value>
+  </data>
+  <data name="Button_Text_Image" xml:space="preserve">
+    <value>画像</value>
+  </data>
+  <data name="Button_Text_Add" xml:space="preserve">
+    <value>追加</value>
+  </data>
+  <data name="Button_Text_Histroy" xml:space="preserve">
+    <value>履歴</value>
+  </data>
 </root>
