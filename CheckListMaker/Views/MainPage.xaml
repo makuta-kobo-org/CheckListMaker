@@ -220,7 +220,8 @@
             <Button Grid.Row="1" Grid.Column="2"
                 Style="{StaticResource TabbarButton}"
                 Text="{x:Static resources:AppResource.Button_Text_Add }"
-                SemanticProperties.Description="Add text button">
+                SemanticProperties.Description="Add text button"
+                Command="{Binding AddItemCommand}">
                 <Button.Behaviors>
                     <toolkit:AnimationBehavior EventName="Clicked">
                         <toolkit:AnimationBehavior.AnimationType>

@@ -171,4 +171,7 @@
   <data name="Button_Text_Histroy" xml:space="preserve">
     <value>履歴</value>
   </data>
+  <data name="Main_Label_AddTitle" xml:space="preserve">
+    <value>チェックアイテムを追加</value>
+  </data>
 </root>

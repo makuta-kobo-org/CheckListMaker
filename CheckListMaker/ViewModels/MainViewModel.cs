@@ -223,16 +223,13 @@ internal partial class MainViewModel : BaseViewModel
     [RelayCommand]
     private async Task AddItem()
     {
-        var popup = new LoadingPopup();
-
         try
         {
-            _popupService.ShowPopup(popup);
+            var result = await ShowPromptAlert(AppResource.Main_Label_AddTitle, string.Empty, string.Empty);
 
-            if (!string.IsNullOrEmpty(InputText))
+            if (!string.IsNullOrEmpty(result))
             {
-                CurrentItems.Items.Add(new CheckItem() { ItemText = InputText });
-                InputText = string.Empty;
+                CurrentItems.Items.Add(new CheckItem() { ItemText = result });
             }
 
             await SaveItems();
@@ -243,7 +240,6 @@ internal partial class MainViewModel : BaseViewModel
         }
         finally
         {
-            _popupService.ClosePopup(popup);
         }
     }
 

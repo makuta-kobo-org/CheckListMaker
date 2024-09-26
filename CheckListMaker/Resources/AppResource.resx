@@ -171,4 +171,7 @@
   <data name="Button_Text_Histroy" xml:space="preserve">
     <value>Histroy</value>
   </data>
+  <data name="Main_Label_AddTitle" xml:space="preserve">
+    <value>Add a check item</value>
+  </data>
 </root>

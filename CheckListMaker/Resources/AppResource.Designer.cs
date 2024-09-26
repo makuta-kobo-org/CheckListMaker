@@ -169,6 +169,15 @@ namespace CheckListMaker.Resources {
         }
         
         /// <summary>
+        ///   Add a check item に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Main_Label_AddTitle {
+            get {
+                return ResourceManager.GetString("Main_Label_AddTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   2 columns に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string Main_Label_Switch {
