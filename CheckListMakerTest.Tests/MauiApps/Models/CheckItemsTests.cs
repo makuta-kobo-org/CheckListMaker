@@ -34,4 +34,26 @@ public class CheckItemsTests(ITestOutputHelper output)
             output.WriteLine(item.ItemText);
         }
     }
+
+    [Fact]
+    public void ItemTextsOneLine_ShouldReturnsOneLineSuccessfully()
+    {
+        // Arrange
+        var _text1 = "TEST-1";
+        var _text2 = "TEST-2";
+        var _text3 = "TEST-3";
+
+        var expect = $"{_text1} {_text2} {_text3}";
+
+        var items = new CheckItems();
+        items.Items.Add(new CheckItem() { ItemText = _text1 });
+        items.Items.Add(new CheckItem() { ItemText = _text2 });
+        items.Items.Add(new CheckItem() { ItemText = _text3 });
+
+        // Act
+        var actual = items.ItemTextsOneLine;
+
+        // Assert
+        actual.Is(expect);
+    }
 }
