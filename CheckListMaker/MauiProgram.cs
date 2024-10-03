@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using System.Net.Security;
 using System.Reflection;
 using CheckListMaker.Controls;
 using CheckListMaker.Models;
@@ -10,7 +9,6 @@ using CommunityToolkit.Maui;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Plugin.MauiMTAdmob;
-using static CheckListMaker.App;
 
 namespace CheckListMaker;
 
@@ -69,8 +67,19 @@ public static class MauiProgram
 
         // Services
         services.AddTransient<IMediaService, MediaService>();
+        services.AddTransient<IAlertService, AlertService>();
         services.AddSingleton<IComputerVisionService>(
             options => ComputerVisionService.GetInstance(config));
+        services.AddSingleton<ILiteDbService, LiteDbService>(options =>
+            {
+                var dbFilePath = Path.Combine(
+                    FileSystem.Current.AppDataDirectory,
+                    config["LiteDb:FileName"]);
+
+                var upperLimit = int.TryParse(config["LiteDb:UpperLimit"], out var parsedValue) ? parsedValue : 10;
+
+                return new LiteDbService(dbFilePath, upperLimit);
+            });
 
         // Controls
         services.AddTransient<IMyPopupService, MyPopupService>();
@@ -80,6 +89,7 @@ public static class MauiProgram
         services.AddTransientViewAndViewModel<MainView, MainViewModel>();
         services.AddTransientViewAndViewModel<SettingsView, SettingsViewModel>();
         services.AddTransientViewAndViewModel<AboutView, AboutViewModel>();
+        services.AddTransientViewAndViewModel<HistoryView, HistoryViewModel>();
     }
 
     /// <summary> ViewとViewModelのService登録およびBindincContextへの設定 </summary>

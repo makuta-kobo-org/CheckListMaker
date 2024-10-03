@@ -174,4 +174,16 @@
   <data name="Main_Label_AddTitle" xml:space="preserve">
     <value>チェックアイテムを追加</value>
   </data>
+  <data name="History_Title" xml:space="preserve">
+    <value>履歴</value>
+  </data>
+  <data name="Format_Date" xml:space="preserve">
+    <value>yyyy年MM月dd日(ddd)</value>
+  </data>
+  <data name="History_Label_AlertTitle" xml:space="preserve">
+    <value>確認</value>
+  </data>
+  <data name="History_Label_AlertMessage" xml:space="preserve">
+    <value>削除しますか？</value>
+  </data>
 </root>

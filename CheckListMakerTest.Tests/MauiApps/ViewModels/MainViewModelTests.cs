@@ -11,7 +11,9 @@ public class MainViewModelTests
 {
     private readonly Mock<IMediaService> _mediaServiceMock;
     private readonly Mock<IComputerVisionService> _computerVisionServiceMock;
+    private readonly Mock<ILiteDbService> _liteDbServiceMock;
     private readonly Mock<IMyPopupService> _popupServiceMock;
+    private readonly Mock<IAlertService> _alertServiceMock;
     private readonly Mock<AdMobConstants> _adMobConstans;
     private readonly MainViewModel _viewModel;
 
@@ -19,13 +21,17 @@ public class MainViewModelTests
     {
         _mediaServiceMock = new Mock<IMediaService>();
         _computerVisionServiceMock = new Mock<IComputerVisionService>();
+        _liteDbServiceMock = new Mock<ILiteDbService>();
         _popupServiceMock = new Mock<IMyPopupService>();
+        _alertServiceMock = new Mock<IAlertService>();
         _adMobConstans = new Mock<AdMobConstants>();
 
         _viewModel = new MainViewModel(
             _mediaServiceMock.Object,
             _computerVisionServiceMock.Object,
+            _liteDbServiceMock.Object,
             _popupServiceMock.Object,
+            _alertServiceMock.Object,
             _adMobConstans.Object
         );
     }
@@ -57,32 +63,41 @@ public class MainViewModelTests
     }
 
     [Fact]
-    public async Task AddItem_WithInputText_AddsNewCheckItem()
+    public async Task AddItem_WhenCalled_AddsNewItemToCheckListAndUpdatesDb()
     {
         // Arrange
-        _viewModel.InputText = "New Item";
-        _viewModel.CurrentItems = new CheckItems { Items = [] };
+        string newItemText = "New Item";
+        _viewModel.CurrentCehckList = new CheckList { Items = [] };
+
+        _alertServiceMock
+            .Setup(service => service.ShowPromptAlert(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync(newItemText);
 
         // Act
         await _viewModel.AddItemCommand.ExecuteAsync(null);
 
         // Assert
-        _viewModel.CurrentItems.Items.Any(i => i.ItemText == "New Item").IsTrue();
-        _viewModel.InputText.Is(string.Empty);
+        _viewModel.CurrentCehckList.Items.Count.Is(1);
+        _viewModel.CurrentCehckList.Items[0].ItemText.Is(newItemText);
+        _liteDbServiceMock.Verify(service => service.Update(It.IsAny<CheckList>()), Times.Once);
     }
 
     [Fact]
-    public async Task AddItem_WithEmptyInputText_DoesNotAddCheckItem()
+    public async Task AddItem_WhenPromptReturnsNull_DoesNotAddItem()
     {
         // Arrange
-        _viewModel.InputText = string.Empty;
-        _viewModel.CurrentItems = new CheckItems { Items = [] };
+        _viewModel.CurrentCehckList = new CheckList { Items = [] };
+
+        _alertServiceMock
+            .Setup(service => service.ShowPromptAlert(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync((string)null);
 
         // Act
         await _viewModel.AddItemCommand.ExecuteAsync(null);
 
         // Assert
-        _viewModel.CurrentItems.Items.Any().IsFalse();
+        _viewModel.CurrentCehckList.Items.Any().IsFalse();
+        _liteDbServiceMock.Verify(service => service.Update(It.IsAny<CheckList>()), Times.Never);
     }
 
     [Fact]
@@ -90,13 +105,13 @@ public class MainViewModelTests
     {
         // Arrange
         var itemToDelete = new CheckItem { ItemText = "Item to delete" };
-        _viewModel.CurrentItems = new CheckItems { Items = new ObservableCollection<CheckItem> { itemToDelete } };
+        _viewModel.CurrentCehckList = new CheckList { Items = new ObservableCollection<CheckItem> { itemToDelete } };
 
         // Act
         await _viewModel.DeleteItemCommand.ExecuteAsync(itemToDelete);
 
         // Assert
-        _viewModel.CurrentItems.Items.Contains(itemToDelete).IsFalse();
+        _viewModel.CurrentCehckList.Items.Contains(itemToDelete).IsFalse();
     }
 
     [Fact]

@@ -67,7 +67,7 @@
 
         <CollectionView Grid.Row="0"
             Margin="10"
-            ItemsSource="{Binding CurrentItems.Items}"
+            ItemsSource="{Binding CurrentCehckList.Items}"
             SelectionMode="None">
 
             <CollectionView.ItemsLayout>
@@ -85,15 +85,15 @@
                             Padding="5, 15"
                             StrokeShape="RoundRectangle 10"
                             BackgroundColor="{Binding IsChecked, Converter={StaticResource BoolToColor}}"
-                            HorizontalOptions="FillAndExpand"
-                            VerticalOptions="FillAndExpand">
+                            HorizontalOptions="Fill"
+                            VerticalOptions="Fill">
 
                             <Grid ColumnDefinitions="*, 35">
 
                                 <!--  Text  -->
                                 <Label Grid.Column="0"
                                     x:Name="CheckItemText"
-                                    HorizontalOptions="FillAndExpand"
+                                    HorizontalOptions="Fill"
                                     FontSize="Body"
                                     Text="{Binding ItemText}"
                                     VerticalTextAlignment="Center" />
@@ -241,7 +241,8 @@
             <Button Grid.Row="1" Grid.Column="3"
                 Style="{StaticResource TabbarButton}"
                 Text="{x:Static resources:AppResource.Button_Text_Histroy }"
-                SemanticProperties.Description="Show histroy button">
+                SemanticProperties.Description="Show histroy button"
+                Command="{Binding GoToHistoryViewCommand}">
                 <Button.Behaviors>
                     <toolkit:AnimationBehavior EventName="Clicked">
                         <toolkit:AnimationBehavior.AnimationType>

@@ -70,6 +70,15 @@ namespace CheckListMaker.Resources {
         }
         
         /// <summary>
+        ///   Item deleted に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Alert_DeleteResultMessage {
+            get {
+                return ResourceManager.GetString("Alert_DeleteResultMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   App Information に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string AppShell_Label_AppinfoText {
@@ -160,6 +169,42 @@ namespace CheckListMaker.Resources {
         }
         
         /// <summary>
+        ///   0:MMM dd, yyyy (ddd) に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Format_Date {
+            get {
+                return ResourceManager.GetString("Format_Date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Do you want to delete it? に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string History_Label_AlertMessage {
+            get {
+                return ResourceManager.GetString("History_Label_AlertMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Confirmation に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string History_Label_AlertTitle {
+            get {
+                return ResourceManager.GetString("History_Label_AlertTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   History に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string History_Title {
+            get {
+                return ResourceManager.GetString("History_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Add item に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string Main_Entry_Placeholder {
@@ -192,15 +237,6 @@ namespace CheckListMaker.Resources {
         internal static string Main_Snackbar_Done {
             get {
                 return ResourceManager.GetString("Main_Snackbar_Done", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Item deleted に類似しているローカライズされた文字列を検索します。
-        /// </summary>
-        internal static string Main_String_DeleteMessage {
-            get {
-                return ResourceManager.GetString("Main_String_DeleteMessage", resourceCulture);
             }
         }
         

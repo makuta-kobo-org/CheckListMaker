@@ -1,6 +1,4 @@
-using CheckListMaker.Messengers;
 using CheckListMaker.ViewModels;
-using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Configuration;
 using Plugin.MauiMTAdmob;
 
@@ -10,10 +8,9 @@ namespace CheckListMaker;
 public partial class App : Application
 {
     private static bool _isDark;
-    private static bool _requiresSave;
 
     /// <summary> Constructor </summary>
-    public App(AppShellViewModel viewModel, IConfiguration config)
+    public App(AppShellViewModel viewModel)
     {
         InitializeComponent();
 
@@ -21,34 +18,10 @@ public partial class App : Application
         CrossMauiMTAdmob.Current.ComplyWithFamilyPolicies = true;
         CrossMauiMTAdmob.Current.UseRestrictedDataProcessing = true;
 
-        _requiresSave = Preferences.Default.Get("requires_save", false);
-
         _isDark = Preferences.Default.Get("is_dark", false);
         SetTheme(_isDark);
 
         MainPage = new AppShell(viewModel);
-    }
-
-    /// <summary> 状態保存をするかのフラグ </summary>
-    public static bool RequiresSave
-    {
-        get => _requiresSave;
-        set
-        {
-            if (_requiresSave == value)
-            {
-                return;
-            }
-
-            _requiresSave = value;
-            Preferences.Default.Set("requires_save", _requiresSave);
-
-            // Trueなら現在のCheckListアイテムを保存
-            if (_requiresSave)
-            {
-                WeakReferenceMessenger.Default.Send(new SaveSettingsChangedMessage(null));
-            }
-        }
     }
 
     /// <summary> ダークモード判定のフラグ </summary>
@@ -68,5 +41,6 @@ public partial class App : Application
         }
     }
 
-    private static void SetTheme(bool isDark) => Current.UserAppTheme = isDark ? AppTheme.Dark : AppTheme.Light;
+    private static void SetTheme(bool isDark) =>
+        Current.UserAppTheme = isDark ? AppTheme.Dark : AppTheme.Light;
 }
