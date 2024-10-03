@@ -8,5 +8,5 @@ internal interface IComputerVisionService
     /// <summary>
     /// パラメータの画像ファイルをComputer VisionでOCR処理し、
     /// CheckItemのListを生成して返す</summary>
-    Task<CheckItems> GetCheckItems(string localFile);
+    Task<CheckList> GetCheckItems(string localFile);
 }

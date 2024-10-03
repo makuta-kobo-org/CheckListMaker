@@ -9,7 +9,7 @@ public class CheckItemsTests(ITestOutputHelper output)
     public void CreateNew_IsDefaultValue_Correct()
     {
         // Act
-        var actual = new CheckItems();
+        var actual = new CheckList();
 
         // Assert
         actual.CreatedDateTime.IsNotNull();
@@ -21,7 +21,7 @@ public class CheckItemsTests(ITestOutputHelper output)
     public void AddCheckItem_Success()
     {
         // Arrange
-        var actual = new CheckItems();
+        var actual = new CheckList();
 
         // Act
         actual.Items.Add(new CheckItem() { ItemText = "Test" });
@@ -45,7 +45,7 @@ public class CheckItemsTests(ITestOutputHelper output)
 
         var expect = $"{_text1} {_text2} {_text3}";
 
-        var items = new CheckItems();
+        var items = new CheckList();
         items.Items.Add(new CheckItem() { ItemText = _text1 });
         items.Items.Add(new CheckItem() { ItemText = _text2 });
         items.Items.Add(new CheckItem() { ItemText = _text3 });

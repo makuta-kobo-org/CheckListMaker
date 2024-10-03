@@ -57,7 +57,7 @@ public class ComputerVisionServiceTests
             .GetMethod("ExtractCheckItems", BindingFlags.NonPublic | BindingFlags.Instance);
 
         // Act
-        var result = methodInfo.Invoke(_service, parameters) as CheckItems;
+        var result = methodInfo.Invoke(_service, parameters) as CheckList;
 
         // Assert
         result.IsNotNull();
@@ -87,7 +87,7 @@ public class ComputerVisionServiceTests
             .GetMethod("ExtractCheckItems", BindingFlags.NonPublic | BindingFlags.Instance);
 
         // Act
-        var result = methodInfo.Invoke(_service, parameters) as CheckItems;
+        var result = methodInfo.Invoke(_service, parameters) as CheckList;
 
         // Assert
         result.IsNotNull();

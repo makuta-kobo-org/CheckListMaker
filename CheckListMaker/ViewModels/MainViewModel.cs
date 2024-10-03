@@ -1,27 +1,25 @@
-using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Text.Json;
 using CheckListMaker.Controls;
 using CheckListMaker.Exceptions;
 using CheckListMaker.Helpers;
-using CheckListMaker.Messengers;
 using CheckListMaker.Models;
 using CheckListMaker.Resources;
 using CheckListMaker.Services;
+using CheckListMaker.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 
 namespace CheckListMaker.ViewModels;
 
 /// <summary> MainページのViewModel </summary>
+[QueryProperty(nameof(CurrentCehckList), "SelectedCheckList")]
 internal partial class MainViewModel : BaseViewModel
 {
-    private const string JsonFileName = "checkItems.json";
-
     private readonly IMediaService _mediaService;
     private readonly IComputerVisionService _computerVisionService;
+    private readonly ILiteDbService _liteDbService;
     private readonly IMyPopupService _popupService;
+    private readonly IAlertService _alertService;
     private CheckItem _itemBeingDragged;
 
     [ObservableProperty]
@@ -36,36 +34,35 @@ internal partial class MainViewModel : BaseViewModel
     [ObservableProperty]
     private string _bannerId;
 
+    [ObservableProperty]
+    private CheckList _currentCehckList = new();
+
     /// <summary> Constructor </summary>
     public MainViewModel(
         IMediaService mediaService,
         IComputerVisionService computerVisionService,
+        ILiteDbService liteDbService,
         IMyPopupService popupService,
+        IAlertService alertService,
         AdMobConstants adMobConstants)
     {
         _mediaService = mediaService;
         _computerVisionService = computerVisionService;
+        _liteDbService = liteDbService;
         _popupService = popupService;
+        _alertService = alertService;
 
-        // 前回状態の復元
-        if (App.RequiresSave)
-        {
-            ReadItems();
-        }
+        ReadCheckList();
 
         BannerId = adMobConstants.BannerId;
-
-        WeakReferenceMessenger.Default.Register<SaveSettingsChangedMessage>(
-            this, async (r, m) => await SaveItems());
     }
-
-    /// <summary> CheckListItem のコレクション  </summary>
-    public CheckItems CurrentItems { get; set; } = new CheckItems();
 
     [RelayCommand]
     private static void ItemDragLeave(CheckItem item)
     {
-        Console.WriteLine($"ItemDragLeave : {item?.ItemText}");
+#if DEBUG
+        Trace.WriteLine($"ItemDragLeave : {item?.ItemText}");
+#endif
 
         item.IsBeingDraggedOver = false;
     }
@@ -76,27 +73,29 @@ internal partial class MainViewModel : BaseViewModel
     private static bool IsGranted(PermissionStatus status)
         => status == PermissionStatus.Granted || status == PermissionStatus.Limited;
 
-    /// <summary> CheckList CurrentItems をローカルのjson fileに保存する </summary>
-    private async Task SaveItems()
+    /// <summary> Add New CheckList to DB </summary>
+    private async Task AddToDb()
     {
-        if (!App.RequiresSave)
-        {
-            return;
-        }
-
         try
         {
-            string json = JsonSerializer.Serialize<CheckItems>(CurrentItems);
-
-            var jsonPath = Path.Combine(FileSystem.Current.AppDataDirectory, JsonFileName);
-
-            Console.WriteLine("SaveItems Executing");
-            Console.WriteLine(json);
-            File.WriteAllText(jsonPath, json);
+            _liteDbService.Insert(CurrentCehckList);
         }
         catch (Exception ex)
         {
-            await ShowAlert("Error", ex.Message);
+            await _alertService.ShowAlert("Error", ex.Message);
+        }
+    }
+
+    /// <summary> Update CheckList to DB </summary>
+    private async Task UpdateDb()
+    {
+        try
+        {
+            _liteDbService.Update(CurrentCehckList);
+        }
+        catch (Exception ex)
+        {
+            await _alertService.ShowAlert("Error", ex.Message);
         }
     }
 
@@ -105,24 +104,20 @@ internal partial class MainViewModel : BaseViewModel
         => NumberOfColumns = IsToggled ? 2 : 1;
 
     /// <summary> ローカルに保存していたjson fileから前回の状態を復帰する </summary>
-    private void ReadItems()
+    private void ReadCheckList()
     {
         try
         {
-            var jsonPath = Path.Combine(FileSystem.Current.AppDataDirectory, JsonFileName);
+            var itemsList = _liteDbService.FindAll();
 
-            if (!File.Exists(jsonPath))
+            if (itemsList.Count > 0)
             {
-                return;
+                CurrentCehckList = itemsList.OrderByDescending(x => x.CreatedDateTime).FirstOrDefault();
             }
-
-            var json = File.ReadAllText(jsonPath);
-
-            CurrentItems = JsonSerializer.Deserialize<CheckItems>(json);
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"ERROR : {ex.Message}");
+            Trace.WriteLine("Error", ex.Message);
         }
     }
 
@@ -142,8 +137,6 @@ internal partial class MainViewModel : BaseViewModel
                 throw new NoPermissionsException(AppResource.Exception_NoPermissions_Camera);
             }
 
-            Debug.WriteLine(cameraStatus.ToString());
-
             var imagePath = await _mediaService.DoCapturePhoto();
 
             if (imagePath == null)
@@ -151,21 +144,21 @@ internal partial class MainViewModel : BaseViewModel
                 return;
             }
 
-            await CreateCheckItems(imagePath);
+            await CreateCheckList(imagePath);
 
             await SnackbarViewer.Show(AppResource.Main_Snackbar_Done);
         }
         catch (NoPermissionsException ex)
         {
-            await ShowAlert("Error", ex.Message);
+            await _alertService.ShowAlert("Error", ex.Message);
         }
         catch (NoCheckItemsException ex)
         {
-            await ShowAlert("Error", ex.Message);
+            await _alertService.ShowAlert("Error", ex.Message);
         }
         catch (Exception ex)
         {
-            await ShowAlert("Error", ex.Message);
+            await _alertService.ShowAlert("Error", ex.Message);
         }
         finally
         {
@@ -189,8 +182,6 @@ internal partial class MainViewModel : BaseViewModel
                 throw new NoPermissionsException(AppResource.Exception_NoPermissions_Media);
             }
 
-            Debug.WriteLine(mediaStatus.ToString());
-
             var imagePath = await _mediaService.DoPickPhoto();
 
             if (imagePath == null)
@@ -198,21 +189,21 @@ internal partial class MainViewModel : BaseViewModel
                 return;
             }
 
-            await CreateCheckItems(imagePath);
+            await CreateCheckList(imagePath);
 
             await SnackbarViewer.Show(AppResource.Main_Snackbar_Done);
         }
         catch (NoPermissionsException ex)
         {
-            await ShowAlert("Error", ex.Message);
+            await _alertService.ShowAlert("Error", ex.Message);
         }
         catch (NoCheckItemsException ex)
         {
-            await ShowAlert("Error", ex.Message);
+            await _alertService.ShowAlert("Error", ex.Message);
         }
         catch (Exception ex)
         {
-            await ShowAlert("Error", ex.Message);
+            await _alertService.ShowAlert("Error", ex.Message);
         }
         finally
         {
@@ -225,21 +216,18 @@ internal partial class MainViewModel : BaseViewModel
     {
         try
         {
-            var result = await ShowPromptAlert(AppResource.Main_Label_AddTitle, string.Empty, string.Empty);
+            var result = await _alertService.ShowPromptAlert(AppResource.Main_Label_AddTitle, string.Empty, string.Empty);
 
             if (!string.IsNullOrEmpty(result))
             {
-                CurrentItems.Items.Add(new CheckItem() { ItemText = result });
-            }
+                CurrentCehckList.Items.Add(new CheckItem() { ItemText = result });
 
-            await SaveItems();
+                await UpdateDb();
+            }
         }
         catch (Exception ex)
         {
-            await ShowAlert("Error", ex.Message);
-        }
-        finally
-        {
+            await _alertService.ShowAlert("Error", ex.Message);
         }
     }
 
@@ -250,15 +238,17 @@ internal partial class MainViewModel : BaseViewModel
 
         try
         {
-            CurrentItems.Items.Remove(item);
+            _popupService.ShowPopup(popup);
 
-            await SaveItems();
+            CurrentCehckList.Items.Remove(item);
 
-            await SnackbarViewer.Show(AppResource.Main_String_DeleteMessage);
+            await UpdateDb();
+
+            await SnackbarViewer.Show(AppResource.Alert_DeleteResultMessage);
         }
         catch (Exception ex)
         {
-            await ShowAlert("Error", ex.Message);
+            await _alertService.ShowAlert("Error", ex.Message);
         }
         finally
         {
@@ -267,9 +257,18 @@ internal partial class MainViewModel : BaseViewModel
     }
 
     [RelayCommand]
+    private async Task GoToHistoryView()
+    {
+        Shell.Current.FlyoutIsPresented = false;
+        await Shell.Current.GoToAsync($"///{nameof(HistoryView)}", false);
+    }
+
+    [RelayCommand]
     private void ItemDragged(CheckItem item)
     {
-        Console.WriteLine($"ItemDragged : {item}");
+#if DEBUG
+        Trace.WriteLine($"ItemDragged : {item}");
+#endif
         item.IsBeingDragged = true;
         _itemBeingDragged = item;
     }
@@ -277,7 +276,9 @@ internal partial class MainViewModel : BaseViewModel
     [RelayCommand]
     private void ItemDraggedOver(CheckItem item)
     {
-        Console.WriteLine($"ItemDraggedOver : {item?.ItemText}");
+#if DEBUG
+        Trace.WriteLine($"ItemDraggedOver : {item?.ItemText}");
+#endif
 
         if (item == _itemBeingDragged)
         {
@@ -300,27 +301,29 @@ internal partial class MainViewModel : BaseViewModel
                 return;
             }
 
-            int insertAtIndex = CurrentItems.Items.IndexOf(itemToInsertBefore);
+            int insertAtIndex = CurrentCehckList.Items.IndexOf(itemToInsertBefore);
 
-            if (insertAtIndex >= 0 && insertAtIndex < CurrentItems.Items.Count)
+            if (insertAtIndex >= 0 && insertAtIndex < CurrentCehckList.Items.Count)
             {
-                CurrentItems.Items.Remove(itemToMove);
-                CurrentItems.Items.Insert(insertAtIndex, itemToMove);
+                CurrentCehckList.Items.Remove(itemToMove);
+                CurrentCehckList.Items.Insert(insertAtIndex, itemToMove);
                 itemToMove.IsBeingDragged = false;
                 itemToInsertBefore.IsBeingDraggedOver = false;
             }
 
-            await SaveItems();
+            await UpdateDb();
 
-            Console.WriteLine($"ItemDropped: [{itemToMove?.ItemText}] => [{itemToInsertBefore?.ItemText}], target index = [{insertAtIndex}]");
+#if DEBUG
+            Trace.WriteLine($"ItemDropped: [{itemToMove?.ItemText}] => [{itemToInsertBefore?.ItemText}], target index = [{insertAtIndex}]");
+#endif
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
+            await _alertService.ShowAlert("Error", ex.Message);
         }
     }
 
-    private async Task CreateCheckItems(string imagePath)
+    private async Task CreateCheckList(string imagePath)
     {
         var results = await _computerVisionService.GetCheckItems(imagePath);
 
@@ -329,9 +332,9 @@ internal partial class MainViewModel : BaseViewModel
             throw new NoCheckItemsException();
         }
 
-        OnPropertyChanged(nameof(CurrentItems));
+        CurrentCehckList = results;
 
-        await SaveItems();
+        await UpdateDb();
     }
 
     private async Task<PermissionStatus> CheckPermissions<TPermission>()

@@ -33,7 +33,7 @@ internal sealed class ComputerVisionService : IComputerVisionService
     /// <summary>
     /// パラメータの画像ファイルをComputer VisionでOCR処理し、CheckItemのListを生成して返す
     /// </summary>
-    public async Task<CheckItems> GetCheckItems(string localFile)
+    public async Task<CheckList> GetCheckItems(string localFile)
     {
         using var client = CreateComputerVisionClient();
         var operationId = await StartOcrOperation(client, localFile);
@@ -68,9 +68,9 @@ internal sealed class ComputerVisionService : IComputerVisionService
         return results;
     }
 
-    private CheckItems ExtractCheckItems(AnalyzeResults analyzeResults)
+    private CheckList ExtractCheckItems(AnalyzeResults analyzeResults)
     {
-        var items = new CheckItems();
+        var items = new CheckList();
 
         foreach (var page in analyzeResults.ReadResults)
         {
