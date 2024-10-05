@@ -12,7 +12,7 @@ internal interface ILiteDbService
     void Insert(CheckList checkList);
 
     /// <summary> Update a CheckList </summary>
-    void Update(CheckList checkList);
+    void Upsert(CheckList checkList);
 
     /// <summary> Delete a CheckList </summary>
     void Delete(CheckList checkList);
