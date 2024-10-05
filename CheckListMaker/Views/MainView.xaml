@@ -14,6 +14,10 @@
     x:DataType="views:MainViewModel"
     Shell.TabBarIsVisible="False">
 
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior Command="{Binding AppearingCommand}" EventName="Appearing"/>
+    </ContentPage.Behaviors>
+
     <ContentPage.Resources>
         <ResourceDictionary>
             <converter:BoolToColorConverter x:Key="BoolToColor" />

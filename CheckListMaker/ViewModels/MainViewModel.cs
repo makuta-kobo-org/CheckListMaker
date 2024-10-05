@@ -35,7 +35,7 @@ internal partial class MainViewModel : BaseViewModel
     private string _bannerId;
 
     [ObservableProperty]
-    private CheckList _currentCehckList = new();
+    private CheckList _currentCehckList;
 
     /// <summary> Constructor </summary>
     public MainViewModel(
@@ -51,8 +51,6 @@ internal partial class MainViewModel : BaseViewModel
         _liteDbService = liteDbService;
         _popupService = popupService;
         _alertService = alertService;
-
-        ReadCheckList();
 
         BannerId = adMobConstants.BannerId;
     }
@@ -73,6 +71,9 @@ internal partial class MainViewModel : BaseViewModel
     private static bool IsGranted(PermissionStatus status)
         => status == PermissionStatus.Granted || status == PermissionStatus.Limited;
 
+    [RelayCommand]
+    private async Task Appearing() => await ReadCheckList();
+
     /// <summary> Add New CheckList to DB </summary>
     private async Task AddToDb()
     {
@@ -91,7 +92,7 @@ internal partial class MainViewModel : BaseViewModel
     {
         try
         {
-            _liteDbService.Update(CurrentCehckList);
+            _liteDbService.Upsert(CurrentCehckList);
         }
         catch (Exception ex)
         {
@@ -104,20 +105,19 @@ internal partial class MainViewModel : BaseViewModel
         => NumberOfColumns = IsToggled ? 2 : 1;
 
     /// <summary> ローカルに保存していたjson fileから前回の状態を復帰する </summary>
-    private void ReadCheckList()
+    private async Task ReadCheckList()
     {
         try
         {
             var itemsList = _liteDbService.FindAll();
 
-            if (itemsList.Count > 0)
-            {
-                CurrentCehckList = itemsList.OrderByDescending(x => x.CreatedDateTime).FirstOrDefault();
-            }
+            CurrentCehckList = itemsList.Count > 0
+                ? itemsList.OrderByDescending(x => x.CreatedDateTime).FirstOrDefault()
+                : new();
         }
         catch (Exception ex)
         {
-            Trace.WriteLine("Error", ex.Message);
+            await _alertService.ShowAlert("Error", ex.Message);
         }
     }
 
@@ -334,7 +334,7 @@ internal partial class MainViewModel : BaseViewModel
 
         CurrentCehckList = results;
 
-        await UpdateDb();
+        await AddToDb();
     }
 
     private async Task<PermissionStatus> CheckPermissions<TPermission>()

@@ -40,13 +40,13 @@ internal sealed class LiteDbService : ILiteDbService
     }
 
     /// <summary> Update CheckList </summary>
-    public void Update(CheckList checkList)
+    public void Upsert(CheckList checkList)
     {
         using var db = new LiteDatabase(_dbFilePath);
 
         var col = db.GetCollection<CheckList>();
 
-        col.Update(checkList);
+        col.Upsert(checkList);
     }
 
     /// <summary> Delete CheckList </summary>
