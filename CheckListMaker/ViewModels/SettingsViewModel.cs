@@ -7,20 +7,10 @@ namespace CheckListMaker.ViewModels;
 internal partial class SettingsViewModel : BaseViewModel
 {
     [ObservableProperty]
-    private bool _requiresSave;
-
-    [ObservableProperty]
     private bool _isDark;
 
     /// <summary> Constructor </summary>
-    public SettingsViewModel()
-    {
-        RequiresSave = App.RequiresSave;
-        IsDark = App.IsDark;
-    }
-
-    [RelayCommand]
-    private void ChangedRequiresSave() => App.RequiresSave = RequiresSave;
+    public SettingsViewModel() => IsDark = App.IsDark;
 
     [RelayCommand]
     private void ChangedIsDark() => App.IsDark = IsDark;

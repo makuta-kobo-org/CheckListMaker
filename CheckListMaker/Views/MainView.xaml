@@ -18,6 +18,16 @@
         <ResourceDictionary>
             <converter:BoolToColorConverter x:Key="BoolToColor" />
         </ResourceDictionary>
+        <Style x:Key="TabbarButton" TargetType="Button">
+            <Setter Property="BackgroundColor" Value="Transparent"/>
+            <Setter Property="FontSize" Value="Micro" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
+            <Setter Property="ContentLayout" Value="Top, 0" />
+            <Setter Property="CornerRadius" Value="0" />
+            <Setter Property="VerticalOptions" Value="Center"/>
+            <Setter Property="Padding" Value="0, 10, 0, 5" />
+            <Setter Property="HeightRequest" Value="60" />
+        </Style>
     </ContentPage.Resources>
 
     <Shell.TitleView>
@@ -57,7 +67,7 @@
 
         <CollectionView Grid.Row="0"
             Margin="10"
-            ItemsSource="{Binding Items}"
+            ItemsSource="{Binding CurrentCehckList.Items}"
             SelectionMode="None">
 
             <CollectionView.ItemsLayout>
@@ -74,16 +84,16 @@
                             x:DataType="models:CheckItem"
                             Padding="5, 15"
                             StrokeShape="RoundRectangle 10"
-                            BackgroundColor="{Binding IsTapped, Converter={StaticResource BoolToColor}}"
-                            HorizontalOptions="FillAndExpand"
-                            VerticalOptions="FillAndExpand">
+                            BackgroundColor="{Binding IsChecked, Converter={StaticResource BoolToColor}}"
+                            HorizontalOptions="Fill"
+                            VerticalOptions="Fill">
 
                             <Grid ColumnDefinitions="*, 35">
 
                                 <!--  Text  -->
                                 <Label Grid.Column="0"
                                     x:Name="CheckItemText"
-                                    HorizontalOptions="FillAndExpand"
+                                    HorizontalOptions="Fill"
                                     FontSize="Body"
                                     Text="{Binding ItemText}"
                                     VerticalTextAlignment="Center" />
@@ -151,17 +161,32 @@
             </CollectionView.Footer>
         </CollectionView>
 
-        <Grid Grid.Row="1"
-            ColumnDefinitions="Auto, Auto, *"
-            Margin="10, 20">
+        <Grid
+            Grid.Row="1"
+            BackgroundColor="Transparent"
+            RowDefinitions="1,70"
+            ColumnDefinitions="*, *, *, *"
+            HorizontalOptions="Fill"
+            VerticalOptions="End">
 
-            <Button Grid.Column="0"
-                SemanticProperties.Description="Camera button"
-                CornerRadius="30"
+            <Border
+                Grid.Row="0"
                 Padding="0"
-                WidthRequest="50"
-                HeightRequest="50"
+                Grid.ColumnSpan="4"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray200}}"/>
+
+            <Button Grid.Row="1" Grid.Column="0"
+                Style="{StaticResource TabbarButton}"
+                Text="{x:Static resources:AppResource.Button_Text_Camera }"
+                SemanticProperties.Description="Camera button"
                 Command="{Binding CreateListWithCapturedImageCommand}">
+                <Button.Behaviors>
+                    <toolkit:AnimationBehavior EventName="Clicked">
+                        <toolkit:AnimationBehavior.AnimationType>
+                            <toolkit:FadeAnimation Opacity="0.5" />
+                        </toolkit:AnimationBehavior.AnimationType>
+                    </toolkit:AnimationBehavior>
+                </Button.Behaviors>
                 <Button.ImageSource>
                     <FontImageSource
                         FontFamily="fontello"
@@ -171,13 +196,18 @@
                 </Button.ImageSource>
             </Button>
 
-            <Button Grid.Column="1"
+            <Button Grid.Row="1" Grid.Column="1"
+                Style="{StaticResource TabbarButton}"
+                Text="{x:Static resources:AppResource.Button_Text_Image }"
                 SemanticProperties.Description="Image selection button"
-                Margin="12, 0, 0, 0"
-                Padding="0"
-                WidthRequest="50"
-                CornerRadius="30"
                 Command="{Binding CreateListWithSelectedImageCommand}">
+                <Button.Behaviors>
+                    <toolkit:AnimationBehavior EventName="Clicked">
+                        <toolkit:AnimationBehavior.AnimationType>
+                            <toolkit:FadeAnimation Opacity="0.5" />
+                        </toolkit:AnimationBehavior.AnimationType>
+                    </toolkit:AnimationBehavior>
+                </Button.Behaviors>
                 <Button.ImageSource>
                     <FontImageSource
                         FontFamily="fontello"
@@ -187,20 +217,49 @@
                 </Button.ImageSource>
             </Button>
 
+            <Button Grid.Row="1" Grid.Column="2"
+                Style="{StaticResource TabbarButton}"
+                Text="{x:Static resources:AppResource.Button_Text_Add }"
+                SemanticProperties.Description="Add text button"
+                Command="{Binding AddItemCommand}">
+                <Button.Behaviors>
+                    <toolkit:AnimationBehavior EventName="Clicked">
+                        <toolkit:AnimationBehavior.AnimationType>
+                            <toolkit:FadeAnimation Opacity="0.5" />
+                        </toolkit:AnimationBehavior.AnimationType>
+                    </toolkit:AnimationBehavior>
+                </Button.Behaviors>
+                <Button.ImageSource>
+                    <FontImageSource
+                        FontFamily="fontello"
+                        Size="25"
+                        Color="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource White}}"
+                        Glyph="{x:Static helpers:IconFontManager.IconPlus}" />
+                </Button.ImageSource>
+            </Button>
 
-            <Entry Grid.Column="2"
-                SemanticProperties.Description="Item addition input form"
-                Margin="15, 0, 0, 0"
-                Placeholder="{x:Static resources:AppResource.Main_Entry_Placeholder}"
-                Text="{Binding InputText}"
-                ClearButtonVisibility="WhileEditing"
-                Keyboard="Text">
-                <Entry.Behaviors>
-                    <toolkit:EventToCommandBehavior
-                        EventName="Completed"
-                        Command="{Binding AddItemCommand}"/>
-                </Entry.Behaviors>
-            </Entry>
+            <Button Grid.Row="1" Grid.Column="3"
+                Style="{StaticResource TabbarButton}"
+                Text="{x:Static resources:AppResource.Button_Text_Histroy }"
+                SemanticProperties.Description="Show histroy button"
+                Command="{Binding GoToHistoryViewCommand}">
+                <Button.Behaviors>
+                    <toolkit:AnimationBehavior EventName="Clicked">
+                        <toolkit:AnimationBehavior.AnimationType>
+                            <toolkit:FadeAnimation Opacity="0.5" />
+                        </toolkit:AnimationBehavior.AnimationType>
+                    </toolkit:AnimationBehavior>
+                </Button.Behaviors>
+                <Button.ImageSource>
+                    <FontImageSource
+                        FontFamily="fontello"
+                        Size="25"
+                        Color="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource White}}"
+                        Glyph="{x:Static helpers:IconFontManager.IconList}" />
+                </Button.ImageSource>
+            </Button>
+
+
 
         </Grid>
 

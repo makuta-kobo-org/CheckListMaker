@@ -12,4 +12,6 @@ internal static class IconFontManager
     internal const string IconPicture = "\ue801";
     internal const string IconHelp = "\ue806";
     internal const string IconInfo = "\ue807";
+    internal const string IconPlus = "\ue808";
+    internal const string IconList = "\uf0ca";
 }

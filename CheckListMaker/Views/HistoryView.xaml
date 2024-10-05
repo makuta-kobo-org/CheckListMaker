@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="CheckListMaker.Views.HistoryView"
+    x:DataType="views:HistoryViewModel"
+    x:Name="HistoryViewContainer"
+    xmlns:views="clr-namespace:CheckListMaker.ViewModels"
+    xmlns:models="clr-namespace:CheckListMaker.Models"
+    xmlns:helpers="clr-namespace:CheckListMaker.Helpers"
+    xmlns:resources="clr-namespace:CheckListMaker.Resources"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    Title="{x:Static resources:AppResource.History_Title}"
+    Shell.TabBarIsVisible="False">
+
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior Command="{Binding AppearingCommand}" EventName="Appearing"/>
+    </ContentPage.Behaviors>
+
+    <Grid
+        HorizontalOptions="Fill"
+        VerticalOptions="Fill">
+
+        <CollectionView
+            Margin="10"
+            ItemsSource="{Binding CheckListCollection}"
+            SelectionMode="None">
+
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical"/>
+            </CollectionView.ItemsLayout>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <VerticalStackLayout>
+                        <Border
+                            x:DataType="models:CheckList"
+                            StrokeShape="RoundRectangle 5"
+                            Margin="10"
+                            BackgroundColor="{StaticResource Gray100}"
+                            HorizontalOptions="Fill"
+                            VerticalOptions="Fill">
+
+                            <Border.Shadow>
+                                <Shadow 
+                                    Brush="{StaticResource Gray500Brush}"
+                                    Offset="5, 5"
+                                    Radius="5"
+                                    Opacity="0.7" />
+                            </Border.Shadow>
+
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Command="{Binding BindingContext.GoToMainViewCommand, Source={x:Reference HistoryViewContainer}}"
+                                    CommandParameter="{Binding}" />
+                            </Border.GestureRecognizers>
+
+                            <Grid
+                                Margin="10"
+                                ColumnDefinitions="*, 25"
+                                RowDefinitions="Auto, Auto">
+
+                                <Label
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    HorizontalOptions="Fill"
+                                    VerticalOptions="Center"
+                                    FontSize="Medium"
+                                    FontAttributes="Bold"
+                                    Text="{Binding CreatedDateTimeDisplay}"
+                                    TextColor="{StaticResource Gray500}"/>
+
+                                <Button
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Padding="0"
+                                    WidthRequest="25"
+                                    BackgroundColor="Transparent"
+                                    Command="{Binding BindingContext.DeleteCheckListCommand, Source={x:Reference HistoryViewContainer}}"
+                                    CommandParameter="{Binding .}">
+
+                                    <Button.ImageSource>
+                                        <FontImageSource
+                                            FontFamily="fontello"
+                                            Color="{StaticResource Gray400}"
+                                            Glyph="{x:Static helpers:IconFontManager.IconDelete}" />
+                                    </Button.ImageSource>
+                                    
+                                </Button>
+
+                                <Label
+                                    Grid.ColumnSpan="2"
+                                    Grid.Row="1"
+                                    LineBreakMode="TailTruncation"
+                                    TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray500}}"
+                                    Text="{Binding ItemTextsOneLine}" />
+
+                            </Grid>
+
+                        </Border>
+                    </VerticalStackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+        </CollectionView>
+
+    </Grid>
+
+</ContentPage>

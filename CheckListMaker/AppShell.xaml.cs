@@ -14,5 +14,6 @@ public partial class AppShell : Shell
 
         Routing.RegisterRoute($"///{nameof(SettingsView)}", typeof(SettingsView));
         Routing.RegisterRoute($"///{nameof(AboutView)}", typeof(AboutView));
+        Routing.RegisterRoute($"///{nameof(HistoryView)}", typeof(HistoryView));
     }
 }

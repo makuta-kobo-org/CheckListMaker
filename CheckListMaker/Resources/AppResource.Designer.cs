@@ -70,6 +70,15 @@ namespace CheckListMaker.Resources {
         }
         
         /// <summary>
+        ///   Item deleted に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Alert_DeleteResultMessage {
+            get {
+                return ResourceManager.GetString("Alert_DeleteResultMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   App Information に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string AppShell_Label_AppinfoText {
@@ -88,11 +97,128 @@ namespace CheckListMaker.Resources {
         }
         
         /// <summary>
+        ///   Add に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Button_Text_Add {
+            get {
+                return ResourceManager.GetString("Button_Text_Add", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Camera に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Button_Text_Camera {
+            get {
+                return ResourceManager.GetString("Button_Text_Camera", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Histroy に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Button_Text_Histroy {
+            get {
+                return ResourceManager.GetString("Button_Text_Histroy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Image に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Button_Text_Image {
+            get {
+                return ResourceManager.GetString("Button_Text_Image", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Could not retrieve the list. Please run it again after a while or try another photo. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Exception_NoCheckItems {
+            get {
+                return ResourceManager.GetString("Exception_NoCheckItems", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Please enable the following permissions and run again. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Exception_NoPermissions {
+            get {
+                return ResourceManager.GetString("Exception_NoPermissions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Camera に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Exception_NoPermissions_Camera {
+            get {
+                return ResourceManager.GetString("Exception_NoPermissions_Camera", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Media に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Exception_NoPermissions_Media {
+            get {
+                return ResourceManager.GetString("Exception_NoPermissions_Media", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   0:MMM dd, yyyy (ddd) に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Format_Date {
+            get {
+                return ResourceManager.GetString("Format_Date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Do you want to delete it? に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string History_Label_AlertMessage {
+            get {
+                return ResourceManager.GetString("History_Label_AlertMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Confirmation に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string History_Label_AlertTitle {
+            get {
+                return ResourceManager.GetString("History_Label_AlertTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   History に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string History_Title {
+            get {
+                return ResourceManager.GetString("History_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Add item に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string Main_Entry_Placeholder {
             get {
                 return ResourceManager.GetString("Main_Entry_Placeholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Add a check item に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Main_Label_AddTitle {
+            get {
+                return ResourceManager.GetString("Main_Label_AddTitle", resourceCulture);
             }
         }
         
@@ -111,15 +237,6 @@ namespace CheckListMaker.Resources {
         internal static string Main_Snackbar_Done {
             get {
                 return ResourceManager.GetString("Main_Snackbar_Done", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Item deleted に類似しているローカライズされた文字列を検索します。
-        /// </summary>
-        internal static string Main_String_DeleteMessage {
-            get {
-                return ResourceManager.GetString("Main_String_DeleteMessage", resourceCulture);
             }
         }
         

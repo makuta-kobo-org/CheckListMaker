@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Reflection;
 using CheckListMaker.Controls;
+using CheckListMaker.Models;
 using CheckListMaker.Services;
 using CheckListMaker.ViewModels;
 using CheckListMaker.Views;
@@ -30,14 +31,14 @@ public static class MauiProgram
 
         // appsettings.json
 #if DEBUG
-        using var appsettings = Assembly
-            .GetExecutingAssembly()
-            .GetManifestResourceStream("CheckListMaker.appsettings.Development.json");
+        var env = "Development";
 #else
+        var env = "Production";
+#endif
         using var appsettings = Assembly
             .GetExecutingAssembly()
-            .GetManifestResourceStream("CheckListMaker.appsettings.Production.json");
-#endif
+            .GetManifestResourceStream($"CheckListMaker.appsettings.{env}.json");
+
         var configBuilder = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonStream(appsettings)
@@ -60,10 +61,25 @@ public static class MauiProgram
         IServiceCollection services,
         IConfiguration config)
     {
+        // Constants
+        services.AddSingleton<AdMobConstants>(
+            options => config.GetRequiredSection("AdMob").Get<AdMobConstants>());
+
         // Services
         services.AddTransient<IMediaService, MediaService>();
+        services.AddTransient<IAlertService, AlertService>();
         services.AddSingleton<IComputerVisionService>(
             options => ComputerVisionService.GetInstance(config));
+        services.AddSingleton<ILiteDbService, LiteDbService>(options =>
+            {
+                var dbFilePath = Path.Combine(
+                    FileSystem.Current.AppDataDirectory,
+                    config["LiteDb:FileName"]);
+
+                var upperLimit = int.TryParse(config["LiteDb:UpperLimit"], out var parsedValue) ? parsedValue : 10;
+
+                return new LiteDbService(dbFilePath, upperLimit);
+            });
 
         // Controls
         services.AddTransient<IMyPopupService, MyPopupService>();
@@ -73,6 +89,7 @@ public static class MauiProgram
         services.AddTransientViewAndViewModel<MainView, MainViewModel>();
         services.AddTransientViewAndViewModel<SettingsView, SettingsViewModel>();
         services.AddTransientViewAndViewModel<AboutView, AboutViewModel>();
+        services.AddTransientViewAndViewModel<HistoryView, HistoryViewModel>();
     }
 
     /// <summary> ViewとViewModelのService登録およびBindincContextへの設定 </summary>
