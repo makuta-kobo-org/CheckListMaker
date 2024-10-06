@@ -13,6 +13,7 @@ namespace CheckListMaker.ViewModels;
 
 /// <summary> MainページのViewModel </summary>
 [QueryProperty(nameof(CurrentCehckList), "SelectedCheckList")]
+[QueryProperty(nameof(NavigationType), "NavigationType")]
 internal partial class MainViewModel : BaseViewModel
 {
     private readonly IMediaService _mediaService;
@@ -55,6 +56,9 @@ internal partial class MainViewModel : BaseViewModel
         BannerId = adMobConstants.BannerId;
     }
 
+    /// <summary> 画面遷移の種別判定フラグ  </summary>
+    public string NavigationType { get; set; } = string.Empty;
+
     [RelayCommand]
     private static void ItemDragLeave(CheckItem item)
     {
@@ -72,7 +76,17 @@ internal partial class MainViewModel : BaseViewModel
         => status == PermissionStatus.Granted || status == PermissionStatus.Limited;
 
     [RelayCommand]
-    private async Task Appearing() => await ReadCheckList();
+    private async Task Appearing()
+    {
+        if (NavigationType != "command")
+        {
+            await ReadCheckList();
+        }
+        else
+        {
+            NavigationType = string.Empty;
+        }
+    }
 
     /// <summary> Add New CheckList to DB </summary>
     private async Task AddToDb()

@@ -51,6 +51,7 @@ internal partial class HistoryViewModel : BaseViewModel
             parameters: new Dictionary<string, object>
             {
                 { "SelectedCheckList", selectedCheckList },
+                { "NavigationType", "command" },
             });
 
     /// <summary> CheckListItem 削除コマンド  </summary>
