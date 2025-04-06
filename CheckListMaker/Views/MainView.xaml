@@ -151,9 +151,9 @@
                             InputTransparent="False"
                             HeightRequest="10"
                             BackgroundColor="{StaticResource Gray300}"
-                            HorizontalOptions="FillAndExpand"
+                            HorizontalOptions="Fill"
                             IsVisible="{Binding IsBeingDraggedOver}"
-                            VerticalOptions="FillAndExpand" />
+                            VerticalOptions="Fill" />
 
                     </VerticalStackLayout>
 
