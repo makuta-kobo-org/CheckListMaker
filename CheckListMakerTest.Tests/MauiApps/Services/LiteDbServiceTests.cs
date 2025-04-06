@@ -81,7 +81,7 @@ public class LiteDbServiceTests : IDisposable
     }
 
     [Fact]
-    public void Update_UpdatesExistingCheckList()
+    public void Upsert_UpdatesExistingCheckList()
     {
         // Arrange
         var checklist = new CheckList { Items = [new CheckItem { ItemText = "Old Name" }] };
@@ -89,7 +89,7 @@ public class LiteDbServiceTests : IDisposable
         checklist.Items[0].ItemText = "New Name";
 
         // Act
-        _service.Update(checklist);
+        _service.Upsert(checklist);
         var result = _service.FindAll();
 
         // Assert

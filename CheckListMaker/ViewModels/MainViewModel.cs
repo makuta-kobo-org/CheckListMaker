@@ -8,12 +8,12 @@ using CheckListMaker.Services;
 using CheckListMaker.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using LiteDB;
 
 namespace CheckListMaker.ViewModels;
 
 /// <summary> MainページのViewModel </summary>
-[QueryProperty(nameof(CurrentCehckList), "SelectedCheckList")]
-[QueryProperty(nameof(NavigationType), "NavigationType")]
+[QueryProperty(nameof(CurrentCheckList), "SelectedCheckList")]
 internal partial class MainViewModel : BaseViewModel
 {
     private readonly IMediaService _mediaService;
@@ -21,7 +21,8 @@ internal partial class MainViewModel : BaseViewModel
     private readonly ILiteDbService _liteDbService;
     private readonly IMyPopupService _popupService;
     private readonly IAlertService _alertService;
-    private CheckItem _itemBeingDragged;
+    private bool _isFirstLaunch = true;
+    private CheckItem _draggedItem;
 
     [ObservableProperty]
     private int _numberOfColumns = 2;
@@ -36,7 +37,7 @@ internal partial class MainViewModel : BaseViewModel
     private string _bannerId;
 
     [ObservableProperty]
-    private CheckList _currentCehckList;
+    private CheckList _currentCheckList;
 
     /// <summary> Constructor </summary>
     public MainViewModel(
@@ -56,44 +57,48 @@ internal partial class MainViewModel : BaseViewModel
         BannerId = adMobConstants.BannerId;
     }
 
-    /// <summary> 画面遷移の種別判定フラグ  </summary>
-    public string NavigationType { get; set; } = string.Empty;
-
     [RelayCommand]
-    private static void ItemDragLeave(CheckItem item)
+    private static void OnItemDragLeave(CheckItem item)
     {
 #if DEBUG
-        Trace.WriteLine($"ItemDragLeave : {item?.ItemText}");
+        Trace.WriteLine($"OnItemDragLeave : {item?.ItemText}");
 #endif
 
         item.IsBeingDraggedOver = false;
     }
 
     [RelayCommand]
-    private static void ItemTapped(CheckItem item) => item.IsChecked = !item.IsChecked;
+    private static void OnItemTapped(CheckItem item) => item.IsChecked = !item.IsChecked;
 
     private static bool IsGranted(PermissionStatus status)
         => status == PermissionStatus.Granted || status == PermissionStatus.Limited;
 
     [RelayCommand]
-    private async Task Appearing()
+    private async Task OnAppearingAsync()
     {
-        if (NavigationType != "command")
+        if (_isFirstLaunch)
         {
-            await ReadCheckList();
+            _isFirstLaunch = false;
+            await LoadCheckListAsync();
+            return;
         }
-        else
+
+        if (IsCheckListExists())
         {
-            NavigationType = string.Empty;
+            return;
         }
+
+        await LoadCheckListAsync();
     }
 
+    private bool IsCheckListExists() => _liteDbService.FindAll().Any(x => x.Id == CurrentCheckList.Id);
+
     /// <summary> Add New CheckList to DB </summary>
-    private async Task AddToDb()
+    private async Task AddCheckListToDbAsync()
     {
         try
         {
-            _liteDbService.Insert(CurrentCehckList);
+            _liteDbService.Insert(CurrentCheckList);
         }
         catch (Exception ex)
         {
@@ -102,11 +107,11 @@ internal partial class MainViewModel : BaseViewModel
     }
 
     /// <summary> Update CheckList to DB </summary>
-    private async Task UpdateDb()
+    private async Task UpdateCheckListInDbAsync()
     {
         try
         {
-            _liteDbService.Upsert(CurrentCehckList);
+            _liteDbService.Upsert(CurrentCheckList);
         }
         catch (Exception ex)
         {
@@ -115,17 +120,17 @@ internal partial class MainViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    private void ChangeNumberOfColumns()
+    private void ToggleNumberOfColumns()
         => NumberOfColumns = IsToggled ? 2 : 1;
 
     /// <summary> ローカルに保存していたjson fileから前回の状態を復帰する </summary>
-    private async Task ReadCheckList()
+    private async Task LoadCheckListAsync()
     {
         try
         {
             var itemsList = _liteDbService.FindAll();
 
-            CurrentCehckList = itemsList.Count > 0
+            CurrentCheckList = itemsList.Count > 0
                 ? itemsList.OrderByDescending(x => x.CreatedDateTime).FirstOrDefault()
                 : new();
         }
@@ -136,7 +141,7 @@ internal partial class MainViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    private async Task CreateListWithCapturedImage()
+    private async Task CreateCheckListWithCapturedImageAsync()
     {
         var popup = new LoadingPopup();
 
@@ -144,7 +149,7 @@ internal partial class MainViewModel : BaseViewModel
         {
             _popupService.ShowPopup(popup);
 
-            var cameraStatus = await CheckPermissions<Permissions.Camera>();
+            var cameraStatus = await RequestPermissionsAsync<Permissions.Camera>();
 
             if (!IsGranted(cameraStatus))
             {
@@ -158,7 +163,7 @@ internal partial class MainViewModel : BaseViewModel
                 return;
             }
 
-            await CreateCheckList(imagePath);
+            await GenerateCheckListAsync(imagePath);
 
             await SnackbarViewer.Show(AppResource.Main_Snackbar_Done);
         }
@@ -181,7 +186,7 @@ internal partial class MainViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    private async Task CreateListWithSelectedImage()
+    private async Task CreateCheckListWithSelectedImageAsync()
     {
         var popup = new LoadingPopup();
 
@@ -189,7 +194,7 @@ internal partial class MainViewModel : BaseViewModel
         {
             _popupService.ShowPopup(popup);
 
-            var mediaStatus = await CheckPermissions<Permissions.Media>();
+            var mediaStatus = await RequestPermissionsAsync<Permissions.Media>();
 
             if (!IsGranted(mediaStatus))
             {
@@ -203,7 +208,7 @@ internal partial class MainViewModel : BaseViewModel
                 return;
             }
 
-            await CreateCheckList(imagePath);
+            await GenerateCheckListAsync(imagePath);
 
             await SnackbarViewer.Show(AppResource.Main_Snackbar_Done);
         }
@@ -226,7 +231,7 @@ internal partial class MainViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    private async Task AddItem()
+    private async Task AddCheckItemAsync()
     {
         try
         {
@@ -234,9 +239,9 @@ internal partial class MainViewModel : BaseViewModel
 
             if (!string.IsNullOrEmpty(result))
             {
-                CurrentCehckList.Items.Add(new CheckItem() { ItemText = result });
+                CurrentCheckList.Items.Add(new CheckItem() { ItemText = result });
 
-                await UpdateDb();
+                await UpdateCheckListInDbAsync();
             }
         }
         catch (Exception ex)
@@ -246,7 +251,7 @@ internal partial class MainViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    private async Task DeleteItem(CheckItem item)
+    private async Task RemoveCheckItemAsync(CheckItem item)
     {
         var popup = new LoadingPopup();
 
@@ -254,9 +259,9 @@ internal partial class MainViewModel : BaseViewModel
         {
             _popupService.ShowPopup(popup);
 
-            CurrentCehckList.Items.Remove(item);
+            CurrentCheckList.Items.Remove(item);
 
-            await UpdateDb();
+            await UpdateCheckListInDbAsync();
 
             await SnackbarViewer.Show(AppResource.Alert_DeleteResultMessage);
         }
@@ -271,43 +276,43 @@ internal partial class MainViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    private async Task GoToHistoryView()
+    private async Task NavigateToHistoryViewAsync()
     {
         Shell.Current.FlyoutIsPresented = false;
         await Shell.Current.GoToAsync($"///{nameof(HistoryView)}", false);
     }
 
     [RelayCommand]
-    private void ItemDragged(CheckItem item)
+    private void OnItemDragged(CheckItem item)
     {
 #if DEBUG
-        Trace.WriteLine($"ItemDragged : {item}");
+        Trace.WriteLine($"OnItemDragged : {item}");
 #endif
         item.IsBeingDragged = true;
-        _itemBeingDragged = item;
+        _draggedItem = item;
     }
 
     [RelayCommand]
-    private void ItemDraggedOver(CheckItem item)
+    private void OnItemDraggedOver(CheckItem item)
     {
 #if DEBUG
-        Trace.WriteLine($"ItemDraggedOver : {item?.ItemText}");
+        Trace.WriteLine($"OnItemDraggedOver : {item?.ItemText}");
 #endif
 
-        if (item == _itemBeingDragged)
+        if (item == _draggedItem)
         {
             item.IsBeingDragged = false;
         }
 
-        item.IsBeingDraggedOver = item != _itemBeingDragged;
+        item.IsBeingDraggedOver = item != _draggedItem;
     }
 
     [RelayCommand]
-    private async Task ItemDropped(CheckItem item)
+    private async Task OnItemDroppedAsync(CheckItem item)
     {
         try
         {
-            var itemToMove = _itemBeingDragged;
+            var itemToMove = _draggedItem;
             var itemToInsertBefore = item;
 
             if (itemToMove == null || itemToInsertBefore == null || itemToMove == itemToInsertBefore)
@@ -315,20 +320,20 @@ internal partial class MainViewModel : BaseViewModel
                 return;
             }
 
-            int insertAtIndex = CurrentCehckList.Items.IndexOf(itemToInsertBefore);
+            int insertAtIndex = CurrentCheckList.Items.IndexOf(itemToInsertBefore);
 
-            if (insertAtIndex >= 0 && insertAtIndex < CurrentCehckList.Items.Count)
+            if (insertAtIndex >= 0 && insertAtIndex < CurrentCheckList.Items.Count)
             {
-                CurrentCehckList.Items.Remove(itemToMove);
-                CurrentCehckList.Items.Insert(insertAtIndex, itemToMove);
+                CurrentCheckList.Items.Remove(itemToMove);
+                CurrentCheckList.Items.Insert(insertAtIndex, itemToMove);
                 itemToMove.IsBeingDragged = false;
                 itemToInsertBefore.IsBeingDraggedOver = false;
             }
 
-            await UpdateDb();
+            await UpdateCheckListInDbAsync();
 
 #if DEBUG
-            Trace.WriteLine($"ItemDropped: [{itemToMove?.ItemText}] => [{itemToInsertBefore?.ItemText}], target index = [{insertAtIndex}]");
+            Trace.WriteLine($"OnItemDroppedAsync: [{itemToMove?.ItemText}] => [{itemToInsertBefore?.ItemText}], target index = [{insertAtIndex}]");
 #endif
         }
         catch (Exception ex)
@@ -337,7 +342,7 @@ internal partial class MainViewModel : BaseViewModel
         }
     }
 
-    private async Task CreateCheckList(string imagePath)
+    private async Task GenerateCheckListAsync(string imagePath)
     {
         var results = await _computerVisionService.GetCheckItems(imagePath);
 
@@ -346,12 +351,14 @@ internal partial class MainViewModel : BaseViewModel
             throw new NoCheckItemsException();
         }
 
-        CurrentCehckList = results;
+        CurrentCheckList = results;
 
-        await AddToDb();
+        await AddCheckListToDbAsync();
     }
 
-    private async Task<PermissionStatus> CheckPermissions<TPermission>()
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.OrderingRules", "SA1202:Elements should be ordered by access", Justification = "<保留中>")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:Elements should be documented", Justification = "<保留中>")]
+    protected virtual async Task<PermissionStatus> RequestPermissionsAsync<TPermission>()
         where TPermission : Permissions.BasePermission, new()
     {
         PermissionStatus status = await Permissions.CheckStatusAsync<TPermission>();

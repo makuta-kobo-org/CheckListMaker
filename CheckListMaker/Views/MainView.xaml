@@ -54,7 +54,7 @@
                     IsToggled="{Binding IsToggled, Mode=TwoWay}">
                     <Switch.Behaviors>
                         <toolkit:EventToCommandBehavior
-                        Command="{Binding ChangeNumberOfColumnsCommand}"
+                        Command="{Binding ToggleNumberOfColumnsCommand}"
                         EventName="Toggled"/>
                     </Switch.Behaviors>
                 </Switch>
@@ -71,7 +71,7 @@
 
         <CollectionView Grid.Row="0"
             Margin="10"
-            ItemsSource="{Binding CurrentCehckList.Items}"
+            ItemsSource="{Binding CurrentCheckList.Items}"
             SelectionMode="None">
 
             <CollectionView.ItemsLayout>
@@ -107,7 +107,7 @@
 
                                     <Image.GestureRecognizers>
                                         <TapGestureRecognizer
-                                    Command="{Binding BindingContext.DeleteItemCommand, Source={x:Reference MainViewContainer}}"
+                                    Command="{Binding BindingContext.RemoveCheckItemCommand, Source={x:Reference MainViewContainer}}"
                                     CommandParameter="{Binding .}"
                                             />
                                     </Image.GestureRecognizers>
@@ -183,7 +183,7 @@
                 Style="{StaticResource TabbarButton}"
                 Text="{x:Static resources:AppResource.Button_Text_Camera }"
                 SemanticProperties.Description="Camera button"
-                Command="{Binding CreateListWithCapturedImageCommand}">
+                Command="{Binding CreateCheckListWithCapturedImageCommand}">
                 <Button.Behaviors>
                     <toolkit:AnimationBehavior EventName="Clicked">
                         <toolkit:AnimationBehavior.AnimationType>
@@ -204,7 +204,7 @@
                 Style="{StaticResource TabbarButton}"
                 Text="{x:Static resources:AppResource.Button_Text_Image }"
                 SemanticProperties.Description="Image selection button"
-                Command="{Binding CreateListWithSelectedImageCommand}">
+                Command="{Binding CreateCheckListWithSelectedImageCommand}">
                 <Button.Behaviors>
                     <toolkit:AnimationBehavior EventName="Clicked">
                         <toolkit:AnimationBehavior.AnimationType>
@@ -225,7 +225,7 @@
                 Style="{StaticResource TabbarButton}"
                 Text="{x:Static resources:AppResource.Button_Text_Add }"
                 SemanticProperties.Description="Add text button"
-                Command="{Binding AddItemCommand}">
+                Command="{Binding AddCheckItemCommand}">
                 <Button.Behaviors>
                     <toolkit:AnimationBehavior EventName="Clicked">
                         <toolkit:AnimationBehavior.AnimationType>
@@ -246,7 +246,7 @@
                 Style="{StaticResource TabbarButton}"
                 Text="{x:Static resources:AppResource.Button_Text_Histroy }"
                 SemanticProperties.Description="Show histroy button"
-                Command="{Binding GoToHistoryViewCommand}">
+                Command="{Binding NavigateToHistoryViewCommand}">
                 <Button.Behaviors>
                     <toolkit:AnimationBehavior EventName="Clicked">
                         <toolkit:AnimationBehavior.AnimationType>

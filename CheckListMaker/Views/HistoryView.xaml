@@ -23,7 +23,7 @@
 
         <CollectionView
             Margin="10"
-            ItemsSource="{Binding CheckListCollection}"
+            ItemsSource="{Binding CheckLists}"
             SelectionMode="None">
 
             <CollectionView.ItemsLayout>
@@ -51,7 +51,7 @@
 
                             <Border.GestureRecognizers>
                                 <TapGestureRecognizer
-                                    Command="{Binding BindingContext.GoToMainViewCommand, Source={x:Reference HistoryViewContainer}}"
+                                    Command="{Binding BindingContext.NavigateToMainViewCommand, Source={x:Reference HistoryViewContainer}}"
                                     CommandParameter="{Binding}" />
                             </Border.GestureRecognizers>
 
@@ -76,7 +76,7 @@
                                     Padding="0"
                                     WidthRequest="25"
                                     BackgroundColor="Transparent"
-                                    Command="{Binding BindingContext.DeleteCheckListCommand, Source={x:Reference HistoryViewContainer}}"
+                                    Command="{Binding BindingContext.RemoveCheckListCommand, Source={x:Reference HistoryViewContainer}}"
                                     CommandParameter="{Binding .}">
 
                                     <Button.ImageSource>
