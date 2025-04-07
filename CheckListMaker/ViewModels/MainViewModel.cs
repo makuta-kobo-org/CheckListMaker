@@ -12,7 +12,9 @@ using LiteDB;
 
 namespace CheckListMaker.ViewModels;
 
-/// <summary> MainページのViewModel </summary>
+/// <summary>
+/// MainViewModel class handles the main operations and data binding for the checklist application.
+/// </summary>
 [QueryProperty(nameof(CurrentCheckList), "SelectedCheckList")]
 internal partial class MainViewModel : BaseViewModel
 {
@@ -39,7 +41,15 @@ internal partial class MainViewModel : BaseViewModel
     [ObservableProperty]
     private CheckList _currentCheckList;
 
-    /// <summary> Constructor </summary>
+    /// <summary>
+    /// Initializes a new instance of the MainViewModel class.
+    /// </summary>
+    /// <param name="mediaService">Service for media operations.</param>
+    /// <param name="computerVisionService">Service for computer vision operations.</param>
+    /// <param name="liteDbService">Service for LiteDB operations.</param>
+    /// <param name="popupService">Service for popup operations.</param>
+    /// <param name="alertService">Service for alert operations.</param>
+    /// <param name="adMobConstants">Constants for AdMob configuration.</param>
     public MainViewModel(
         IMediaService mediaService,
         IComputerVisionService computerVisionService,
@@ -57,6 +67,36 @@ internal partial class MainViewModel : BaseViewModel
         BannerId = adMobConstants.BannerId;
     }
 
+    /// <summary>
+    /// Requests the specified permission.
+    /// </summary>
+    /// <typeparam name="TPermission">The type of permission to request.</typeparam>
+    /// <returns>The status of the permission.</returns>
+    protected virtual async Task<PermissionStatus> RequestPermissionsAsync<TPermission>()
+        where TPermission : Permissions.BasePermission, new()
+    {
+        PermissionStatus status = await Permissions.CheckStatusAsync<TPermission>();
+
+        if (status != PermissionStatus.Granted)
+        {
+            status = await Permissions.RequestAsync<TPermission>();
+        }
+
+        return status;
+    }
+
+    /// <summary>
+    /// Checks if the specified permission is granted.
+    /// </summary>
+    /// <param name="status">The status of the permission to check.</param>
+    /// <returns>True if the permission is granted, otherwise false.</returns>
+    private static bool IsGranted(PermissionStatus status)
+        => status == PermissionStatus.Granted || status == PermissionStatus.Limited;
+
+    /// <summary>
+    /// Called when the drag operation on the specified item ends.
+    /// </summary>
+    /// <param name="item">The item that was dragged.</param>
     [RelayCommand]
     private static void OnItemDragLeave(CheckItem item)
     {
@@ -67,12 +107,22 @@ internal partial class MainViewModel : BaseViewModel
         item.IsBeingDraggedOver = false;
     }
 
+    /// <summary>
+    /// Called when the specified item is tapped.
+    /// </summary>
+    /// <param name="item">The item that was tapped.</param>
     [RelayCommand]
-    private static void OnItemTapped(CheckItem item) => item.IsChecked = !item.IsChecked;
+    private async Task OnItemTapped(CheckItem item)
+    {
+        item.IsChecked = !item.IsChecked;
 
-    private static bool IsGranted(PermissionStatus status)
-        => status == PermissionStatus.Granted || status == PermissionStatus.Limited;
+        await UpdateCheckListInDbAsync();
+    }
 
+    /// <summary>
+    /// Called when the page appears.
+    /// Loads the checklist on the first launch.
+    /// </summary>
     [RelayCommand]
     private async Task OnAppearingAsync()
     {
@@ -91,9 +141,15 @@ internal partial class MainViewModel : BaseViewModel
         await LoadCheckListAsync();
     }
 
+    /// <summary>
+    /// Checks if the checklist exists.
+    /// </summary>
+    /// <returns>True if the checklist exists, otherwise false.</returns>
     private bool IsCheckListExists() => _liteDbService.FindAll().Any(x => x.Id == CurrentCheckList.Id);
 
-    /// <summary> Add New CheckList to DB </summary>
+    /// <summary>
+    /// Adds the current checklist to the database.
+    /// </summary>
     private async Task AddCheckListToDbAsync()
     {
         try
@@ -106,7 +162,9 @@ internal partial class MainViewModel : BaseViewModel
         }
     }
 
-    /// <summary> Update CheckList to DB </summary>
+    /// <summary>
+    /// Updates the current checklist in the database.
+    /// </summary>
     private async Task UpdateCheckListInDbAsync()
     {
         try
@@ -119,11 +177,16 @@ internal partial class MainViewModel : BaseViewModel
         }
     }
 
+    /// <summary>
+    /// Toggles the number of columns.
+    /// </summary>
     [RelayCommand]
     private void ToggleNumberOfColumns()
         => NumberOfColumns = IsToggled ? 2 : 1;
 
-    /// <summary> ローカルに保存していたjson fileから前回の状態を復帰する </summary>
+    /// <summary>
+    /// Loads the checklist from the local JSON file.
+    /// </summary>
     private async Task LoadCheckListAsync()
     {
         try
@@ -140,6 +203,9 @@ internal partial class MainViewModel : BaseViewModel
         }
     }
 
+    /// <summary>
+    /// Creates a checklist with a captured image.
+    /// </summary>
     [RelayCommand]
     private async Task CreateCheckListWithCapturedImageAsync()
     {
@@ -185,6 +251,9 @@ internal partial class MainViewModel : BaseViewModel
         }
     }
 
+    /// <summary>
+    /// Creates a checklist with a selected image.
+    /// </summary>
     [RelayCommand]
     private async Task CreateCheckListWithSelectedImageAsync()
     {
@@ -230,6 +299,9 @@ internal partial class MainViewModel : BaseViewModel
         }
     }
 
+    /// <summary>
+    /// Adds a new check item to the current checklist.
+    /// </summary>
     [RelayCommand]
     private async Task AddCheckItemAsync()
     {
@@ -250,6 +322,10 @@ internal partial class MainViewModel : BaseViewModel
         }
     }
 
+    /// <summary>
+    /// Removes the specified check item from the current checklist.
+    /// </summary>
+    /// <param name="item">The check item to remove.</param>
     [RelayCommand]
     private async Task RemoveCheckItemAsync(CheckItem item)
     {
@@ -275,6 +351,9 @@ internal partial class MainViewModel : BaseViewModel
         }
     }
 
+    /// <summary>
+    /// Navigates to the history view.
+    /// </summary>
     [RelayCommand]
     private async Task NavigateToHistoryViewAsync()
     {
@@ -282,6 +361,10 @@ internal partial class MainViewModel : BaseViewModel
         await Shell.Current.GoToAsync($"///{nameof(HistoryView)}", false);
     }
 
+    /// <summary>
+    /// Called when the specified item is being dragged.
+    /// </summary>
+    /// <param name="item">The item being dragged.</param>
     [RelayCommand]
     private void OnItemDragged(CheckItem item)
     {
@@ -292,6 +375,10 @@ internal partial class MainViewModel : BaseViewModel
         _draggedItem = item;
     }
 
+    /// <summary>
+    /// Called when the specified item is being dragged over another item.
+    /// </summary>
+    /// <param name="item">The item being dragged over.</param>
     [RelayCommand]
     private void OnItemDraggedOver(CheckItem item)
     {
@@ -307,6 +394,10 @@ internal partial class MainViewModel : BaseViewModel
         item.IsBeingDraggedOver = item != _draggedItem;
     }
 
+    /// <summary>
+    /// Called when the specified item is dropped.
+    /// </summary>
+    /// <param name="item">The item that was dropped.</param>
     [RelayCommand]
     private async Task OnItemDroppedAsync(CheckItem item)
     {
@@ -342,6 +433,10 @@ internal partial class MainViewModel : BaseViewModel
         }
     }
 
+    /// <summary>
+    /// Generates a checklist from the specified image path.
+    /// </summary>
+    /// <param name="imagePath">The path of the image to process.</param>
     private async Task GenerateCheckListAsync(string imagePath)
     {
         var results = await _computerVisionService.GetCheckItems(imagePath);
@@ -354,20 +449,5 @@ internal partial class MainViewModel : BaseViewModel
         CurrentCheckList = results;
 
         await AddCheckListToDbAsync();
-    }
-
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.OrderingRules", "SA1202:Elements should be ordered by access", Justification = "<保留中>")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:Elements should be documented", Justification = "<保留中>")]
-    protected virtual async Task<PermissionStatus> RequestPermissionsAsync<TPermission>()
-        where TPermission : Permissions.BasePermission, new()
-    {
-        PermissionStatus status = await Permissions.CheckStatusAsync<TPermission>();
-
-        if (status != PermissionStatus.Granted)
-        {
-            status = await Permissions.RequestAsync<TPermission>();
-        }
-
-        return status;
     }
 }

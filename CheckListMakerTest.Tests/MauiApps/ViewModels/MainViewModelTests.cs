@@ -132,16 +132,31 @@ public class MainViewModelTests
     }
 
     [Fact]
-    public void ItemTapped_TogglesCheckItemIsChecked()
+    public async Task ItemTapped_TogglesCheckItemIsChecked()
     {
         // Arrange
         var item = new CheckItem { IsChecked = false };
 
         // Act
-        _viewModel.ItemTappedCommand.Execute(item);
+        await _viewModel.ItemTappedCommand.ExecuteAsync(item);
 
         // Assert
         item.IsChecked.IsTrue();
+        _liteDbServiceMock.Verify(service => service.Upsert(It.IsAny<CheckList>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task ItemTapped_UpdatesCheckListInDb()
+    {
+        // Arrange
+        var item = new CheckItem { IsChecked = false };
+        _viewModel.CurrentCheckList = new CheckList { Items = new ObservableCollection<CheckItem> { item } };
+
+        // Act
+        await _viewModel.ItemTappedCommand.ExecuteAsync(item);
+
+        // Assert
+        _liteDbServiceMock.Verify(service => service.Upsert(_viewModel.CurrentCheckList), Times.Once);
     }
 
     [Fact]
