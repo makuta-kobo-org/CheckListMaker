@@ -2,8 +2,8 @@ using CommunityToolkit.Maui.Views;
 
 namespace CheckListMaker.Controls;
 
-/// <summary> MyPopupService </summary>
-public sealed class MyPopupService : IMyPopupService
+/// <summary> CustomPopupService </summary>
+public sealed class CustomPopupService : ICustomPopupService
 {
     /// <summary> Page </summary>
     private Page Page { get; set; }

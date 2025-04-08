@@ -82,7 +82,7 @@ public static class MauiProgram
             });
 
         // Controls
-        services.AddTransient<IMyPopupService, MyPopupService>();
+        services.AddTransient<ICustomPopupService, CustomPopupService>();
 
         // Views and ViewModels
         services.AddTransient<AppShell, AppShellViewModel>();

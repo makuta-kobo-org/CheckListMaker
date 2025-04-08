@@ -12,7 +12,7 @@ public class MainViewModelTests
     private readonly Mock<IMediaService> _mediaServiceMock;
     private readonly Mock<IComputerVisionService> _computerVisionServiceMock;
     private readonly Mock<ILiteDbService> _liteDbServiceMock;
-    private readonly Mock<IMyPopupService> _popupServiceMock;
+    private readonly Mock<ICustomPopupService> _popupServiceMock;
     private readonly Mock<IAlertService> _alertServiceMock;
     private readonly Mock<AdMobConstants> _adMobConstans;
     private readonly MainViewModel _viewModel;
@@ -22,7 +22,7 @@ public class MainViewModelTests
         _mediaServiceMock = new Mock<IMediaService>();
         _computerVisionServiceMock = new Mock<IComputerVisionService>();
         _liteDbServiceMock = new Mock<ILiteDbService>();
-        _popupServiceMock = new Mock<IMyPopupService>();
+        _popupServiceMock = new Mock<ICustomPopupService>();
         _alertServiceMock = new Mock<IAlertService>();
         _adMobConstans = new Mock<AdMobConstants>();
 
@@ -42,7 +42,7 @@ public class MainViewModelTests
             IMediaService mediaService,
             IComputerVisionService computerVisionService,
             ILiteDbService liteDbService,
-            IMyPopupService popupService,
+            ICustomPopupService popupService,
             IAlertService alertService,
             AdMobConstants adMobConstants)
             : base(mediaService, computerVisionService, liteDbService, popupService, alertService, adMobConstants)

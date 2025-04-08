@@ -2,8 +2,8 @@ using CommunityToolkit.Maui.Views;
 
 namespace CheckListMaker.Controls;
 
-/// <summary> interface IMyPopupService </summary>
-public interface IMyPopupService
+/// <summary> interface ICustomPopupService </summary>
+public interface ICustomPopupService
 {
     /// <summary> ShowPopup </summary>
     void ShowPopup(Popup popup);

@@ -13,7 +13,7 @@ namespace CheckListMaker.ViewModels;
 /// <remarks> Constructor </remarks>
 internal partial class HistoryViewModel : BaseViewModel
 {
-    private readonly IMyPopupService _popupService;
+    private readonly ICustomPopupService _popupService;
     private readonly ILiteDbService _liteDbService;
     private readonly IAlertService _alertService;
 
@@ -24,7 +24,7 @@ internal partial class HistoryViewModel : BaseViewModel
     /// <param name="liteDbService">LiteDbサービス</param>
     /// <param name="alertService">アラートサービス</param>
     public HistoryViewModel(
-        IMyPopupService popupService,
+        ICustomPopupService popupService,
         ILiteDbService liteDbService,
         IAlertService alertService)
     {

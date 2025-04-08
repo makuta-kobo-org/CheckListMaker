@@ -9,14 +9,14 @@ namespace CheckListMakerTest.Tests.MauiApps.ViewModels;
 
 public class HistoryViewModelTests
 {
-    private readonly Mock<IMyPopupService> _popupServiceMock;
+    private readonly Mock<ICustomPopupService> _popupServiceMock;
     private readonly Mock<ILiteDbService> _liteDbServiceMock;
     private readonly Mock<IAlertService> _alertServiceMock;
     private readonly HistoryViewModel _viewModel;
 
     public HistoryViewModelTests()
     {
-        _popupServiceMock = new Mock<IMyPopupService>();
+        _popupServiceMock = new Mock<ICustomPopupService>();
         _liteDbServiceMock = new Mock<ILiteDbService>();
         _alertServiceMock = new Mock<IAlertService>();
 

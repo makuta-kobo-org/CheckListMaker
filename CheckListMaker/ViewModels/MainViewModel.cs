@@ -21,7 +21,7 @@ internal partial class MainViewModel : BaseViewModel
     private readonly IMediaService _mediaService;
     private readonly IComputerVisionService _computerVisionService;
     private readonly ILiteDbService _liteDbService;
-    private readonly IMyPopupService _popupService;
+    private readonly ICustomPopupService _popupService;
     private readonly IAlertService _alertService;
     private bool _isFirstLaunch = true;
     private CheckItem _draggedItem;
@@ -54,7 +54,7 @@ internal partial class MainViewModel : BaseViewModel
         IMediaService mediaService,
         IComputerVisionService computerVisionService,
         ILiteDbService liteDbService,
-        IMyPopupService popupService,
+        ICustomPopupService popupService,
         IAlertService alertService,
         AdMobConstants adMobConstants)
     {
