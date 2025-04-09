@@ -23,7 +23,7 @@
             <converter:BoolToColorConverter x:Key="BoolToColor" />
         </ResourceDictionary>
         <Style x:Key="TabbarButton" TargetType="Button">
-            <Setter Property="BackgroundColor" Value="Transparent"/>
+            <Setter Property="Background" Value="Transparent"/>
             <Setter Property="FontSize" Value="Micro" />
             <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
             <Setter Property="ContentLayout" Value="Top, 0" />
@@ -59,27 +59,22 @@
                     </Switch.Behaviors>
                 </Switch>
             </HorizontalStackLayout>
-
         </Grid>
-
     </Shell.TitleView>
 
     <Grid
         RowDefinitions="*,Auto,Auto"
         HorizontalOptions="Fill"
         VerticalOptions="Fill">
-
         <CollectionView Grid.Row="0"
             Margin="10"
             ItemsSource="{Binding CurrentCheckList.Items}"
             SelectionMode="None">
-
             <CollectionView.ItemsLayout>
                 <GridItemsLayout
                     Orientation="Vertical"
                     Span="{Binding NumberOfColumns}" />
             </CollectionView.ItemsLayout>
-
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <VerticalStackLayout>
@@ -262,9 +257,6 @@
                         Glyph="{x:Static helpers:IconFontManager.IconList}" />
                 </Button.ImageSource>
             </Button>
-
-
-
         </Grid>
 
         <!-- AD Banner -->
@@ -274,7 +266,5 @@
             AdsId="{Binding BannerId}"
             AdSize="AnchoredAdaptive"
             IsVisible="true"/>
-
     </Grid>
-
 </ContentPage>

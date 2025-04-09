@@ -112,6 +112,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Controls\AddItemPopupView.xaml.cs">
+	    <DependentUpon>AddItemPopupView.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Resources\AppResource.Designer.cs">
 	    <DesignTime>True</DesignTime>
 	    <AutoGen>True</AutoGen>
@@ -136,6 +139,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="Controls\AddItemPopupView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Controls\FlyoutHeader.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

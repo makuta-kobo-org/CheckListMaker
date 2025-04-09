@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using CheckListMaker.Controls;
 using CheckListMaker.Exceptions;
+using CheckListMaker.Factories;
 using CheckListMaker.Helpers;
 using CheckListMaker.Models;
 using CheckListMaker.Resources;
@@ -8,21 +9,23 @@ using CheckListMaker.Services;
 using CheckListMaker.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using LiteDB;
 
 namespace CheckListMaker.ViewModels;
 
 /// <summary>
-/// MainViewModel class handles the main operations and data binding for the checklist application.
+/// ViewModel for managing the main operations and data binding of the checklist application.
 /// </summary>
 [QueryProperty(nameof(CurrentCheckList), "SelectedCheckList")]
-internal partial class MainViewModel : BaseViewModel
+public partial class MainViewModel : BaseViewModel
 {
     private readonly IMediaService _mediaService;
     private readonly IComputerVisionService _computerVisionService;
     private readonly ILiteDbService _liteDbService;
     private readonly ICustomPopupService _popupService;
     private readonly IAlertService _alertService;
+    private readonly IAddItemPopupViewFactory _addItemPopupViewFactory;
     private bool _isFirstLaunch = true;
     private CheckItem _draggedItem;
 
@@ -42,7 +45,7 @@ internal partial class MainViewModel : BaseViewModel
     private CheckList _currentCheckList;
 
     /// <summary>
-    /// Initializes a new instance of the MainViewModel class.
+    /// Initializes a new instance of the <see cref="MainViewModel"/> class.
     /// </summary>
     /// <param name="mediaService">Service for media operations.</param>
     /// <param name="computerVisionService">Service for computer vision operations.</param>
@@ -50,28 +53,40 @@ internal partial class MainViewModel : BaseViewModel
     /// <param name="popupService">Service for popup operations.</param>
     /// <param name="alertService">Service for alert operations.</param>
     /// <param name="adMobConstants">Constants for AdMob configuration.</param>
+    /// <param name="addItemPopupViewFactory">Factory for creating add item popup views.</param>
     public MainViewModel(
         IMediaService mediaService,
         IComputerVisionService computerVisionService,
         ILiteDbService liteDbService,
         ICustomPopupService popupService,
         IAlertService alertService,
-        AdMobConstants adMobConstants)
+        AdMobConstants adMobConstants,
+        IAddItemPopupViewFactory addItemPopupViewFactory)
     {
         _mediaService = mediaService;
         _computerVisionService = computerVisionService;
         _liteDbService = liteDbService;
         _popupService = popupService;
         _alertService = alertService;
+        _addItemPopupViewFactory = addItemPopupViewFactory;
 
         BannerId = adMobConstants.BannerId;
+
+        // Register to receive messages for adding new checklist items.
+        WeakReferenceMessenger.Default.Register<NewCheckItemMessage>(this, (r, m) =>
+        {
+            CurrentCheckList ??= new CheckList();
+
+            CurrentCheckList.Items.Add(new CheckItem { ItemText = m.inputText });
+            _liteDbService.Upsert(CurrentCheckList);
+        });
     }
 
     /// <summary>
     /// Requests the specified permission.
     /// </summary>
     /// <typeparam name="TPermission">The type of permission to request.</typeparam>
-    /// <returns>The status of the permission.</returns>
+    /// <returns>The status of the requested permission.</returns>
     protected virtual async Task<PermissionStatus> RequestPermissionsAsync<TPermission>()
         where TPermission : Permissions.BasePermission, new()
     {
@@ -86,15 +101,15 @@ internal partial class MainViewModel : BaseViewModel
     }
 
     /// <summary>
-    /// Checks if the specified permission is granted.
+    /// Determines if the specified permission is granted.
     /// </summary>
-    /// <param name="status">The status of the permission to check.</param>
+    /// <param name="status">The permission status to check.</param>
     /// <returns>True if the permission is granted, otherwise false.</returns>
     private static bool IsGranted(PermissionStatus status)
         => status == PermissionStatus.Granted || status == PermissionStatus.Limited;
 
     /// <summary>
-    /// Called when the drag operation on the specified item ends.
+    /// Handles the end of a drag operation for a checklist item.
     /// </summary>
     /// <param name="item">The item that was dragged.</param>
     [RelayCommand]
@@ -103,25 +118,22 @@ internal partial class MainViewModel : BaseViewModel
 #if DEBUG
         Trace.WriteLine($"OnItemDragLeave : {item?.ItemText}");
 #endif
-
         item.IsBeingDraggedOver = false;
     }
 
     /// <summary>
-    /// Called when the specified item is tapped.
+    /// Toggles the checked state of a checklist item when tapped.
     /// </summary>
     /// <param name="item">The item that was tapped.</param>
     [RelayCommand]
     private async Task OnItemTapped(CheckItem item)
     {
         item.IsChecked = !item.IsChecked;
-
         await UpdateCheckListInDbAsync();
     }
 
     /// <summary>
-    /// Called when the page appears.
-    /// Loads the checklist on the first launch.
+    /// Handles the page appearing event. Loads the checklist on the first launch.
     /// </summary>
     [RelayCommand]
     private async Task OnAppearingAsync()
@@ -142,7 +154,7 @@ internal partial class MainViewModel : BaseViewModel
     }
 
     /// <summary>
-    /// Checks if the checklist exists.
+    /// Checks if the current checklist exists in the database.
     /// </summary>
     /// <returns>True if the checklist exists, otherwise false.</returns>
     private bool IsCheckListExists() => _liteDbService.FindAll().Any(x => x.Id == CurrentCheckList.Id);
@@ -178,14 +190,14 @@ internal partial class MainViewModel : BaseViewModel
     }
 
     /// <summary>
-    /// Toggles the number of columns.
+    /// Toggles the number of columns in the checklist view.
     /// </summary>
     [RelayCommand]
     private void ToggleNumberOfColumns()
         => NumberOfColumns = IsToggled ? 2 : 1;
 
     /// <summary>
-    /// Loads the checklist from the local JSON file.
+    /// Loads the checklist from the database.
     /// </summary>
     private async Task LoadCheckListAsync()
     {
@@ -204,7 +216,7 @@ internal partial class MainViewModel : BaseViewModel
     }
 
     /// <summary>
-    /// Creates a checklist with a captured image.
+    /// Creates a checklist using a captured image.
     /// </summary>
     [RelayCommand]
     private async Task CreateCheckListWithCapturedImageAsync()
@@ -233,14 +245,6 @@ internal partial class MainViewModel : BaseViewModel
 
             await SnackbarViewer.Show(AppResource.Main_Snackbar_Done);
         }
-        catch (NoPermissionsException ex)
-        {
-            await _alertService.ShowAlert("Error", ex.Message);
-        }
-        catch (NoCheckItemsException ex)
-        {
-            await _alertService.ShowAlert("Error", ex.Message);
-        }
         catch (Exception ex)
         {
             await _alertService.ShowAlert("Error", ex.Message);
@@ -252,7 +256,7 @@ internal partial class MainViewModel : BaseViewModel
     }
 
     /// <summary>
-    /// Creates a checklist with a selected image.
+    /// Creates a checklist using a selected image.
     /// </summary>
     [RelayCommand]
     private async Task CreateCheckListWithSelectedImageAsync()
@@ -281,14 +285,6 @@ internal partial class MainViewModel : BaseViewModel
 
             await SnackbarViewer.Show(AppResource.Main_Snackbar_Done);
         }
-        catch (NoPermissionsException ex)
-        {
-            await _alertService.ShowAlert("Error", ex.Message);
-        }
-        catch (NoCheckItemsException ex)
-        {
-            await _alertService.ShowAlert("Error", ex.Message);
-        }
         catch (Exception ex)
         {
             await _alertService.ShowAlert("Error", ex.Message);
@@ -300,21 +296,15 @@ internal partial class MainViewModel : BaseViewModel
     }
 
     /// <summary>
-    /// Adds a new check item to the current checklist.
+    /// Displays a popup to add a new checklist item.
     /// </summary>
     [RelayCommand]
     private async Task AddCheckItemAsync()
     {
         try
         {
-            var result = await _alertService.ShowPromptAlert(AppResource.Main_Label_AddTitle, string.Empty, string.Empty);
-
-            if (!string.IsNullOrEmpty(result))
-            {
-                CurrentCheckList.Items.Add(new CheckItem() { ItemText = result });
-
-                await UpdateCheckListInDbAsync();
-            }
+            var popup = _addItemPopupViewFactory.Create();
+            await _popupService.ShowPopupAsync(popup);
         }
         catch (Exception ex)
         {
@@ -323,9 +313,9 @@ internal partial class MainViewModel : BaseViewModel
     }
 
     /// <summary>
-    /// Removes the specified check item from the current checklist.
+    /// Removes a specified checklist item from the current checklist.
     /// </summary>
-    /// <param name="item">The check item to remove.</param>
+    /// <param name="item">The item to remove.</param>
     [RelayCommand]
     private async Task RemoveCheckItemAsync(CheckItem item)
     {
@@ -362,7 +352,7 @@ internal partial class MainViewModel : BaseViewModel
     }
 
     /// <summary>
-    /// Called when the specified item is being dragged.
+    /// Handles the drag operation for a checklist item.
     /// </summary>
     /// <param name="item">The item being dragged.</param>
     [RelayCommand]
@@ -376,7 +366,7 @@ internal partial class MainViewModel : BaseViewModel
     }
 
     /// <summary>
-    /// Called when the specified item is being dragged over another item.
+    /// Handles the drag-over operation for a checklist item.
     /// </summary>
     /// <param name="item">The item being dragged over.</param>
     [RelayCommand]
@@ -395,7 +385,7 @@ internal partial class MainViewModel : BaseViewModel
     }
 
     /// <summary>
-    /// Called when the specified item is dropped.
+    /// Handles the drop operation for a checklist item.
     /// </summary>
     /// <param name="item">The item that was dropped.</param>
     [RelayCommand]
@@ -451,3 +441,9 @@ internal partial class MainViewModel : BaseViewModel
         await AddCheckListToDbAsync();
     }
 }
+
+/// <summary>
+/// Represents a message for adding a new checklist item.
+/// </summary>
+/// <param name="inputText"> The text of the new checklist item.</param>
+public record NewCheckItemMessage(string inputText);

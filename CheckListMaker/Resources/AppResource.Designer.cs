@@ -70,6 +70,33 @@ namespace CheckListMaker.Resources {
         }
         
         /// <summary>
+        ///   Input text に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string AddItemPopup_Entry_Placeholder {
+            get {
+                return ResourceManager.GetString("AddItemPopup_Entry_Placeholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Add a check item に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string AddItemPopup_Label_AddTitle {
+            get {
+                return ResourceManager.GetString("AddItemPopup_Label_AddTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Close に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string AddItemPopup_Label_CloseButton {
+            get {
+                return ResourceManager.GetString("AddItemPopup_Label_CloseButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Item deleted に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string Alert_DeleteResultMessage {
@@ -205,24 +232,6 @@ namespace CheckListMaker.Resources {
         }
         
         /// <summary>
-        ///   Add item に類似しているローカライズされた文字列を検索します。
-        /// </summary>
-        internal static string Main_Entry_Placeholder {
-            get {
-                return ResourceManager.GetString("Main_Entry_Placeholder", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Add a check item に類似しているローカライズされた文字列を検索します。
-        /// </summary>
-        internal static string Main_Label_AddTitle {
-            get {
-                return ResourceManager.GetString("Main_Label_AddTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   2 columns に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string Main_Label_Switch {
@@ -237,6 +246,15 @@ namespace CheckListMaker.Resources {
         internal static string Main_Snackbar_Done {
             get {
                 return ResourceManager.GetString("Main_Snackbar_Done", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Item deleted に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Main_String_DeleteMessage {
+            get {
+                return ResourceManager.GetString("Main_String_DeleteMessage", resourceCulture);
             }
         }
         

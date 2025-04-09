@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:behaviors="using:CommunityToolkit.Maui.Behaviors"
+    xmlns:resources="using:CheckListMaker.Resources"
+    xmlns:views="using:CheckListMaker.ViewModels"
+    x:Class="CheckListMaker.Controls.AddItemPopupView"
+    x:DataType="views:AddItemPopupViewModel"
+    x:Name="AddItemPopup" >
+
+    <Grid>
+        <Grid
+            Padding="20"
+            ColumnSpacing="10"
+            RowSpacing="10"
+            VerticalOptions="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Label 
+            Grid.Row="0"
+            Grid.ColumnSpan="2"
+            Style="{StaticResource Headline}"
+            TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource Gray900}}"
+            FontSize="Title"
+            FontAttributes="Bold"
+            VerticalOptions="Center"
+            Text="{x:Static resources:AppResource.AddItemPopup_Label_AddTitle}"/>
+
+            <Border
+                Grid.Row="1"
+                Grid.ColumnSpan="2"
+                Stroke="{StaticResource Primary}"
+                Background="White"
+                StrokeThickness="2"
+                Margin="0,20,0,0"
+                Padding="10, 0, 10, 0"
+                VerticalOptions="Center">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="5" />
+                </Border.StrokeShape>
+                <Entry
+                    Grid.Row="1"
+                    Grid.ColumnSpan="2"
+                    x:Name="AddItemEntry"
+                    FontSize="Large"
+                    MinimumHeightRequest="40"
+                    MinimumWidthRequest="280"
+                    toolkit:SetFocusOnEntryCompletedBehavior.NextElement="{x:Reference AddItemEntry}"
+                    Text="{Binding InputText, Mode=TwoWay}"
+                    Placeholder="{x:Static resources:AppResource.AddItemPopup_Entry_Placeholder}">
+                    <Entry.Behaviors>
+                        <toolkit:EventToCommandBehavior
+                            EventName="Loaded"
+                            Command="{Binding LoadedCommand}"
+                            CommandParameter="{Binding Source={x:Reference AddItemEntry}}"/>
+                        <toolkit:EventToCommandBehavior
+                            EventName="Completed"
+                            Command="{Binding AddCheckItemCommand}"
+                            CommandParameter="{Binding Text, Source={x:Reference Name=AddItemEntry}}"/>
+                    </Entry.Behaviors>
+                </Entry>
+            </Border>
+
+            <Button
+                Grid.Row="2"
+                Grid.Column="0"
+                Margin="0,20,0,0"
+                BackgroundColor="{StaticResource Gray400}"
+                Text="{x:Static resources:AppResource.AddItemPopup_Label_CloseButton}"
+                Command="{Binding ClosePopupCommand}"
+                CommandParameter="{Binding Source={x:Reference AddItemPopup}}"/>
+
+            <Button
+                Grid.Row="2"
+                Grid.Column="1"
+                Margin="0,20,0,0"
+                Text="{x:Static resources:AppResource.Button_Text_Add}"
+                Command="{Binding AddCheckItemCommand}"
+                CommandParameter="{Binding Text, Source={x:Reference Name=AddItemEntry}}"/>
+
+        </Grid>
+    </Grid>
+</toolkit:Popup>

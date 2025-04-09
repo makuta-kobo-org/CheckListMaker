@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -126,17 +126,14 @@
   <data name="AppShell_Label_SettingsText" xml:space="preserve">
     <value>設定</value>
   </data>
-  <data name="Main_Entry_Placeholder" xml:space="preserve">
-    <value>アイテムを追加</value>
-  </data>
   <data name="Main_Label_Switch" xml:space="preserve">
     <value>2列</value>
   </data>
   <data name="Main_Snackbar_Done" xml:space="preserve">
     <value>作成完了！</value>
   </data>
-  <data name="Main_String_DeleteMessage" xml:space="preserve">
-    <value>削除しました</value>
+  <data name="Alert_DeleteResultMessage" xml:space="preserve">
+    <value>アイテムを削除しました</value>
   </data>
   <data name="Settings_Label_Annotation1" xml:space="preserve">
     <value>※パフォーマンスが低下する場合があります。</value>
@@ -171,7 +168,7 @@
   <data name="Button_Text_Histroy" xml:space="preserve">
     <value>履歴</value>
   </data>
-  <data name="Main_Label_AddTitle" xml:space="preserve">
+  <data name="AddItemPopup_Label_AddTitle" xml:space="preserve">
     <value>チェックアイテムを追加</value>
   </data>
   <data name="History_Title" xml:space="preserve">
@@ -185,5 +182,14 @@
   </data>
   <data name="History_Label_AlertMessage" xml:space="preserve">
     <value>削除しますか？</value>
+  </data>
+  <data name="Main_String_DeleteMessage" xml:space="preserve">
+    <value>削除しました</value>
+  </data>
+  <data name="AddItemPopup_Label_CloseButton" xml:space="preserve">
+    <value>閉じる</value>
+  </data>
+  <data name="AddItemPopup_Entry_Placeholder" xml:space="preserve">
+    <value>テキストを入力</value>
   </data>
 </root>
