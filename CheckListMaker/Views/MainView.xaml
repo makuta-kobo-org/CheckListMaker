@@ -34,33 +34,33 @@
         </Style>
     </ContentPage.Resources>
 
-    <Shell.TitleView>
-        <Grid
-            ColumnDefinitions="*, *"
-            Padding="0, 0, 10, 0">
-
-            <Label Grid.Column="0"
-                Text="Home"
-                FontSize="Title"
-                FontAttributes="Bold"
-                VerticalOptions="Center"
-                HorizontalOptions="Start"/>
-
-            <HorizontalStackLayout Grid.Column="1" HorizontalOptions="End">
-
-                <Label VerticalOptions="Center" Text="{x:Static resources:AppResource.Main_Label_Switch}" />
-
-                <Switch
-                    IsToggled="{Binding IsToggled, Mode=TwoWay}">
-                    <Switch.Behaviors>
-                        <toolkit:EventToCommandBehavior
-                        Command="{Binding ToggleNumberOfColumnsCommand}"
-                        EventName="Toggled"/>
-                    </Switch.Behaviors>
-                </Switch>
-            </HorizontalStackLayout>
-        </Grid>
-    </Shell.TitleView>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem
+            Text="{x:Static resources:AppResource.Toolbar_Label_SwitchDisplay}"
+            Command="{Binding ToggleNumberOfColumnsCommand}"
+            Order="Secondary" >
+            <ToolbarItem.IconImageSource>
+                <FontImageSource
+                    FontFamily="fontello"
+                    Size="24"
+                    Color="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource White}}"
+                    FontAutoScalingEnabled="True"
+                    Glyph="{x:Static helpers:IconFontManager.Icon2Columns}"/>
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+        <ToolbarItem
+            Text="{x:Static resources:AppResource.Toolbar_Label_Delete}"
+            Command="{Binding RemoveCheckListCommand}"
+            Order="Secondary" >
+            <ToolbarItem.IconImageSource>
+                <FontImageSource
+                    FontFamily="fontello"
+                    Size="24"
+                    Color="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource White}}"
+                    Glyph="{x:Static helpers:IconFontManager.IconTrash}"/>
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+    </ContentPage.ToolbarItems>
 
     <Grid
         RowDefinitions="*,Auto,Auto"

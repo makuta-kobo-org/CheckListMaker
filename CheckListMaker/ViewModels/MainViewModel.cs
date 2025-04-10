@@ -36,9 +36,6 @@ public partial class MainViewModel : BaseViewModel
     private string _inputText = string.Empty;
 
     [ObservableProperty]
-    private bool _isToggled = true;
-
-    [ObservableProperty]
     private string _bannerId;
 
     [ObservableProperty]
@@ -194,7 +191,7 @@ public partial class MainViewModel : BaseViewModel
     /// </summary>
     [RelayCommand]
     private void ToggleNumberOfColumns()
-        => NumberOfColumns = IsToggled ? 2 : 1;
+        => NumberOfColumns = NumberOfColumns == 1 ? 2 : 1;
 
     /// <summary>
     /// Loads the checklist from the database.
@@ -420,6 +417,40 @@ public partial class MainViewModel : BaseViewModel
         catch (Exception ex)
         {
             await _alertService.ShowAlert("Error", ex.Message);
+        }
+    }
+
+    /// <summary> CheckListItem 削除コマンド  </summary>
+    [RelayCommand]
+    private async Task RemoveCheckListAsync()
+    {
+        var popup = new LoadingPopup();
+
+        try
+        {
+            var isConfirmed = await _alertService.ShowOkCancelAlert(
+                AppResource.Alert_Label_ConfirmTitle,
+                AppResource.Alert_Label_DeleteMessage);
+
+            if (!isConfirmed)
+            {
+                return;
+            }
+
+            _popupService.ShowPopup(popup);
+
+            _liteDbService.Delete(CurrentCheckList);
+            CurrentCheckList = new CheckList();
+
+            await SnackbarViewer.Show(AppResource.Alert_DeleteResultMessage);
+        }
+        catch (Exception ex)
+        {
+            await _alertService.ShowAlert("Error", ex.Message);
+        }
+        finally
+        {
+            _popupService.ClosePopup(popup);
         }
     }
 

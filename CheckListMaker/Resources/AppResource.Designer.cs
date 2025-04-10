@@ -106,6 +106,24 @@ namespace CheckListMaker.Resources {
         }
         
         /// <summary>
+        ///   Confirmation に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Alert_Label_ConfirmTitle {
+            get {
+                return ResourceManager.GetString("Alert_Label_ConfirmTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Do you want to delete it? に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Alert_Label_DeleteMessage {
+            get {
+                return ResourceManager.GetString("Alert_Label_DeleteMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   App Information に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string AppShell_Label_AppinfoText {
@@ -205,24 +223,6 @@ namespace CheckListMaker.Resources {
         }
         
         /// <summary>
-        ///   Do you want to delete it? に類似しているローカライズされた文字列を検索します。
-        /// </summary>
-        internal static string History_Label_AlertMessage {
-            get {
-                return ResourceManager.GetString("History_Label_AlertMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Confirmation に類似しているローカライズされた文字列を検索します。
-        /// </summary>
-        internal static string History_Label_AlertTitle {
-            get {
-                return ResourceManager.GetString("History_Label_AlertTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   History に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string History_Title {
@@ -282,6 +282,24 @@ namespace CheckListMaker.Resources {
         internal static string Settings_Label_Save {
             get {
                 return ResourceManager.GetString("Settings_Label_Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Delete に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Toolbar_Label_Delete {
+            get {
+                return ResourceManager.GetString("Toolbar_Label_Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Switch display に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Toolbar_Label_SwitchDisplay {
+            get {
+                return ResourceManager.GetString("Toolbar_Label_SwitchDisplay", resourceCulture);
             }
         }
     }

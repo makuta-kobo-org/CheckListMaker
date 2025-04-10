@@ -177,12 +177,6 @@
   <data name="Format_Date" xml:space="preserve">
     <value>yyyy年MM月dd日(ddd)</value>
   </data>
-  <data name="History_Label_AlertTitle" xml:space="preserve">
-    <value>確認</value>
-  </data>
-  <data name="History_Label_AlertMessage" xml:space="preserve">
-    <value>削除しますか？</value>
-  </data>
   <data name="Main_String_DeleteMessage" xml:space="preserve">
     <value>削除しました</value>
   </data>
@@ -191,5 +185,17 @@
   </data>
   <data name="AddItemPopup_Entry_Placeholder" xml:space="preserve">
     <value>テキストを入力</value>
+  </data>
+  <data name="Toolbar_Label_Delete" xml:space="preserve">
+    <value>削除する</value>
+  </data>
+  <data name="Alert_Label_ConfirmTitle" xml:space="preserve">
+    <value>確認</value>
+  </data>
+  <data name="Alert_Label_DeleteMessage" xml:space="preserve">
+    <value>削除しますか？</value>
+  </data>
+  <data name="Toolbar_Label_SwitchDisplay" xml:space="preserve">
+    <value>表示を切り換える</value>
   </data>
 </root>

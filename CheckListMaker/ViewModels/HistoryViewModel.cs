@@ -66,8 +66,8 @@ internal partial class HistoryViewModel : BaseViewModel
         try
         {
             var isConfirmed = await _alertService.ShowOkCancelAlert(
-                AppResource.History_Label_AlertTitle,
-                AppResource.History_Label_AlertMessage);
+                AppResource.Alert_Label_ConfirmTitle,
+                AppResource.Alert_Label_DeleteMessage);
 
             if (!isConfirmed)
             {
