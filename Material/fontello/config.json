@@ -67,6 +67,12 @@
       "src": "fontawesome"
     },
     {
+      "uid": "3ab2abf6f936d3e53ee8c184cedaed82",
+      "css": "trash",
+      "code": 59401,
+      "src": "elusive"
+    },
+    {
       "uid": "c1117f8a258d15f14309fdd072464f3f",
       "css": "SettingsIcon",
       "code": 59393,
