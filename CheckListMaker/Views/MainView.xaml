@@ -79,10 +79,17 @@
         RowDefinitions="*,Auto,Auto"
         HorizontalOptions="Fill"
         VerticalOptions="Fill">
-        <CollectionView Grid.Row="0"
+        <CollectionView
+            Grid.Row="0"
             Margin="10"
             ItemsSource="{Binding CurrentCheckList.Items}"
-            SelectionMode="None">
+            SelectionMode="None"
+            CanReorderItems="True">
+            <CollectionView.Behaviors>
+                <toolkit:EventToCommandBehavior
+                    EventName="ReorderCompleted"
+                    Command="{Binding ReorderCompletedCommand}"/>
+            </CollectionView.Behaviors>
             <CollectionView.ItemsLayout>
                 <GridItemsLayout
                     Orientation="Vertical"
@@ -136,7 +143,7 @@
                                     Command="{Binding BindingContext.ItemTappedCommand, Source={x:Reference MainViewContainer}}"
                                     CommandParameter="{Binding}" />
 
-                                <DragGestureRecognizer
+                                <!--<DragGestureRecognizer
                                     CanDrag="True"
                                     DragStartingCommand="{Binding BindingContext.ItemDraggedCommand, Source={x:Reference MainViewContainer}}"
                                     DragStartingCommandParameter="{Binding}" />
@@ -148,7 +155,7 @@
                                     DragOverCommand="{Binding BindingContext.ItemDraggedOverCommand, Source={x:Reference MainViewContainer}}"
                                     DragOverCommandParameter="{Binding}"
                                     DropCommand="{Binding BindingContext.ItemDroppedCommand, Source={x:Reference MainViewContainer}}"
-                                    DropCommandParameter="{Binding}" />
+                                    DropCommandParameter="{Binding}" />-->
 
                             </Border.GestureRecognizers>
 

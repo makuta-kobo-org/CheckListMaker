@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using CheckListMaker.Controls;
 using CheckListMaker.Exceptions;
 using CheckListMaker.Factories;
@@ -27,7 +26,6 @@ public partial class MainViewModel : BaseViewModel
     private readonly IAlertService _alertService;
     private readonly IAddItemPopupViewFactory _addItemPopupViewFactory;
     private bool _isFirstLaunch = true;
-    private CheckItem _draggedItem;
 
     [ObservableProperty]
     private int _numberOfColumns = 2;
@@ -104,19 +102,6 @@ public partial class MainViewModel : BaseViewModel
     /// <returns>True if the permission is granted, otherwise false.</returns>
     private static bool IsGranted(PermissionStatus status)
         => status == PermissionStatus.Granted || status == PermissionStatus.Limited;
-
-    /// <summary>
-    /// Handles the end of a drag operation for a checklist item.
-    /// </summary>
-    /// <param name="item">The item that was dragged.</param>
-    [RelayCommand]
-    private static void OnItemDragLeave(CheckItem item)
-    {
-#if DEBUG
-        Trace.WriteLine($"OnItemDragLeave : {item?.ItemText}");
-#endif
-        item.IsBeingDraggedOver = false;
-    }
 
     /// <summary>
     /// Toggles the checked state of a checklist item when tapped.
@@ -348,78 +333,6 @@ public partial class MainViewModel : BaseViewModel
         await Shell.Current.GoToAsync($"///{nameof(HistoryView)}", false);
     }
 
-    /// <summary>
-    /// Handles the drag operation for a checklist item.
-    /// </summary>
-    /// <param name="item">The item being dragged.</param>
-    [RelayCommand]
-    private void OnItemDragged(CheckItem item)
-    {
-#if DEBUG
-        Trace.WriteLine($"OnItemDragged : {item}");
-#endif
-        item.IsBeingDragged = true;
-        _draggedItem = item;
-    }
-
-    /// <summary>
-    /// Handles the drag-over operation for a checklist item.
-    /// </summary>
-    /// <param name="item">The item being dragged over.</param>
-    [RelayCommand]
-    private void OnItemDraggedOver(CheckItem item)
-    {
-#if DEBUG
-        Trace.WriteLine($"OnItemDraggedOver : {item?.ItemText}");
-#endif
-
-        if (item == _draggedItem)
-        {
-            item.IsBeingDragged = false;
-        }
-
-        item.IsBeingDraggedOver = item != _draggedItem;
-    }
-
-    /// <summary>
-    /// Handles the drop operation for a checklist item.
-    /// </summary>
-    /// <param name="item">The item that was dropped.</param>
-    [RelayCommand]
-    private async Task OnItemDroppedAsync(CheckItem item)
-    {
-        try
-        {
-            var itemToMove = _draggedItem;
-            var itemToInsertBefore = item;
-
-            if (itemToMove == null || itemToInsertBefore == null || itemToMove == itemToInsertBefore)
-            {
-                return;
-            }
-
-            int insertAtIndex = CurrentCheckList.Items.IndexOf(itemToInsertBefore);
-
-            if (insertAtIndex >= 0 && insertAtIndex < CurrentCheckList.Items.Count)
-            {
-                CurrentCheckList.Items.Remove(itemToMove);
-                CurrentCheckList.Items.Insert(insertAtIndex, itemToMove);
-                itemToMove.IsBeingDragged = false;
-                itemToInsertBefore.IsBeingDraggedOver = false;
-            }
-
-            await UpdateCheckListInDbAsync();
-
-#if DEBUG
-            Trace.WriteLine($"OnItemDroppedAsync: [{itemToMove?.ItemText}] => [{itemToInsertBefore?.ItemText}], target index = [{insertAtIndex}]");
-#endif
-        }
-        catch (Exception ex)
-        {
-            await _alertService.ShowAlert("Error", ex.Message);
-        }
-    }
-
     [RelayCommand]
     private void CreateNewCheckList()
     {
@@ -474,6 +387,32 @@ public partial class MainViewModel : BaseViewModel
         finally
         {
             _popupService.ClosePopup(popup);
+        }
+    }
+
+    /// <summary>
+    /// Handles the completion of a reorder operation for checklist items.
+    /// </summary>
+    /// <remarks>
+    /// This method is triggered when the user completes a drag-and-drop reorder operation
+    /// on the checklist items. It updates the current checklist in the database to reflect
+    /// the new order of items.
+    /// </remarks>
+    [RelayCommand]
+    private void ReorderCompleted()
+    {
+        if (CurrentCheckList == null)
+        {
+            return;
+        }
+
+        try
+        {
+            _liteDbService.Upsert(CurrentCheckList);
+        }
+        catch (Exception ex)
+        {
+            _alertService.ShowAlert("Error", ex.Message);
         }
     }
 

@@ -111,22 +111,6 @@ public class MainViewModelTests
     }
 
     /// <summary>
-    /// Tests that dragging an item away sets its "IsBeingDraggedOver" property to false.
-    /// </summary>
-    [Fact]
-    public void ItemDragLeave_SetsItemIsBeingDraggedOverToFalse()
-    {
-        // Arrange
-        var item = new CheckItem { IsBeingDraggedOver = true };
-
-        // Act
-        _viewModel.ItemDragLeaveCommand.Execute(item);
-
-        // Assert
-        item.IsBeingDraggedOver.IsFalse();
-    }
-
-    /// <summary>
     /// Tests that the appearing command reads the checklist on the first launch.
     /// </summary>
     [Fact]
@@ -140,59 +124,6 @@ public class MainViewModelTests
 
         // Assert
         _liteDbServiceMock.Verify(service => service.FindAll(), Times.Once);
-    }
-
-    /// <summary>
-    /// Tests that dragging an item sets its "IsBeingDragged" property to true.
-    /// </summary>
-    [Fact]
-    public void ItemDraggedCommand_SetsItemIsBeingDragged()
-    {
-        // Arrange
-        var item = new CheckItem { IsBeingDragged = false };
-
-        // Act
-        _viewModel.ItemDraggedCommand.Execute(item);
-
-        // Assert
-        item.IsBeingDragged.IsTrue();
-    }
-
-    /// <summary>
-    /// Tests that dragging over an item sets its "IsBeingDraggedOver" property to true.
-    /// </summary>
-    [Fact]
-    public void ItemDraggedOverCommand_SetsItemIsBeingDraggedOver()
-    {
-        // Arrange
-        var item = new CheckItem { IsBeingDraggedOver = false };
-
-        // Act
-        _viewModel.ItemDraggedOverCommand.Execute(item);
-
-        // Assert
-        item.IsBeingDraggedOver.IsTrue();
-    }
-
-    /// <summary>
-    /// Tests that dropping an item moves it and updates the database.
-    /// </summary>
-    [Fact]
-    public async Task ItemDroppedCommand_MovesItemAndUpdatesDb()
-    {
-        // Arrange
-        var itemToMove = new CheckItem { ItemText = "Move" };
-        var itemToInsertBefore = new CheckItem { ItemText = "Before" };
-        _viewModel.CurrentCheckList = new CheckList { Items = new ObservableCollection<CheckItem> { itemToMove, itemToInsertBefore } };
-        _viewModel.ItemDraggedCommand.Execute(itemToMove);
-
-        // Act
-        await _viewModel.ItemDroppedCommand.ExecuteAsync(itemToInsertBefore);
-
-        // Assert
-        _viewModel.CurrentCheckList.Items[0].Is(itemToInsertBefore);
-        _viewModel.CurrentCheckList.Items[1].Is(itemToMove);
-        _liteDbServiceMock.Verify(service => service.Upsert(It.IsAny<CheckList>()), Times.Once);
     }
 
     /// <summary>
