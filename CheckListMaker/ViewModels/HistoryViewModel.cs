@@ -57,9 +57,43 @@ internal partial class HistoryViewModel : BaseViewModel
         await Shell.Current.GoToAsync($"//{nameof(MainView)}", navigationParameter);
     }
 
+    [RelayCommand]
+    private async Task EditTitleAsync(CheckList checklist)
+    {
+        var popup = new LoadingPopup();
+
+        try
+        {
+            var newTitle = await _alertService.ShowPromptAlert(
+                title: AppResource.Alert_Text_EditTitle,
+                message: AppResource.Alert_Text_EditMessage,
+                initialValue: checklist.Title);
+
+            if (string.IsNullOrWhiteSpace(newTitle) || newTitle == checklist.Title)
+            {
+                return;
+            }
+
+            _popupService.ShowPopup(popup);
+
+            checklist.Title = newTitle;
+            _liteDbService.Upsert(checklist);
+
+            await SnackbarViewer.Show(AppResource.Alert_EditResultMessage);
+        }
+        catch (Exception ex)
+        {
+            await _alertService.ShowAlert("Error", ex.Message);
+        }
+        finally
+        {
+            _popupService.ClosePopup(popup);
+        }
+    }
+
     /// <summary> CheckListItem 削除コマンド  </summary>
     [RelayCommand]
-    private async Task RemoveCheckListAsync(CheckList items)
+    private async Task RemoveCheckListAsync(CheckList checklist)
     {
         var popup = new LoadingPopup();
 
@@ -76,8 +110,8 @@ internal partial class HistoryViewModel : BaseViewModel
 
             _popupService.ShowPopup(popup);
 
-            CheckLists.Remove(items);
-            _liteDbService.Delete(items);
+            CheckLists.Remove(checklist);
+            _liteDbService.Delete(checklist);
 
             await SnackbarViewer.Show(AppResource.Alert_DeleteResultMessage);
         }

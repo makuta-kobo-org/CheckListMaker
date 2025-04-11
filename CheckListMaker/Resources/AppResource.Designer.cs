@@ -106,6 +106,15 @@ namespace CheckListMaker.Resources {
         }
         
         /// <summary>
+        ///   The title has been updated. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Alert_EditResultMessage {
+            get {
+                return ResourceManager.GetString("Alert_EditResultMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Confirmation に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string Alert_Label_ConfirmTitle {
@@ -120,6 +129,24 @@ namespace CheckListMaker.Resources {
         internal static string Alert_Label_DeleteMessage {
             get {
                 return ResourceManager.GetString("Alert_Label_DeleteMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Edit title. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Alert_Text_EditMessage {
+            get {
+                return ResourceManager.GetString("Alert_Text_EditMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Edit に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Alert_Text_EditTitle {
+            get {
+                return ResourceManager.GetString("Alert_Text_EditTitle", resourceCulture);
             }
         }
         
@@ -160,6 +187,24 @@ namespace CheckListMaker.Resources {
         }
         
         /// <summary>
+        ///   Delete に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Button_Text_Delete {
+            get {
+                return ResourceManager.GetString("Button_Text_Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Edit Title に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Button_Text_EditTitle {
+            get {
+                return ResourceManager.GetString("Button_Text_EditTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Histroy に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string Button_Text_Histroy {
@@ -174,6 +219,15 @@ namespace CheckListMaker.Resources {
         internal static string Button_Text_Image {
             get {
                 return ResourceManager.GetString("Button_Text_Image", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Title に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string CheckList_Text_Title {
+            get {
+                return ResourceManager.GetString("CheckList_Text_Title", resourceCulture);
             }
         }
         
@@ -286,11 +340,20 @@ namespace CheckListMaker.Resources {
         }
         
         /// <summary>
-        ///   Delete に類似しているローカライズされた文字列を検索します。
+        ///   Delete checklist に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string Toolbar_Label_Delete {
             get {
                 return ResourceManager.GetString("Toolbar_Label_Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   New checklist に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Toolbar_Label_NewCheckList {
+            get {
+                return ResourceManager.GetString("Toolbar_Label_NewCheckList", resourceCulture);
             }
         }
         

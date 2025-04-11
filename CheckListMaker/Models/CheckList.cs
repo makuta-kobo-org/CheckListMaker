@@ -15,7 +15,13 @@ public partial class CheckList : ObservableObject
     /// Gets or sets the observable collection of check items.
     /// </summary>
     [ObservableProperty]
-    private ObservableCollection<CheckItem> _items = new();
+    private ObservableCollection<CheckItem> _items = [];
+
+    /// <summary>
+    /// Gets or sets the title for the checklist.
+    /// </summary>
+    [ObservableProperty]
+    private string _title = AppResource.CheckList_Text_Title;
 
     /// <summary>
     /// Gets or sets the primary identifier for the checklist.

@@ -187,7 +187,7 @@
     <value>テキストを入力</value>
   </data>
   <data name="Toolbar_Label_Delete" xml:space="preserve">
-    <value>削除する</value>
+    <value>チェックリストを削除</value>
   </data>
   <data name="Alert_Label_ConfirmTitle" xml:space="preserve">
     <value>確認</value>
@@ -196,6 +196,27 @@
     <value>削除しますか？</value>
   </data>
   <data name="Toolbar_Label_SwitchDisplay" xml:space="preserve">
-    <value>表示を切り換える</value>
+    <value>表示切り換え</value>
+  </data>
+  <data name="Button_Text_Delete" xml:space="preserve">
+    <value>削除</value>
+  </data>
+  <data name="Button_Text_EditTitle" xml:space="preserve">
+    <value>タイトルを編集</value>
+  </data>
+  <data name="CheckList_Text_Title" xml:space="preserve">
+    <value>タイトル</value>
+  </data>
+  <data name="Alert_Text_EditTitle" xml:space="preserve">
+    <value>編集</value>
+  </data>
+  <data name="Alert_Text_EditMessage" xml:space="preserve">
+    <value>タイトルを編集します</value>
+  </data>
+  <data name="Alert_EditResultMessage" xml:space="preserve">
+    <value>タイトルを更新しました</value>
+  </data>
+  <data name="Toolbar_Label_NewCheckList" xml:space="preserve">
+    <value>新規チェックリスト</value>
   </data>
 </root>
