@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ソリューション項目
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		azure-pipelines-android.yml = azure-pipelines-android.yml
+		LICENSE = LICENSE
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckListMakerTest.Tests", "CheckListMakerTest.Tests\CheckListMakerTest.Tests.csproj", "{CCB62A97-B090-448E-B2C9-7DDF26A533FA}"
