@@ -2,6 +2,7 @@ using CheckListMaker.Controls;
 using CheckListMaker.Models;
 using CheckListMaker.Services;
 using CheckListMaker.ViewModels;
+using CommunityToolkit.Maui.Views;
 using LiteDB;
 using Moq;
 
@@ -61,5 +62,74 @@ public class HistoryViewModelTests
         // Assert
         _viewModel.CheckLists.Count.Is(0);
         _liteDbServiceMock.Verify(x => x.Delete(checkList), Times.Once);
+    }
+
+    [Fact]
+    public async Task EditTitle_WhenInputNullOrUnchanged_ShouldNotUpdate()
+    {
+        // Arrange
+        var checkList = new CheckList { Id = new ObjectId(), Title = "Original Title" };
+        _alertServiceMock.Setup(x => x.ShowPromptAlert(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                         .ReturnsAsync("Original Title");
+
+        // Act
+        await _viewModel.EditTitleCommand.ExecuteAsync(checkList);
+
+        // Assert
+        _liteDbServiceMock.Verify(x => x.Upsert(It.IsAny<CheckList>()), Times.Never);
+        _popupServiceMock.Verify(x => x.ShowPopup(It.IsAny<Popup>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task EditTitle_WhenInputNewTitle_ShouldUpdateTitle()
+    {
+        // Arrange
+        var checkList = new CheckList { Id = new ObjectId(), Title = "Old Title" };
+        string newTitle = "New Title";
+        _alertServiceMock.Setup(x => x.ShowPromptAlert(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                         .ReturnsAsync(newTitle);
+
+        // Act
+        await _viewModel.EditTitleCommand.ExecuteAsync(checkList);
+
+        // Assert
+        checkList.Title.Is(newTitle);
+        _liteDbServiceMock.Verify(x => x.Upsert(checkList), Times.Once);
+        _popupServiceMock.Verify(x => x.ShowPopup(It.IsAny<Popup>()), Times.Once);
+        _popupServiceMock.Verify(x => x.ClosePopup(It.IsAny<Popup>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task EditTitle_WhenExceptionThrown_ShowsAlertAndClosesPopup()
+    {
+        // Arrange
+        var checkList = new CheckList { Id = new ObjectId(), Title = "Old Title" };
+        string newTitle = "New Title";
+        _alertServiceMock.Setup(x => x.ShowPromptAlert(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                         .ReturnsAsync(newTitle);
+        _liteDbServiceMock.Setup(x => x.Upsert(checkList)).Throws(new Exception("Upsert error"));
+
+        // Act
+        await _viewModel.EditTitleCommand.ExecuteAsync(checkList);
+
+        // Assert
+        _alertServiceMock.Verify(x => x.ShowAlert("Error", "Upsert error"), Times.Once);
+        _popupServiceMock.Verify(x => x.ClosePopup(It.IsAny<Popup>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task RemoveCheckList_WhenCancelled_ShouldNotRemoveOrDelete()
+    {
+        // Arrange
+        var checkList = new CheckList { Id = new ObjectId() };
+        _viewModel.CheckLists.Add(checkList);
+        _alertServiceMock.Setup(x => x.ShowOkCancelAlert(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(false);
+
+        // Act
+        await _viewModel.RemoveCheckListCommand.ExecuteAsync(checkList);
+
+        // Assert
+        _viewModel.CheckLists.Contains(checkList).IsTrue();
+        _liteDbServiceMock.Verify(x => x.Delete(It.IsAny<CheckList>()), Times.Never);
     }
 }

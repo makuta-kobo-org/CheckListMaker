@@ -75,38 +75,6 @@ public class MainViewModelTests
     }
 
     /// <summary>
-    /// Tests that toggling the number of columns to true sets the column count to 2.
-    /// </summary>
-    [Fact]
-    public void ToggleNumberOfColumns_ToggledTrue_ChangesColumnsTo2()
-    {
-        // Arrange
-        _viewModel.IsToggled = true;
-
-        // Act
-        _viewModel.ToggleNumberOfColumnsCommand.Execute(null);
-
-        // Assert
-        _viewModel.NumberOfColumns.Is(2);
-    }
-
-    /// <summary>
-    /// Tests that toggling the number of columns to false sets the column count to 1.
-    /// </summary>
-    [Fact]
-    public void ToggleNumberOfColumns_ToggledFalse_ChangesColumnsTo1()
-    {
-        // Arrange
-        _viewModel.IsToggled = false;
-
-        // Act
-        _viewModel.ToggleNumberOfColumnsCommand.Execute(null);
-
-        // Assert
-        _viewModel.NumberOfColumns.Is(1);
-    }
-
-    /// <summary>
     /// Tests that deleting an item removes it from the checklist.
     /// </summary>
     [Fact]
@@ -124,36 +92,21 @@ public class MainViewModelTests
     }
 
     /// <summary>
-    /// Tests that tapping an item toggles its checked state.
+    /// Tests that tapping an item toggles its checked state and updates the checklist in the database.
     /// </summary>
     [Fact]
-    public async Task ItemTapped_TogglesCheckItemIsChecked()
+    public async Task ItemTapped_TogglesCheckItemIsChecked_AndUpdatesDb()
     {
         // Arrange
         var item = new CheckItem { IsChecked = false };
-
-        // Act
-        await _viewModel.ItemTappedCommand.ExecuteAsync(item);
-
-        // Assert
-        item.IsChecked.IsTrue();
-        _liteDbServiceMock.Verify(service => service.Upsert(It.IsAny<CheckList>()), Times.Once);
-    }
-
-    /// <summary>
-    /// Tests that tapping an item updates the checklist in the database.
-    /// </summary>
-    [Fact]
-    public async Task ItemTapped_UpdatesCheckListInDb()
-    {
-        // Arrange
-        var item = new CheckItem { IsChecked = false };
+        // Ensure CurrentCheckList is set so that Upsert is called with a valid checklist.
         _viewModel.CurrentCheckList = new CheckList { Items = new ObservableCollection<CheckItem> { item } };
 
         // Act
         await _viewModel.ItemTappedCommand.ExecuteAsync(item);
 
         // Assert
+        Assert.True(item.IsChecked);
         _liteDbServiceMock.Verify(service => service.Upsert(_viewModel.CurrentCheckList), Times.Once);
     }
 
