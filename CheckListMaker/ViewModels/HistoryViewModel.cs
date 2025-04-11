@@ -6,6 +6,7 @@ using CheckListMaker.Models;
 using CheckListMaker.Resources;
 using CheckListMaker.Services;
 using CheckListMaker.Views;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace CheckListMaker.ViewModels;
@@ -18,20 +19,27 @@ internal partial class HistoryViewModel : BaseViewModel
     private readonly ILiteDbService _liteDbService;
     private readonly IAlertService _alertService;
 
+    [ObservableProperty]
+    private string _bannerId;
+
     /// <summary>
     /// HistoryViewModelのコンストラクタ
     /// </summary>
     /// <param name="popupService">ポップアップサービス</param>
     /// <param name="liteDbService">LiteDbサービス</param>
     /// <param name="alertService">アラートサービス</param>
+    /// <param name="adMobConstants">Constants for AdMob configuration.</param>
     public HistoryViewModel(
         ICustomPopupService popupService,
         ILiteDbService liteDbService,
-        IAlertService alertService)
+        IAlertService alertService,
+        AdMobConstants adMobConstants)
     {
         _popupService = popupService;
         _liteDbService = liteDbService;
         _alertService = alertService;
+
+        BannerId = adMobConstants.BannerId;
     }
 
     /// <summary> CheckListItem のコレクション  </summary>

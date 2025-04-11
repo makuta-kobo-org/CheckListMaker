@@ -2,15 +2,16 @@
 <ContentPage
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    x:Class="CheckListMaker.Views.HistoryView"
-    x:DataType="views:HistoryViewModel"
-    x:Name="HistoryViewContainer"
+    xmlns:ads="clr-namespace:Plugin.MauiMTAdmob.Controls;assembly=Plugin.MauiMTAdmob"
     xmlns:views="clr-namespace:CheckListMaker.ViewModels"
     xmlns:models="clr-namespace:CheckListMaker.Models"
     xmlns:helpers="clr-namespace:CheckListMaker.Helpers"
     xmlns:resources="clr-namespace:CheckListMaker.Resources"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     Title="{x:Static resources:AppResource.History_Title}"
+    x:Class="CheckListMaker.Views.HistoryView"
+    x:DataType="views:HistoryViewModel"
+    x:Name="HistoryViewContainer"
     Shell.TabBarIsVisible="False">
 
     <ContentPage.ToolbarItems>
@@ -32,11 +33,12 @@
     </ContentPage.Behaviors>
 
     <Grid
-        HorizontalOptions="Fill"
-        VerticalOptions="Fill">
+        RowDefinitions="*,Auto"
+        >
 
         <CollectionView
             x:Name="CheckListCollectionView"
+            Grid.Row="0"
             Margin="10"
             ItemsSource="{Binding CheckLists}"
             SelectionMode="None">
@@ -155,5 +157,13 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
+
+        <!-- AD Banner -->
+        <ads:MTAdView
+            Grid.Row="1"
+            x:Name="myAds"
+            AdsId="{Binding BannerId}"
+            AdSize="AnchoredAdaptive"
+            IsVisible="true"/>
     </Grid>
 </ContentPage>
