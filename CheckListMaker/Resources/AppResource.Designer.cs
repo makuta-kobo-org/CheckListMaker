@@ -151,6 +151,33 @@ namespace CheckListMaker.Resources {
         }
         
         /// <summary>
+        ///   Swipe each checklist to the right to display the edit and delete buttons. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Alert_Text_HelpMessage1 {
+            get {
+                return ResourceManager.GetString("Alert_Text_HelpMessage1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   You can edit the checklist title using the edit button. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Alert_Text_HelpMessage2 {
+            get {
+                return ResourceManager.GetString("Alert_Text_HelpMessage2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   How to edit checklists に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string Alert_Text_HelpTitle {
+            get {
+                return ResourceManager.GetString("Alert_Text_HelpTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   App Information に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string AppShell_Label_AppinfoText {

@@ -219,4 +219,13 @@
   <data name="Toolbar_Label_NewCheckList" xml:space="preserve">
     <value>New checklist</value>
   </data>
+  <data name="Alert_Text_HelpTitle" xml:space="preserve">
+    <value>How to edit checklists</value>
+  </data>
+  <data name="Alert_Text_HelpMessage1" xml:space="preserve">
+    <value>Swipe each checklist to the right to display the edit and delete buttons.</value>
+  </data>
+  <data name="Alert_Text_HelpMessage2" xml:space="preserve">
+    <value>You can edit the checklist title using the edit button.</value>
+  </data>
 </root>

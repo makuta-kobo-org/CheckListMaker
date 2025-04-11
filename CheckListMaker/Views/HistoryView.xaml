@@ -13,6 +13,20 @@
     Title="{x:Static resources:AppResource.History_Title}"
     Shell.TabBarIsVisible="False">
 
+    <ContentPage.ToolbarItems>
+        <ToolbarItem
+            Command="{Binding HelpIconTappedCommand}">
+            <ToolbarItem.IconImageSource>
+                <FontImageSource
+                    FontFamily="fontello"
+                    Size="24"
+                    Color="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource White}}"
+                    FontAutoScalingEnabled="True"
+                    Glyph="{x:Static helpers:IconFontManager.IconHelp}"/>
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+    </ContentPage.ToolbarItems>
+
     <ContentPage.Behaviors>
         <toolkit:EventToCommandBehavior Command="{Binding AppearingCommand}" EventName="Appearing"/>
     </ContentPage.Behaviors>

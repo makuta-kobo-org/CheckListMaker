@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Text;
 using CheckListMaker.Controls;
 using CheckListMaker.Helpers;
 using CheckListMaker.Models;
@@ -123,5 +124,16 @@ internal partial class HistoryViewModel : BaseViewModel
         {
             _popupService.ClosePopup(popup);
         }
+    }
+
+    [RelayCommand]
+    private async Task HelpIconTapped()
+    {
+        var message = new StringBuilder()
+            .AppendLine(AppResource.Alert_Text_HelpMessage1)
+            .AppendLine(AppResource.Alert_Text_HelpMessage2)
+            .ToString();
+
+        await _alertService.ShowAlert( AppResource.Alert_Text_HelpTitle, message);
     }
 }

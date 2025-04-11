@@ -219,4 +219,13 @@
   <data name="Toolbar_Label_NewCheckList" xml:space="preserve">
     <value>新規チェックリスト</value>
   </data>
+  <data name="Alert_Text_HelpTitle" xml:space="preserve">
+    <value>チェックリスト編集方法</value>
+  </data>
+  <data name="Alert_Text_HelpMessage1" xml:space="preserve">
+    <value>各チェックリストを右にスワイプすると編集と削除のボタンが表示されます。</value>
+  </data>
+  <data name="Alert_Text_HelpMessage2" xml:space="preserve">
+    <value>編集ボタンでチェックリストのタイトルを編集できます</value>
+  </data>
 </root>
