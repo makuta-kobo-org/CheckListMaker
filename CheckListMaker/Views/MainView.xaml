@@ -49,6 +49,19 @@
             </ToolbarItem.IconImageSource>
         </ToolbarItem>
         <ToolbarItem
+            Text="{x:Static resources:AppResource.Toolbar_Label_NewCheckList}"
+            Command="{Binding CreateNewCheckListCommand}"
+            Order="Secondary" >
+            <ToolbarItem.IconImageSource>
+                <FontImageSource
+                    FontFamily="fontello"
+                    Size="24"
+                    Color="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource White}}"
+                    FontAutoScalingEnabled="True"
+                    Glyph="{x:Static helpers:IconFontManager.Icon2Columns}"/>
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+        <ToolbarItem
             Text="{x:Static resources:AppResource.Toolbar_Label_Delete}"
             Command="{Binding RemoveCheckListCommand}"
             Order="Secondary" >

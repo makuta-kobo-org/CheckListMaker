@@ -420,7 +420,29 @@ public partial class MainViewModel : BaseViewModel
         }
     }
 
-    /// <summary> CheckListItem 削除コマンド  </summary>
+    [RelayCommand]
+    private void CreateNewCheckList()
+    {
+        var popup = new LoadingPopup();
+
+        try
+        {
+            _popupService.ShowPopup(popup);
+
+            CurrentCheckList = new CheckList();
+
+            _liteDbService.Insert(CurrentCheckList);
+        }
+        catch (Exception ex)
+        {
+            _alertService.ShowAlert("Error", ex.Message);
+        }
+        finally
+        {
+            _popupService.ClosePopup(popup);
+        }
+    }
+
     [RelayCommand]
     private async Task RemoveCheckListAsync()
     {
@@ -440,7 +462,8 @@ public partial class MainViewModel : BaseViewModel
             _popupService.ShowPopup(popup);
 
             _liteDbService.Delete(CurrentCheckList);
-            CurrentCheckList = new CheckList();
+
+            await LoadCheckListAsync();
 
             await SnackbarViewer.Show(AppResource.Alert_DeleteResultMessage);
         }
