@@ -4,74 +4,82 @@ using Microsoft.Extensions.Configuration;
 
 namespace CheckListMaker.Services;
 
-/// <summary> Lite DBのCRUDを行う </summary>
-internal sealed class LiteDbService : ILiteDbService
+/// <summary> LiteDBのCRUDを行う </summary>
+internal sealed class LiteDbService : ILiteDbService, IDisposable
 {
-    private readonly int _upperLimit = 10;
+    private readonly int _upperLimit;
     private readonly string _dbFilePath;
+    private LiteDatabase? _database;
 
     /// <summary> Constructor </summary>
     public LiteDbService(string dbFilePath, int upperLimit)
     {
-        _upperLimit = upperLimit;
         _dbFilePath = dbFilePath;
+        _upperLimit = upperLimit;
+        _database = new LiteDatabase(_dbFilePath);
     }
 
-    /// <summary> Add CheckList </summary>
+    /// <summary> 全てのCheckListを取得する </summary>
     public List<CheckList> FindAll()
     {
-        using var db = new LiteDatabase(_dbFilePath);
-
-        var col = db.GetCollection<CheckList>();
-
+        EnsureDatabase();
+        var col = _database!.GetCollection<CheckList>();
         return col.FindAll().ToList();
     }
 
-    /// <summary> Add a CheckList </summary>
+    /// <summary> CheckListを追加する </summary>
     public void Insert(CheckList checkList)
     {
-        using var db = new LiteDatabase(_dbFilePath);
-
-        var col = db.GetCollection<CheckList>();
-
+        EnsureDatabase();
+        var col = _database!.GetCollection<CheckList>();
         col.Insert(checkList);
-
         DeleteAboveTheUpperLimit(col);
     }
 
-    /// <summary> Update CheckList </summary>
+    /// <summary> CheckListを更新または追加する </summary>
     public void Upsert(CheckList checkList)
     {
-        using var db = new LiteDatabase(_dbFilePath);
-
-        var col = db.GetCollection<CheckList>();
-
+        EnsureDatabase();
+        var col = _database!.GetCollection<CheckList>();
         col.Upsert(checkList);
     }
 
-    /// <summary> Delete CheckList </summary>
+    /// <summary> CheckListを削除する </summary>
     public void Delete(CheckList checkList)
     {
-        using var db = new LiteDatabase(_dbFilePath);
-
-        var col = db.GetCollection<CheckList>();
-
+        EnsureDatabase();
+        var col = _database!.GetCollection<CheckList>();
         col.Delete(checkList.Id);
     }
 
     /// <summary> 上限数以上の古いデータを削除する </summary>
     private void DeleteAboveTheUpperLimit(ILiteCollection<CheckList> col)
     {
-        var checkLists = col.FindAll();
+        var checkLists = col.FindAll().OrderByDescending(x => x.CreatedDateTime).ToList();
 
-        if (checkLists.Count() > 10)
+        if (checkLists.Count > _upperLimit)
         {
-            var deletionTargets = checkLists.Skip(10).ToList();
-
+            var deletionTargets = checkLists.Skip(_upperLimit).ToList();
             foreach (var deletionTarget in deletionTargets)
             {
                 col.Delete(deletionTarget.Id);
             }
         }
+    }
+
+    /// <summary> LiteDatabaseインスタンスを確認し、必要に応じて再初期化する </summary>
+    private void EnsureDatabase()
+    {
+        if (_database == null)
+        {
+            _database = new LiteDatabase(_dbFilePath);
+        }
+    }
+
+    /// <summary> リソースを解放する </summary>
+    public void Dispose()
+    {
+        _database?.Dispose();
+        _database = null;
     }
 }

@@ -80,7 +80,7 @@ public static class MauiProgram
         services.AddTransient<IAlertService, AlertService>();
         services.AddSingleton<IComputerVisionService>(
             options => ComputerVisionService.GetInstance(config));
-        services.AddSingleton<ILiteDbService, LiteDbService>(options =>
+        services.AddSingleton<ILiteDbService>(options =>
             {
                 var dbFilePath = Path.Combine(
                     FileSystem.Current.AppDataDirectory,
