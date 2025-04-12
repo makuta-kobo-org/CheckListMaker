@@ -1,11 +1,18 @@
 namespace CheckListMaker.Models;
 
 /// <summary>
-/// マイグレーションメタデータを保持するクラス
+/// Represents metadata for a database migration, including an identifier and version number.
 /// </summary>
 public class MigrationMetadata
 {
-    // 固定のIDを利用して、複数回の検索を容易にする
+    /// <summary>
+    /// Gets or sets the identifier for the migration metadata.
+    /// Default value is "schemaVersion".
+    /// </summary>
     public string Id { get; set; } = "schemaVersion";
+
+    /// <summary>
+    /// Gets or sets the version number of the migration.
+    /// </summary>
     public int Version { get; set; }
 }

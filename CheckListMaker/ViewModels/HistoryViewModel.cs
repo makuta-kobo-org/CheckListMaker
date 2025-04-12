@@ -11,8 +11,12 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace CheckListMaker.ViewModels;
 
-/// <summary> HistoryページのViewModel </summary>
-/// <remarks> Constructor </remarks>
+/// <summary>
+/// ViewModel for the History page.
+/// </summary>
+/// <remarks>
+/// This class provides functionality for managing and interacting with the history of checklists.
+/// </remarks>
 internal partial class HistoryViewModel : BaseViewModel
 {
     private readonly ICustomPopupService _popupService;
@@ -23,11 +27,11 @@ internal partial class HistoryViewModel : BaseViewModel
     private string _bannerId;
 
     /// <summary>
-    /// HistoryViewModelのコンストラクタ
+    /// Initializes a new instance of the <see cref="HistoryViewModel"/> class.
     /// </summary>
-    /// <param name="popupService">ポップアップサービス</param>
-    /// <param name="liteDbService">LiteDbサービス</param>
-    /// <param name="alertService">アラートサービス</param>
+    /// <param name="popupService">Service for managing popups.</param>
+    /// <param name="liteDbService">Service for interacting with the LiteDB database.</param>
+    /// <param name="alertService">Service for displaying alerts.</param>
     /// <param name="adMobConstants">Constants for AdMob configuration.</param>
     public HistoryViewModel(
         ICustomPopupService popupService,
@@ -42,9 +46,14 @@ internal partial class HistoryViewModel : BaseViewModel
         BannerId = adMobConstants.BannerId;
     }
 
-    /// <summary> CheckListItem のコレクション  </summary>
+    /// <summary>
+    /// Gets the collection of checklist items.
+    /// </summary>
     public ObservableCollection<CheckList> CheckLists { get; private set; } = [];
 
+    /// <summary>
+    /// Command executed when the page appears.
+    /// </summary>
     [RelayCommand]
     private void OnAppearing()
     {
@@ -55,6 +64,10 @@ internal partial class HistoryViewModel : BaseViewModel
         OnPropertyChanged(nameof(CheckLists));
     }
 
+    /// <summary>
+    /// Navigates to the main view with the selected checklist.
+    /// </summary>
+    /// <param name="selectedCheckList">The selected checklist to navigate with.</param>
     [RelayCommand]
     private async Task NavigateToMainViewAsync(CheckList selectedCheckList)
     {
@@ -66,6 +79,10 @@ internal partial class HistoryViewModel : BaseViewModel
         await Shell.Current.GoToAsync($"//{nameof(MainView)}", navigationParameter);
     }
 
+    /// <summary>
+    /// Edits the title of the specified checklist.
+    /// </summary>
+    /// <param name="checklist">The checklist to edit.</param>
     [RelayCommand]
     private async Task EditTitleAsync(CheckList checklist)
     {
@@ -100,7 +117,10 @@ internal partial class HistoryViewModel : BaseViewModel
         }
     }
 
-    /// <summary> CheckListItem 削除コマンド  </summary>
+    /// <summary>
+    /// Removes the specified checklist.
+    /// </summary>
+    /// <param name="checklist">The checklist to remove.</param>
     [RelayCommand]
     private async Task RemoveCheckListAsync(CheckList checklist)
     {
@@ -134,6 +154,9 @@ internal partial class HistoryViewModel : BaseViewModel
         }
     }
 
+    /// <summary>
+    /// Displays a help message when the help icon is tapped.
+    /// </summary>
     [RelayCommand]
     private async Task HelpIconTapped()
     {
@@ -142,6 +165,6 @@ internal partial class HistoryViewModel : BaseViewModel
             .AppendLine(AppResource.Alert_Text_HelpMessage2)
             .ToString();
 
-        await _alertService.ShowAlert( AppResource.Alert_Text_HelpTitle, message);
+        await _alertService.ShowAlert(AppResource.Alert_Text_HelpTitle, message);
     }
 }

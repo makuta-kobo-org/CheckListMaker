@@ -5,7 +5,7 @@ using LiteDB;
 namespace CheckListMaker.Services;
 
 /// <summary>
-/// LiteDB の CRUD 操作およびマイグレーションを行うクラス
+/// A service class for performing CRUD operations and migrations using LiteDB.
 /// </summary>
 internal sealed class LiteDbService : ILiteDbService, IDisposable
 {
@@ -13,9 +13,15 @@ internal sealed class LiteDbService : ILiteDbService, IDisposable
 
     private readonly int _upperLimit;
     private readonly string _dbFilePath;
+#nullable enable
     private LiteDatabase? _database;
+#nullable disable
 
-    /// <summary> Constructor </summary>
+    /// <summary>
+    /// Initializes a new instance of the <see cref="LiteDbService"/> class.
+    /// </summary>
+    /// <param name="dbFilePath">The file path of the LiteDB database.</param>
+    /// <param name="upperLimit">The maximum number of records allowed in the database.</param>
     public LiteDbService(string dbFilePath, int upperLimit)
     {
         _dbFilePath = dbFilePath;
@@ -24,68 +30,10 @@ internal sealed class LiteDbService : ILiteDbService, IDisposable
         MigrateIfNeeded();
     }
 
-    /// <summary> 必要に応じてマイグレーションを実行する </summary>
-    private void MigrateIfNeeded()
-    {
-        // "migration_metadata" コレクションを利用してスキーマバージョンを管理
-        var metadataCol = _database!.GetCollection<MigrationMetadata>("migration_metadata");
-        var metadata = metadataCol.FindById("schemaVersion");
-
-        if (metadata == null)
-        {
-            // 初回マイグレーション (初期状態はバージョン0)
-            int previousVersion = 0;
-            if (previousVersion < CURRENT_DB_VERSION)
-            {
-                ApplyMigration(previousVersion, CURRENT_DB_VERSION);
-            }
-
-            // マイグレーション終了後、バージョン情報を登録
-            metadataCol.Upsert(new MigrationMetadata { Id = "schemaVersion", Version = CURRENT_DB_VERSION });
-        }
-        else if (metadata.Version < CURRENT_DB_VERSION)
-        {
-            // 既存バージョンから CURRENT_DB_VERSION へのマイグレーション処理
-            ApplyMigration(metadata.Version, CURRENT_DB_VERSION);
-
-            // マイグレーション終了後、バージョン情報を更新
-            metadata.Version = CURRENT_DB_VERSION;
-            metadataCol.Update(metadata);
-        }
-    }
-
     /// <summary>
-    /// 指定されたバージョン間のマイグレーションを適用する
+    /// Retrieves all CheckList records from the database.
     /// </summary>
-    /// <param name="fromVersion">現在のバージョン</param>
-    /// <param name="toVersion">目標バージョン</param>
-    private void ApplyMigration(int fromVersion, int toVersion)
-    {
-        var col = _database!.GetCollection<CheckList>();
-
-        // バージョンごとのマイグレーション処理を記述
-        if (fromVersion < 1)
-        {
-            // バージョン 0 -> 1 のマイグレーション処理
-            // 例: CheckList に新しいフィールドを追加し、初期値を設定
-            foreach (var item in col.FindAll())
-            {
-                item.Title = AppResource.CheckList_Text_Title; // 新しいフィールドに初期値を設定
-                col.Update(item);
-            }
-        }
-
-        if (fromVersion < 2)
-        {
-            // バージョン 1 -> 2 のマイグレーション処理
-            // 例: 別のフィールドを追加または変更
-            // ※ 必要に応じて実装
-        }
-
-        // 必要に応じてさらにバージョン間の処理を追加
-    }
-
-    /// <summary> 全ての CheckList を取得する </summary>
+    /// <returns>A list of all CheckList records.</returns>
     public List<CheckList> FindAll()
     {
         EnsureDatabase();
@@ -93,7 +41,10 @@ internal sealed class LiteDbService : ILiteDbService, IDisposable
         return col.FindAll().ToList();
     }
 
-    /// <summary> CheckList を追加する </summary>
+    /// <summary>
+    /// Inserts a new CheckList record into the database.
+    /// </summary>
+    /// <param name="checkList">The CheckList record to insert.</param>
     public void Insert(CheckList checkList)
     {
         EnsureDatabase();
@@ -102,7 +53,10 @@ internal sealed class LiteDbService : ILiteDbService, IDisposable
         DeleteAboveTheUpperLimit(col);
     }
 
-    /// <summary> CheckList を更新または追加する </summary>
+    /// <summary>
+    /// Updates an existing CheckList record or inserts it if it does not exist.
+    /// </summary>
+    /// <param name="checkList">The CheckList record to update or insert.</param>
     public void Upsert(CheckList checkList)
     {
         EnsureDatabase();
@@ -110,7 +64,10 @@ internal sealed class LiteDbService : ILiteDbService, IDisposable
         col.Upsert(checkList);
     }
 
-    /// <summary> CheckList を削除する </summary>
+    /// <summary>
+    /// Deletes a CheckList record from the database.
+    /// </summary>
+    /// <param name="checkList">The CheckList record to delete.</param>
     public void Delete(CheckList checkList)
     {
         EnsureDatabase();
@@ -118,7 +75,9 @@ internal sealed class LiteDbService : ILiteDbService, IDisposable
         col.Delete(checkList.Id);
     }
 
-    /// <summary> リソースを解放する </summary>
+    /// <summary>
+    /// Releases the resources used by the LiteDbService.
+    /// </summary>
     public void Dispose()
     {
         if (_database == null)
@@ -130,7 +89,38 @@ internal sealed class LiteDbService : ILiteDbService, IDisposable
         _database = null;
     }
 
-    /// <summary> 上限数以上の古いデータを削除する </summary>
+    /// <summary>
+    /// Applies migrations between the specified versions.
+    /// </summary>
+    /// <param name="fromVersion">The current schema version.</param>
+    /// <param name="toVersion">The target schema version.</param>
+    private void ApplyMigration(int fromVersion, int toVersion)
+    {
+        var col = _database!.GetCollection<CheckList>();
+
+        if (fromVersion < 1)
+        {
+            // Migration from version 0 to 1
+            foreach (var item in col.FindAll())
+            {
+                item.Title = AppResource.CheckList_Text_Title; // Set default value for the new field
+                col.Update(item);
+            }
+        }
+
+        if (fromVersion < 2)
+        {
+            // Migration from version 1 to 2
+            // Add or modify fields as needed
+        }
+
+        // Add further migration steps as needed
+    }
+
+    /// <summary>
+    /// Deletes records exceeding the upper limit, keeping only the most recent ones.
+    /// </summary>
+    /// <param name="col">The collection of CheckList records.</param>
     private void DeleteAboveTheUpperLimit(ILiteCollection<CheckList> col)
     {
         var checkLists = col.FindAll().OrderByDescending(x => x.CreatedDateTime).ToList();
@@ -144,6 +134,39 @@ internal sealed class LiteDbService : ILiteDbService, IDisposable
         }
     }
 
-    /// <summary> LiteDatabase インスタンスを確認し、必要に応じて再初期化する </summary>
+    /// <summary>
+    /// Executes migrations if needed based on the current database schema version.
+    /// </summary>
+    private void MigrateIfNeeded()
+    {
+        var metadataCol = _database!.GetCollection<MigrationMetadata>("migration_metadata");
+        var metadata = metadataCol.FindById("schemaVersion");
+
+        if (metadata == null)
+        {
+            // Initial migration (default version is 0)
+            int previousVersion = 0;
+            if (previousVersion < CURRENT_DB_VERSION)
+            {
+                ApplyMigration(previousVersion, CURRENT_DB_VERSION);
+            }
+
+            // Register schema version after migration
+            metadataCol.Upsert(new MigrationMetadata { Id = "schemaVersion", Version = CURRENT_DB_VERSION });
+        }
+        else if (metadata.Version < CURRENT_DB_VERSION)
+        {
+            // Migrate from the existing version to the current version
+            ApplyMigration(metadata.Version, CURRENT_DB_VERSION);
+
+            // Update schema version after migration
+            metadata.Version = CURRENT_DB_VERSION;
+            metadataCol.Update(metadata);
+        }
+    }
+
+    /// <summary>
+    /// Ensures the LiteDatabase instance is initialized, reinitializing it if necessary.
+    /// </summary>
     private void EnsureDatabase() => _database ??= new LiteDatabase(_dbFilePath);
 }
