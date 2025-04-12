@@ -56,8 +56,8 @@
                                     Command="{Binding Source={x:Reference CheckListCollectionView}, Path=BindingContext.EditTitleCommand}"
                                     CommandParameter="{Binding .}" >
                                     <Border
-                                        WidthRequest="90"
-                                        HeightRequest="90"
+                                        WidthRequest="100"
+                                        HeightRequest="100"
                             StrokeShape="RoundRectangle 20"
                                         BackgroundColor="{StaticResource Secondary}">
 
@@ -70,13 +70,14 @@
                                                 HeightRequest="40">
                                                 <Image.Source>
                                                     <FontImageSource
-                                                FontFamily="fontello"
-                                                Color="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource White}}"
-                                                Glyph="{x:Static helpers:IconFontManager.IconPencil}"/>
+                                                        FontFamily="fontello"
+                                                        Color="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource Gray600}}"
+                                                        Glyph="{x:Static helpers:IconFontManager.IconPencil}"/>
                                                 </Image.Source>
                                             </Image>
                                             <Label
                                                 Text="{x:Static resources:AppResource.Button_Text_EditTitle}"
+                                                TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource Gray600}}"
                                                 Margin="0,3,0,0"
                                                 HorizontalOptions="Center"/>
                                         </VerticalStackLayout>
@@ -88,8 +89,8 @@
                                     CommandParameter="{Binding .}" >
                                     <Border
                                             Margin="10, 0, 0 ,0"
-                                            WidthRequest="90"
-                                            HeightRequest="90"
+                                            WidthRequest="100"
+                                            HeightRequest="100"
                                             StrokeShape="RoundRectangle 20"
                                             Background="{StaticResource Magenta}" >
                                         <VerticalStackLayout
@@ -102,13 +103,14 @@
                                                 <Image.Source>
                                                     <FontImageSource
                                                     FontFamily="fontello"
-                                                    Color="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource White}}"
+                                                    Color="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource Gray600}}"
                                                     Glyph="{x:Static helpers:IconFontManager.IconTrash}"/>
                                                 </Image.Source>
                                             </Image>
                                             <Label
                                                 Text="{x:Static resources:AppResource.Button_Text_Delete}"
                                                 Margin="0,3,0,0"
+                                                TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource Gray600}}"
                                                 HorizontalOptions="Center"/>
                                         </VerticalStackLayout>
                                     </Border>
