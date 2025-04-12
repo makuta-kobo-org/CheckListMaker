@@ -199,7 +199,7 @@
     <value>表示切り換え</value>
   </data>
   <data name="Button_Text_Delete" xml:space="preserve">
-    <value>削除</value>
+    <value>削　除</value>
   </data>
   <data name="Button_Text_EditTitle" xml:space="preserve">
     <value>タイトル編集</value>

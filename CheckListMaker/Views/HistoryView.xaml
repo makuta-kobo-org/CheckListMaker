@@ -32,6 +32,29 @@
         <toolkit:EventToCommandBehavior Command="{Binding AppearingCommand}" EventName="Appearing"/>
     </ContentPage.Behaviors>
 
+    <ContentPage.Resources>
+        <Style x:Key="SwipeViewBorder" TargetType="Border">
+            <Setter Property="WidthRequest" Value="100" />
+            <Setter Property="HeightRequest" Value="100" />
+            <Setter Property="StrokeShape" Value="RoundRectangle 20" />
+            <Setter Property="WidthRequest" Value="100" />
+        </Style>
+        <Style x:Key="SwipeViewStackLayout" TargetType="VerticalStackLayout">
+            <Setter Property="Padding" Value="0, 10, 0, 10" />
+            <Setter Property="VerticalOptions" Value="Center" />
+        </Style>
+        <Style x:Key="SwipeViewImage" TargetType="Image">
+            <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="WidthRequest" Value="40" />
+            <Setter Property="HeightRequest" Value="40" />
+        </Style>
+        <Style x:Key="SwipeViewlabel" TargetType="Label">
+            <Setter Property="FontSize" Value="Caption" />
+            <Setter Property="Margin" Value="0,5,0,0" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+        </Style>
+    </ContentPage.Resources>
+
     <Grid
         RowDefinitions="*,Auto"
         >
@@ -48,7 +71,7 @@
             </CollectionView.ItemsLayout>
 
             <CollectionView.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate x:DataType="models:CheckList">
                     <SwipeView>
                         <SwipeView.LeftItems>
                             <SwipeItems>
@@ -56,18 +79,10 @@
                                     Command="{Binding Source={x:Reference CheckListCollectionView}, Path=BindingContext.EditTitleCommand}"
                                     CommandParameter="{Binding .}" >
                                     <Border
-                                        WidthRequest="100"
-                                        HeightRequest="100"
-                            StrokeShape="RoundRectangle 20"
+                                        Style="{StaticResource SwipeViewBorder}"
                                         BackgroundColor="{StaticResource Secondary}">
-
-                                        <VerticalStackLayout
-                                            Padding="0, 10, 0, 10"
-                                            VerticalOptions="Center">
-                                            <Image
-                                                HorizontalOptions="Center"
-                                                WidthRequest="40"
-                                                HeightRequest="40">
+                                        <VerticalStackLayout Style="{StaticResource SwipeViewStackLayout}">
+                                            <Image Style="{StaticResource SwipeViewImage}">
                                                 <Image.Source>
                                                     <FontImageSource
                                                         FontFamily="fontello"
@@ -78,8 +93,7 @@
                                             <Label
                                                 Text="{x:Static resources:AppResource.Button_Text_EditTitle}"
                                                 TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource Gray600}}"
-                                                Margin="0,3,0,0"
-                                                HorizontalOptions="Center"/>
+                                                Style="{StaticResource SwipeViewlabel}" />
                                         </VerticalStackLayout>
                                     </Border>
                                 </SwipeItemView>
@@ -88,30 +102,22 @@
                                     Command="{Binding Source={x:Reference CheckListCollectionView}, Path=BindingContext.RemoveCheckListCommand}"
                                     CommandParameter="{Binding .}" >
                                     <Border
-                                            Margin="10, 0, 0 ,0"
-                                            WidthRequest="100"
-                                            HeightRequest="100"
-                                            StrokeShape="RoundRectangle 20"
-                                            Background="{StaticResource Magenta}" >
-                                        <VerticalStackLayout
-                                            Padding="0, 10, 0, 10"
-                                            VerticalOptions="Center">
-                                            <Image
-                                            HorizontalOptions="Center"
-                                            WidthRequest="40"
-                                            HeightRequest="40">
+                                        Margin="10, 0, 0 ,0"
+                                        Style="{StaticResource SwipeViewBorder}"
+                                        Background="{StaticResource Magenta}" >
+                                        <VerticalStackLayout Style="{StaticResource SwipeViewStackLayout}">
+                                            <Image Style="{StaticResource SwipeViewImage}">
                                                 <Image.Source>
                                                     <FontImageSource
-                                                    FontFamily="fontello"
-                                                    Color="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource Gray600}}"
-                                                    Glyph="{x:Static helpers:IconFontManager.IconTrash}"/>
+                                                        FontFamily="fontello"
+                                                        Color="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource Gray600}}"
+                                                        Glyph="{x:Static helpers:IconFontManager.IconTrash}"/>
                                                 </Image.Source>
                                             </Image>
                                             <Label
                                                 Text="{x:Static resources:AppResource.Button_Text_Delete}"
-                                                Margin="0,3,0,0"
                                                 TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource Gray600}}"
-                                                HorizontalOptions="Center"/>
+                                                Style="{StaticResource SwipeViewlabel}" />
                                         </VerticalStackLayout>
                                     </Border>
                                 </SwipeItemView>
