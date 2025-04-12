@@ -13,6 +13,7 @@ public class HistoryViewModelTests
     private readonly Mock<ICustomPopupService> _popupServiceMock;
     private readonly Mock<ILiteDbService> _liteDbServiceMock;
     private readonly Mock<IAlertService> _alertServiceMock;
+    private readonly Mock<AdMobConstants> _adMobConstans;
     private readonly HistoryViewModel _viewModel;
 
     public HistoryViewModelTests()
@@ -20,11 +21,13 @@ public class HistoryViewModelTests
         _popupServiceMock = new Mock<ICustomPopupService>();
         _liteDbServiceMock = new Mock<ILiteDbService>();
         _alertServiceMock = new Mock<IAlertService>();
+        _adMobConstans = new Mock<AdMobConstants>();
 
         _viewModel = new HistoryViewModel(
             _popupServiceMock.Object,
             _liteDbServiceMock.Object,
-            _alertServiceMock.Object
+            _alertServiceMock.Object,
+            _adMobConstans.Object
         );
     }
 
