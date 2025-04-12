@@ -90,9 +90,15 @@ public class LiteDbServiceTests : IDisposable
     public void Insert_ShouldDeleteOldestWhenAboveLimit()
     {
         // Arrange
+        // 各チェックリストの CreatedDateTime に微小な差分を与えて、古い順に並ぶようにする
         for (int i = 1; i <= _upperLimit + 2; i++)
         {
-            _service.Insert(new CheckList { Title = $"Checklist {i}" });
+            var checklist = new CheckList
+            {
+                Title = $"Checklist {i}",
+                CreatedDateTime = DateTimeOffset.Now.AddMilliseconds(i)
+            };
+            _service.Insert(checklist);
         }
 
         // Act
@@ -100,8 +106,10 @@ public class LiteDbServiceTests : IDisposable
 
         // Assert
         Assert.Equal(_upperLimit, result.Count);
+        // 古いエントリ（Checklist 1、Checklist 2）が削除されていることを確認
         Assert.DoesNotContain(result, x => x.Title == "Checklist 1");
         Assert.DoesNotContain(result, x => x.Title == "Checklist 2");
+        // 最新のエントリが残っていることを確認
         Assert.Contains(result, x => x.Title == $"Checklist {_upperLimit + 2}");
     }
 
