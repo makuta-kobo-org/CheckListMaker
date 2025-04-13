@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -126,9 +126,6 @@
   <data name="AppShell_Label_SettingsText" xml:space="preserve">
     <value>Settings</value>
   </data>
-  <data name="Main_Entry_Placeholder" xml:space="preserve">
-    <value>Add item</value>
-  </data>
   <data name="Main_Label_Switch" xml:space="preserve">
     <value>2 columns</value>
   </data>
@@ -171,7 +168,7 @@
   <data name="Button_Text_Histroy" xml:space="preserve">
     <value>Histroy</value>
   </data>
-  <data name="Main_Label_AddTitle" xml:space="preserve">
+  <data name="AddItemPopup_Label_AddTitle" xml:space="preserve">
     <value>Add a check item</value>
   </data>
   <data name="History_Title" xml:space="preserve">
@@ -180,10 +177,55 @@
   <data name="Format_Date" xml:space="preserve">
     <value>0:MMM dd, yyyy (ddd)</value>
   </data>
-  <data name="History_Label_AlertTitle" xml:space="preserve">
+  <data name="Main_String_DeleteMessage" xml:space="preserve">
+    <value>Item deleted</value>
+  </data>
+  <data name="AddItemPopup_Label_CloseButton" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="AddItemPopup_Entry_Placeholder" xml:space="preserve">
+    <value>Input text</value>
+  </data>
+  <data name="Toolbar_Label_Delete" xml:space="preserve">
+    <value>Delete checklist</value>
+  </data>
+  <data name="Alert_Label_ConfirmTitle" xml:space="preserve">
     <value>Confirmation</value>
   </data>
-  <data name="History_Label_AlertMessage" xml:space="preserve">
+  <data name="Alert_Label_DeleteMessage" xml:space="preserve">
     <value>Do you want to delete it?</value>
+  </data>
+  <data name="Toolbar_Label_SwitchDisplay" xml:space="preserve">
+    <value>Switch display</value>
+  </data>
+  <data name="Button_Text_Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Button_Text_EditTitle" xml:space="preserve">
+    <value>Edit Title</value>
+  </data>
+  <data name="CheckList_Text_Title" xml:space="preserve">
+    <value>Title</value>
+  </data>
+  <data name="Alert_Text_EditTitle" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="Alert_Text_EditMessage" xml:space="preserve">
+    <value>Edit title.</value>
+  </data>
+  <data name="Alert_EditResultMessage" xml:space="preserve">
+    <value>The title has been updated.</value>
+  </data>
+  <data name="Toolbar_Label_NewCheckList" xml:space="preserve">
+    <value>New checklist</value>
+  </data>
+  <data name="Alert_Text_HelpTitle" xml:space="preserve">
+    <value>How to edit checklists</value>
+  </data>
+  <data name="Alert_Text_HelpMessage1" xml:space="preserve">
+    <value>Swipe each checklist to the right to display the edit and delete buttons.</value>
+  </data>
+  <data name="Alert_Text_HelpMessage2" xml:space="preserve">
+    <value>You can edit the checklist title using the edit button.</value>
   </data>
 </root>

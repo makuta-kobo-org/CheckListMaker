@@ -6,23 +6,42 @@ using LiteDB;
 
 namespace CheckListMaker.Models;
 
-/// <summary> CheckList Item Collectionのモデル </summary>
-internal partial class CheckList : ObservableObject
+/// <summary>
+/// Represents a collection of checklist items.
+/// </summary>
+public partial class CheckList : ObservableObject
 {
+    /// <summary>
+    /// Gets or sets the observable collection of check items.
+    /// </summary>
     [ObservableProperty]
     private ObservableCollection<CheckItem> _items = [];
 
-    /// <summary> Primary Id </summary>
+    /// <summary>
+    /// Gets or sets the title for the checklist.
+    /// </summary>
+    [ObservableProperty]
+    private string _title = AppResource.CheckList_Text_Title;
+
+    /// <summary>
+    /// Gets or sets the primary identifier for the checklist.
+    /// </summary>
     public ObjectId Id { get; set; } = ObjectId.NewObjectId();
 
-    /// <summary> 作成日 UTC </summary>
+    /// <summary>
+    /// Gets or sets the creation date and time in UTC.
+    /// </summary>
     public DateTimeOffset CreatedDateTime { get; set; } = DateTimeOffset.UtcNow;
 
-    /// <summary> CreatedDateTimeを、local timeかつfomatして返す </summary>
+    /// <summary>
+    /// Gets the creation date and time converted to local time and formatted using the predefined date format.
+    /// </summary>
     public string CreatedDateTimeDisplay =>
         CreatedDateTime.ToLocalTime().ToString(AppResource.Format_Date);
 
-    /// <summary> ItemTextをスペース区切りで一行にまとめて返す </summary>
+    /// <summary>
+    /// Gets a single line string representation of all item texts, separated by spaces.
+    /// </summary>
     public string ItemTextsOneLine
     {
         get

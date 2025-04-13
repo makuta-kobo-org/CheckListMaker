@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using CheckListMaker.Controls;
+using CheckListMaker.Factories;
 using CheckListMaker.Models;
 using CheckListMaker.Services;
 using CheckListMaker.ViewModels;
@@ -7,24 +8,33 @@ using Moq;
 
 namespace CheckListMakerTest.Tests.MauiApps.ViewModels;
 
+/// <summary>
+/// Unit tests for the <see cref="MainViewModel"/> class.
+/// </summary>
 public class MainViewModelTests
 {
     private readonly Mock<IMediaService> _mediaServiceMock;
     private readonly Mock<IComputerVisionService> _computerVisionServiceMock;
     private readonly Mock<ILiteDbService> _liteDbServiceMock;
-    private readonly Mock<IMyPopupService> _popupServiceMock;
+    private readonly Mock<ICustomPopupService> _popupServiceMock;
     private readonly Mock<IAlertService> _alertServiceMock;
     private readonly Mock<AdMobConstants> _adMobConstans;
     private readonly MainViewModel _viewModel;
+    private readonly IAddItemPopupViewFactory _addItemPopupViewFactory;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MainViewModelTests"/> class.
+    /// Sets up mocks and initializes the <see cref="MainViewModel"/> instance.
+    /// </summary>
     public MainViewModelTests()
     {
         _mediaServiceMock = new Mock<IMediaService>();
         _computerVisionServiceMock = new Mock<IComputerVisionService>();
         _liteDbServiceMock = new Mock<ILiteDbService>();
-        _popupServiceMock = new Mock<IMyPopupService>();
+        _popupServiceMock = new Mock<ICustomPopupService>();
         _alertServiceMock = new Mock<IAlertService>();
         _adMobConstans = new Mock<AdMobConstants>();
+        _addItemPopupViewFactory = new AddItemPopupViewFactory();
 
         _viewModel = new MainViewModel(
             _mediaServiceMock.Object,
@@ -32,111 +42,145 @@ public class MainViewModelTests
             _liteDbServiceMock.Object,
             _popupServiceMock.Object,
             _alertServiceMock.Object,
-            _adMobConstans.Object
+            _adMobConstans.Object,
+            _addItemPopupViewFactory
         );
     }
 
-    [Fact]
-    public void ChangeNumberOfColumns_ToggledTrue_ChangesColumnsTo2()
+    /// <summary>
+    /// A test-specific implementation of <see cref="MainViewModel"/> that overrides permission requests.
+    /// </summary>
+    private class TestMainViewModel : MainViewModel
     {
-        // Arrange
-        _viewModel.IsToggled = true;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TestMainViewModel"/> class.
+        /// </summary>
+        public TestMainViewModel(
+            IMediaService mediaService,
+            IComputerVisionService computerVisionService,
+            ILiteDbService liteDbService,
+            ICustomPopupService popupService,
+            IAlertService alertService,
+            AdMobConstants adMobConstants,
+            IAddItemPopupViewFactory addItemPopupViewFactory)
+            : base(mediaService, computerVisionService, liteDbService, popupService, alertService, adMobConstants, addItemPopupViewFactory)
+        {
+        }
 
-        // Act
-        _viewModel.ChangeNumberOfColumnsCommand.Execute(null);
-
-        // Assert
-        _viewModel.NumberOfColumns.Is(2);
+        /// <summary>
+        /// Overrides the permission request to always return <see cref="PermissionStatus.Granted"/>.
+        /// </summary>
+        protected override Task<PermissionStatus> RequestPermissionsAsync<TPermission>()
+            => Task.FromResult(PermissionStatus.Granted);
     }
 
-    [Fact]
-    public void ChangeNumberOfColumns_ToggledFalse_ChangesColumnsTo1()
-    {
-        // Arrange
-        _viewModel.IsToggled = false;
-
-        // Act
-        _viewModel.ChangeNumberOfColumnsCommand.Execute(null);
-
-        // Assert
-        _viewModel.NumberOfColumns.Is(1);
-    }
-
-    [Fact]
-    public async Task AddItem_WhenCalled_AddsNewItemToCheckListAndUpdatesDb()
-    {
-        // Arrange
-        string newItemText = "New Item";
-        _viewModel.CurrentCehckList = new CheckList { Items = [] };
-
-        _alertServiceMock
-            .Setup(service => service.ShowPromptAlert(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-            .ReturnsAsync(newItemText);
-
-        // Act
-        await _viewModel.AddItemCommand.ExecuteAsync(null);
-
-        // Assert
-        _viewModel.CurrentCehckList.Items.Count.Is(1);
-        _viewModel.CurrentCehckList.Items[0].ItemText.Is(newItemText);
-        _liteDbServiceMock.Verify(service => service.Update(It.IsAny<CheckList>()), Times.Once);
-    }
-
-    [Fact]
-    public async Task AddItem_WhenPromptReturnsNull_DoesNotAddItem()
-    {
-        // Arrange
-        _viewModel.CurrentCehckList = new CheckList { Items = [] };
-
-        _alertServiceMock
-            .Setup(service => service.ShowPromptAlert(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-            .ReturnsAsync((string)null);
-
-        // Act
-        await _viewModel.AddItemCommand.ExecuteAsync(null);
-
-        // Assert
-        _viewModel.CurrentCehckList.Items.Any().IsFalse();
-        _liteDbServiceMock.Verify(service => service.Update(It.IsAny<CheckList>()), Times.Never);
-    }
-
+    /// <summary>
+    /// Tests that deleting an item removes it from the checklist.
+    /// </summary>
     [Fact]
     public async Task DeleteItem_RemovesCheckItemFromList()
     {
         // Arrange
         var itemToDelete = new CheckItem { ItemText = "Item to delete" };
-        _viewModel.CurrentCehckList = new CheckList { Items = new ObservableCollection<CheckItem> { itemToDelete } };
+        _viewModel.CurrentCheckList = new CheckList { Items = new ObservableCollection<CheckItem> { itemToDelete } };
 
         // Act
-        await _viewModel.DeleteItemCommand.ExecuteAsync(itemToDelete);
+        await _viewModel.RemoveCheckItemCommand.ExecuteAsync(itemToDelete);
 
         // Assert
-        _viewModel.CurrentCehckList.Items.Contains(itemToDelete).IsFalse();
+        _viewModel.CurrentCheckList.Items.Contains(itemToDelete).IsFalse();
     }
 
+    /// <summary>
+    /// Tests that tapping an item toggles its checked state and updates the checklist in the database.
+    /// </summary>
     [Fact]
-    public void ItemTapped_TogglesCheckItemIsChecked()
+    public async Task ItemTapped_TogglesCheckItemIsChecked_AndUpdatesDb()
     {
         // Arrange
         var item = new CheckItem { IsChecked = false };
+        // Ensure CurrentCheckList is set so that Upsert is called with a valid checklist.
+        _viewModel.CurrentCheckList = new CheckList { Items = new ObservableCollection<CheckItem> { item } };
 
         // Act
-        _viewModel.ItemTappedCommand.Execute(item);
+        await _viewModel.ItemTappedCommand.ExecuteAsync(item);
 
         // Assert
-        item.IsChecked.IsTrue();
+        Assert.True(item.IsChecked);
+        _liteDbServiceMock.Verify(service => service.Upsert(_viewModel.CurrentCheckList), Times.Once);
     }
 
+    /// <summary>
+    /// Tests that the appearing command reads the checklist on the first launch.
+    /// </summary>
     [Fact]
-    public void ItemDragLeave_SetsItemIsBeingDraggedOverToFalse()
+    public async Task AppearingCommand_InitialLaunch_ReadsCheckList()
     {
         // Arrange
-        var item = new CheckItem { IsBeingDraggedOver = true };
+        _viewModel.AsDynamic()._isFirstLaunch = true;
 
         // Act
-        _viewModel.ItemDragLeaveCommand.Execute(item);
+        await _viewModel.AppearingCommand.ExecuteAsync(null);
 
         // Assert
-        item.IsBeingDraggedOver.IsFalse();
+        _liteDbServiceMock.Verify(service => service.FindAll(), Times.Once);
+    }
+
+    /// <summary>
+    /// Tests that creating a checklist with a selected image inserts it into the database.
+    /// </summary>
+    [Fact]
+    public async Task CreateListWithSelectedImageCommand_ValidImagePath_CreatesCheckList()
+    {
+        // Arrange
+        var imagePath = "valid/path";
+        var checkList = new CheckList { Items = new ObservableCollection<CheckItem> { new CheckItem { ItemText = "Item" } } };
+        _mediaServiceMock.Setup(service => service.DoPickPhoto()).ReturnsAsync(imagePath);
+        _computerVisionServiceMock.Setup(service => service.GetCheckItems(imagePath)).ReturnsAsync(checkList);
+
+        var viewModel = new TestMainViewModel(
+            _mediaServiceMock.Object,
+            _computerVisionServiceMock.Object,
+            _liteDbServiceMock.Object,
+            _popupServiceMock.Object,
+            _alertServiceMock.Object,
+            _adMobConstans.Object,
+            _addItemPopupViewFactory
+        );
+
+        // Act
+        await viewModel.CreateCheckListWithSelectedImageCommand.ExecuteAsync(null);
+
+        // Assert
+        _liteDbServiceMock.Verify(service => service.Insert(checkList), Times.Once);
+    }
+
+    /// <summary>
+    /// Tests that creating a checklist with a captured image inserts it into the database.
+    /// </summary>
+    [Fact]
+    public async Task CreateListWithCapturedImageCommand_ValidImagePath_CreatesCheckList()
+    {
+        // Arrange
+        var imagePath = "valid/path";
+        var checkList = new CheckList { Items = new ObservableCollection<CheckItem> { new CheckItem { ItemText = "Item" } } };
+        _mediaServiceMock.Setup(service => service.DoCapturePhoto()).ReturnsAsync(imagePath);
+        _computerVisionServiceMock.Setup(service => service.GetCheckItems(imagePath)).ReturnsAsync(checkList);
+
+        var viewModel = new TestMainViewModel(
+            _mediaServiceMock.Object,
+            _computerVisionServiceMock.Object,
+            _liteDbServiceMock.Object,
+            _popupServiceMock.Object,
+            _alertServiceMock.Object,
+            _adMobConstans.Object,
+            _addItemPopupViewFactory
+        );
+
+        // Act
+        await viewModel.CreateCheckListWithCapturedImageCommand.ExecuteAsync(null);
+
+        // Assert
+        _liteDbServiceMock.Verify(service => service.Insert(checkList), Times.Once);
     }
 }

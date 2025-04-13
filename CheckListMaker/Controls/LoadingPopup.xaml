@@ -10,8 +10,8 @@
 
     <Grid Background="Gray" Opacity="0.8">
         <VerticalStackLayout
-            VerticalOptions="CenterAndExpand"
-            HorizontalOptions="CenterAndExpand" >
+            VerticalOptions="Center"
+            HorizontalOptions="Center" >
 
             <ActivityIndicator Color="White" IsRunning="True" />
 

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -126,17 +126,14 @@
   <data name="AppShell_Label_SettingsText" xml:space="preserve">
     <value>設定</value>
   </data>
-  <data name="Main_Entry_Placeholder" xml:space="preserve">
-    <value>アイテムを追加</value>
-  </data>
   <data name="Main_Label_Switch" xml:space="preserve">
     <value>2列</value>
   </data>
   <data name="Main_Snackbar_Done" xml:space="preserve">
     <value>作成完了！</value>
   </data>
-  <data name="Main_String_DeleteMessage" xml:space="preserve">
-    <value>削除しました</value>
+  <data name="Alert_DeleteResultMessage" xml:space="preserve">
+    <value>アイテムを削除しました</value>
   </data>
   <data name="Settings_Label_Annotation1" xml:space="preserve">
     <value>※パフォーマンスが低下する場合があります。</value>
@@ -171,7 +168,7 @@
   <data name="Button_Text_Histroy" xml:space="preserve">
     <value>履歴</value>
   </data>
-  <data name="Main_Label_AddTitle" xml:space="preserve">
+  <data name="AddItemPopup_Label_AddTitle" xml:space="preserve">
     <value>チェックアイテムを追加</value>
   </data>
   <data name="History_Title" xml:space="preserve">
@@ -180,10 +177,55 @@
   <data name="Format_Date" xml:space="preserve">
     <value>yyyy年MM月dd日(ddd)</value>
   </data>
-  <data name="History_Label_AlertTitle" xml:space="preserve">
+  <data name="Main_String_DeleteMessage" xml:space="preserve">
+    <value>削除しました</value>
+  </data>
+  <data name="AddItemPopup_Label_CloseButton" xml:space="preserve">
+    <value>閉じる</value>
+  </data>
+  <data name="AddItemPopup_Entry_Placeholder" xml:space="preserve">
+    <value>テキストを入力</value>
+  </data>
+  <data name="Toolbar_Label_Delete" xml:space="preserve">
+    <value>チェックリストを削除</value>
+  </data>
+  <data name="Alert_Label_ConfirmTitle" xml:space="preserve">
     <value>確認</value>
   </data>
-  <data name="History_Label_AlertMessage" xml:space="preserve">
+  <data name="Alert_Label_DeleteMessage" xml:space="preserve">
     <value>削除しますか？</value>
+  </data>
+  <data name="Toolbar_Label_SwitchDisplay" xml:space="preserve">
+    <value>表示切り換え</value>
+  </data>
+  <data name="Button_Text_Delete" xml:space="preserve">
+    <value>削　除</value>
+  </data>
+  <data name="Button_Text_EditTitle" xml:space="preserve">
+    <value>タイトル編集</value>
+  </data>
+  <data name="CheckList_Text_Title" xml:space="preserve">
+    <value>タイトル</value>
+  </data>
+  <data name="Alert_Text_EditTitle" xml:space="preserve">
+    <value>編集</value>
+  </data>
+  <data name="Alert_Text_EditMessage" xml:space="preserve">
+    <value>タイトルを編集します</value>
+  </data>
+  <data name="Alert_EditResultMessage" xml:space="preserve">
+    <value>タイトルを更新しました</value>
+  </data>
+  <data name="Toolbar_Label_NewCheckList" xml:space="preserve">
+    <value>新規チェックリスト</value>
+  </data>
+  <data name="Alert_Text_HelpTitle" xml:space="preserve">
+    <value>チェックリスト編集方法</value>
+  </data>
+  <data name="Alert_Text_HelpMessage1" xml:space="preserve">
+    <value>各チェックリストを右にスワイプすると編集と削除のボタンが表示されます。</value>
+  </data>
+  <data name="Alert_Text_HelpMessage2" xml:space="preserve">
+    <value>編集ボタンでチェックリストのタイトルを編集できます</value>
   </data>
 </root>

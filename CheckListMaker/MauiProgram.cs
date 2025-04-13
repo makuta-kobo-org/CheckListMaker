@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Reflection;
 using CheckListMaker.Controls;
+using CheckListMaker.Factories;
 using CheckListMaker.Models;
 using CheckListMaker.Services;
 using CheckListMaker.ViewModels;
@@ -12,10 +13,15 @@ using Plugin.MauiMTAdmob;
 
 namespace CheckListMaker;
 
-/// <summary> MauiProgram起点 </summary>
+/// <summary>
+/// Entry point for the Maui application.
+/// </summary>
 public static class MauiProgram
 {
-    /// <summary> CreateMauiApp </summary>
+    /// <summary>
+    /// Creates and configures the Maui application.
+    /// </summary>
+    /// <returns>A configured <see cref="MauiApp"/> instance.</returns>
     public static MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
@@ -29,7 +35,7 @@ public static class MauiProgram
                 fonts.AddFont("fontello.ttf", "fontello");
             });
 
-        // appsettings.json
+        // Load appsettings.json based on the environment
 #if DEBUG
         var env = "Development";
 #else
@@ -46,7 +52,7 @@ public static class MauiProgram
 
         builder.Configuration.AddConfiguration(configBuilder);
 
-        // DI
+        // Register services for dependency injection
         RegisterServices(builder.Services, builder.Configuration);
 
 #if DEBUG
@@ -56,21 +62,25 @@ public static class MauiProgram
         return builder.Build();
     }
 
-    /// <summary> ServiceProvider の設定</summary>
+    /// <summary>
+    /// Registers services and dependencies into the service provider.
+    /// </summary>
+    /// <param name="services">The service collection to register dependencies.</param>
+    /// <param name="config">The application configuration.</param>
     private static void RegisterServices(
         IServiceCollection services,
         IConfiguration config)
     {
-        // Constants
+        // Register constants
         services.AddSingleton<AdMobConstants>(
             options => config.GetRequiredSection("AdMob").Get<AdMobConstants>());
 
-        // Services
+        // Register services
         services.AddTransient<IMediaService, MediaService>();
         services.AddTransient<IAlertService, AlertService>();
         services.AddSingleton<IComputerVisionService>(
             options => ComputerVisionService.GetInstance(config));
-        services.AddSingleton<ILiteDbService, LiteDbService>(options =>
+        services.AddSingleton<ILiteDbService>(options =>
             {
                 var dbFilePath = Path.Combine(
                     FileSystem.Current.AppDataDirectory,
@@ -81,18 +91,28 @@ public static class MauiProgram
                 return new LiteDbService(dbFilePath, upperLimit);
             });
 
-        // Controls
-        services.AddTransient<IMyPopupService, MyPopupService>();
+        // Register controls
+        services.AddTransient<ICustomPopupService, CustomPopupService>();
 
-        // Views and ViewModels
+        // Register views and view models
         services.AddTransient<AppShell, AppShellViewModel>();
         services.AddTransientViewAndViewModel<MainView, MainViewModel>();
         services.AddTransientViewAndViewModel<SettingsView, SettingsViewModel>();
         services.AddTransientViewAndViewModel<AboutView, AboutViewModel>();
         services.AddTransientViewAndViewModel<HistoryView, HistoryViewModel>();
+
+        // Register factories
+        services.AddSingleton<IAddItemPopupViewFactory, AddItemPopupViewFactory>();
     }
 
-    /// <summary> ViewとViewModelのService登録およびBindincContextへの設定 </summary>
+    /// <summary>
+    /// Registers a view and its corresponding view model into the service provider.
+    /// Also sets the view model as the binding context for the view.
+    /// </summary>
+    /// <typeparam name="TView">The type of the view.</typeparam>
+    /// <typeparam name="TViewModel">The type of the view model.</typeparam>
+    /// <param name="services">The service collection to register dependencies.</param>
+    /// <returns>The updated service collection.</returns>
     private static IServiceCollection AddTransientViewAndViewModel<TView, TViewModel>(this IServiceCollection services)
         where TView : BindableObject, new()
         where TViewModel : class, INotifyPropertyChanged =>

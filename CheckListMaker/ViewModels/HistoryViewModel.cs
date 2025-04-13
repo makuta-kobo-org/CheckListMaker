@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Text;
 using CheckListMaker.Controls;
 using CheckListMaker.Helpers;
 using CheckListMaker.Models;
@@ -10,73 +11,137 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace CheckListMaker.ViewModels;
 
-/// <summary> HistoryページのViewModel </summary>
+/// <summary>
+/// ViewModel for the History page.
+/// </summary>
+/// <remarks>
+/// This class provides functionality for managing and interacting with the history of checklists.
+/// </remarks>
 internal partial class HistoryViewModel : BaseViewModel
 {
-    private readonly IMyPopupService _popupService;
+    private readonly ICustomPopupService _popupService;
     private readonly ILiteDbService _liteDbService;
     private readonly IAlertService _alertService;
 
     [ObservableProperty]
-    private CheckList _selectedCheckItems = null;
+    private string _bannerId;
 
-    /// <summary> Constructor </summary>
+    /// <summary>
+    /// Initializes a new instance of the <see cref="HistoryViewModel"/> class.
+    /// </summary>
+    /// <param name="popupService">Service for managing popups.</param>
+    /// <param name="liteDbService">Service for interacting with the LiteDB database.</param>
+    /// <param name="alertService">Service for displaying alerts.</param>
+    /// <param name="adMobConstants">Constants for AdMob configuration.</param>
     public HistoryViewModel(
-        IMyPopupService myPopupService,
+        ICustomPopupService popupService,
         ILiteDbService liteDbService,
-        IAlertService alertService)
+        IAlertService alertService,
+        AdMobConstants adMobConstants)
     {
-        _popupService = myPopupService;
+        _popupService = popupService;
         _liteDbService = liteDbService;
         _alertService = alertService;
+
+        BannerId = adMobConstants.BannerId;
     }
 
-    /// <summary> CheckListItem のコレクション  </summary>
-    public ObservableCollection<CheckList> CheckListCollection { get; private set; } = [];
+    /// <summary>
+    /// Gets the collection of checklist items.
+    /// </summary>
+    public ObservableCollection<CheckList> CheckLists { get; private set; } = [];
 
+    /// <summary>
+    /// Command executed when the page appears.
+    /// </summary>
     [RelayCommand]
-    private void Appearing()
+    private void OnAppearing()
     {
         var itemsList = _liteDbService.FindAll();
 
-        CheckListCollection = new ObservableCollection<CheckList>(itemsList.OrderByDescending(x => x.CreatedDateTime));
+        CheckLists = [.. itemsList.OrderByDescending(x => x.CreatedDateTime)];
 
-        OnPropertyChanged(nameof(CheckListCollection));
+        OnPropertyChanged(nameof(CheckLists));
     }
 
+    /// <summary>
+    /// Navigates to the main view with the selected checklist.
+    /// </summary>
+    /// <param name="selectedCheckList">The selected checklist to navigate with.</param>
     [RelayCommand]
-    private async Task GoToMainView(CheckList selectedCheckList) =>
-        await Shell.Current.GoToAsync(
-            state: $"//{nameof(MainView)}",
-            parameters: new Dictionary<string, object>
-            {
-                { "SelectedCheckList", selectedCheckList },
-                { "NavigationType", "command" },
-            });
+    private async Task NavigateToMainViewAsync(CheckList selectedCheckList)
+    {
+        var navigationParameter = new Dictionary<string, object>
+        {
+            { "SelectedCheckList", selectedCheckList },
+        };
 
-    /// <summary> CheckListItem 削除コマンド  </summary>
+        await Shell.Current.GoToAsync($"//{nameof(MainView)}", navigationParameter);
+    }
+
+    /// <summary>
+    /// Edits the title of the specified checklist.
+    /// </summary>
+    /// <param name="checklist">The checklist to edit.</param>
     [RelayCommand]
-    private async Task DeleteCheckList(CheckList items)
+    private async Task EditTitleAsync(CheckList checklist)
     {
         var popup = new LoadingPopup();
 
         try
         {
-            var isOk = await _alertService.ShowOkCancelAlert(
-                AppResource.History_Label_AlertTitle,
-                AppResource.History_Label_AlertMessage);
+            var newTitle = await _alertService.ShowPromptAlert(
+                title: AppResource.Alert_Text_EditTitle,
+                message: AppResource.Alert_Text_EditMessage,
+                initialValue: checklist.Title);
 
-            if (!isOk)
+            if (string.IsNullOrWhiteSpace(newTitle) || newTitle == checklist.Title)
             {
                 return;
             }
 
             _popupService.ShowPopup(popup);
 
-            CheckListCollection.Remove(items);
-            _liteDbService.Delete(items);
+            checklist.Title = newTitle;
+            _liteDbService.Upsert(checklist);
 
-            // TODO save to json
+            await SnackbarViewer.Show(AppResource.Alert_EditResultMessage);
+        }
+        catch (Exception ex)
+        {
+            await _alertService.ShowAlert("Error", ex.Message);
+        }
+        finally
+        {
+            _popupService.ClosePopup(popup);
+        }
+    }
+
+    /// <summary>
+    /// Removes the specified checklist.
+    /// </summary>
+    /// <param name="checklist">The checklist to remove.</param>
+    [RelayCommand]
+    private async Task RemoveCheckListAsync(CheckList checklist)
+    {
+        var popup = new LoadingPopup();
+
+        try
+        {
+            var isConfirmed = await _alertService.ShowOkCancelAlert(
+                AppResource.Alert_Label_ConfirmTitle,
+                AppResource.Alert_Label_DeleteMessage);
+
+            if (!isConfirmed)
+            {
+                return;
+            }
+
+            _popupService.ShowPopup(popup);
+
+            CheckLists.Remove(checklist);
+            _liteDbService.Delete(checklist);
+
             await SnackbarViewer.Show(AppResource.Alert_DeleteResultMessage);
         }
         catch (Exception ex)
@@ -87,5 +152,19 @@ internal partial class HistoryViewModel : BaseViewModel
         {
             _popupService.ClosePopup(popup);
         }
+    }
+
+    /// <summary>
+    /// Displays a help message when the help icon is tapped.
+    /// </summary>
+    [RelayCommand]
+    private async Task HelpIconTapped()
+    {
+        var message = new StringBuilder()
+            .AppendLine(AppResource.Alert_Text_HelpMessage1)
+            .AppendLine(AppResource.Alert_Text_HelpMessage2)
+            .ToString();
+
+        await _alertService.ShowAlert(AppResource.Alert_Text_HelpTitle, message);
     }
 }
