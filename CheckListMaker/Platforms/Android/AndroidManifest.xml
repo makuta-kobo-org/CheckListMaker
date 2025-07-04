@@ -14,5 +14,5 @@
 			<action android:name="android.media.action.IMAGE_CAPTURE" />
 		</intent>
 	</queries>
-	<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34" android:installLocation="internalOnly" />
+	<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="36" android:installLocation="internalOnly" />
 </manifest>
