@@ -84,16 +84,26 @@
 
 ## 12. .NET アップグレード（8 → 10）方針とコミュニケーション指針
 - 目的: LTS 以降のランタイム/SDKに合わせ、MAUI/依存ライブラリの互換性を維持しつつ性能・機能を向上。
-- 対応の基本手順（Copilot へ依頼する際は、以下の情報を必ず併記）
-  - 対象プロジェクトと `TargetFrameworks` の現状（例: `net8.0-android;net8.0-ios;net8.0-windows10.0.*;net8.0-maccatalyst`）
-  - 予定する `TargetFrameworks`（例: `net10.0-android;net10.0-ios;net10.0-windows10.0.*;net10.0-maccatalyst`）
-  - 使用 SDK/ワークロードのバージョン（MAUI/Android/iOS/Windows）
-  - 主要ライブラリのバージョン制約（`CommunityToolkit.Mvvm` など）
-  - 既知のブレイキングチェンジや API 変更が疑われる箇所（例: `MainThread`, `Dispatcher`, `Handlers` 周辺）
-- 生成/提案のルール
-  - MAUI の `Platforms/*` と `MauiProgram` 設定の差分を最小化し、互換性維持を優先。
-  - SDK/Workload の更新手順（インストーラー/`dotnet workload install`）は具体的コマンド・確認方法を提示。
-  - 失敗時のロールバック案（`global.json` で SDK ピン止め、`TargetFrameworks` を段階的に切替）も併記。
-- 検証とログ
-  - ビルド/テスト/デプロイ対象ごとにログ取得方法を明示（VS の出力ウィンドウ、`binlog`、テスト結果）。
-  - Android/iOS はエミュレータ/実機の OS バージョンも記載して依頼する。
+
+### ドキュメント言語規約
+- **すべての生成ドキュメント（plan.md, tasks.md, README 等）は日本語で記述する**
+  - 見出し、本文、テーブルヘッダー、リスト項目：すべて日本語
+  - コード例、コマンド、パッケージ名、API 名：英語のまま
+  - 技術用語：必要に応じて英語を併記（例: ターゲットフレームワーク (Target Framework)）
+- **例外**: `assessment.md` はツール自動生成のため英語（制御対象外）
+
+### 対応の基本手順（Copilot へ依頼する際は、以下の情報を必ず併記）
+- 対象プロジェクトと `TargetFrameworks` の現状（例: `net8.0-android;net8.0-ios;net8.0-windows10.0.*;net8.0-maccatalyst`）
+- 予定する `TargetFrameworks`（例: `net10.0-android;net10.0-ios;net10.0-windows10.0.*;net10.0-maccatalyst`）
+- 使用 SDK/ワークロードのバージョン（MAUI/Android/iOS/Windows）
+- 主要ライブラリのバージョン制約（`CommunityToolkit.Mvvm` など）
+- 既知のブレイキングチェンジや API 変更が疑われる箇所（例: `MainThread`, `Dispatcher`, `Handlers` 周辺）
+
+### 生成/提案のルール
+- MAUI の `Platforms/*` と `MauiProgram` 設定の差分を最小化し、互換性維持を優先。
+- SDK/Workload の更新手順（インストーラー/`dotnet workload install`）は具体的コマンド・確認方法を提示。
+- 失敗時のロールバック案（`global.json` で SDK ピン止め、`TargetFrameworks` を段階的に切替）も併記。
+
+### 検証とログ
+- ビルド/テスト/デプロイ対象ごとにログ取得方法を明示（VS の出力ウィンドウ、`binlog`、テスト結果）。
+- Android/iOS はエミュレータ/実機の OS バージョンも記載して依頼する。
