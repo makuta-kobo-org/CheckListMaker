@@ -1,6 +1,6 @@
+using Azure;
+using Azure.AI.Vision.ImageAnalysis;
 using CheckListMaker.Models;
-using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
-using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
 using Microsoft.Extensions.Configuration;
 
 namespace CheckListMaker.Services;
@@ -8,8 +8,7 @@ namespace CheckListMaker.Services;
 /// <summary> Azure Computer Vision のサービスクラス </summary>
 internal sealed class ComputerVisionService : IComputerVisionService
 {
-    private const int NumberOfCharsInOperationId = 36;
-    private static readonly object _lockObject = new();
+    private static readonly object _lockObject = new ();
     private static ComputerVisionService _instance = null;
     private readonly CVConstants _constants;
 
@@ -35,46 +34,40 @@ internal sealed class ComputerVisionService : IComputerVisionService
     /// </summary>
     public async Task<CheckList> GetCheckItems(string localFile)
     {
-        using var client = CreateComputerVisionClient();
-        var operationId = await StartOcrOperation(client, localFile);
-        var results = await WaitForOcrResults(client, operationId);
+        var client = CreateImageAnalysisClient();
+        var result = await AnalyzeImageAsync(client, localFile);
 
-        return ExtractCheckItems(results.AnalyzeResult);
+        return ExtractCheckItems(result);
     }
 
-    private ComputerVisionClient CreateComputerVisionClient() =>
-    new(new ApiKeyServiceClientCredentials(_constants.Key))
-    {
-        Endpoint = _constants.EndPoint,
-    };
+    private ImageAnalysisClient CreateImageAnalysisClient() =>
+        new (
+            new Uri(_constants.EndPoint),
+            new AzureKeyCredential(_constants.Key));
 
-    private async Task<string> StartOcrOperation(ComputerVisionClient client, string localFile)
+    private async Task<ImageAnalysisResult> AnalyzeImageAsync(ImageAnalysisClient client, string localFile)
     {
-        var textHeaders = await client.ReadInStreamAsync(File.OpenRead(localFile));
-        return textHeaders.OperationLocation[^NumberOfCharsInOperationId..];
+        using var imageStream = File.OpenRead(localFile);
+        var imageData = BinaryData.FromStream(imageStream);
+
+        return await client.AnalyzeAsync(
+            imageData,
+            VisualFeatures.Read,
+            new ImageAnalysisOptions { Language = "ja" });
     }
 
-    private async Task<ReadOperationResult> WaitForOcrResults(ComputerVisionClient client, string operationId)
-    {
-        ReadOperationResult results;
-        do
-        {
-            results = await client.GetReadResultAsync(Guid.Parse(operationId));
-            await Task.Delay(1000); // 1秒ごとにステータス確認
-        }
-        while (results.Status == OperationStatusCodes.Running ||
-               results.Status == OperationStatusCodes.NotStarted);
-
-        return results;
-    }
-
-    private CheckList ExtractCheckItems(AnalyzeResults analyzeResults)
+    private CheckList ExtractCheckItems(ImageAnalysisResult result)
     {
         var items = new CheckList();
 
-        foreach (var page in analyzeResults.ReadResults)
+        if (result.Read?.Blocks == null)
         {
-            foreach (var line in page.Lines)
+            return items;
+        }
+
+        foreach (var block in result.Read.Blocks)
+        {
+            foreach (var line in block.Lines)
             {
                 var text = line.Text.StartsWith('·')
                     ? line.Text.Remove(0, 1).Trim()

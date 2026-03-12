@@ -136,7 +136,7 @@
     <value>Item deleted</value>
   </data>
   <data name="Settings_Label_Annotation1" xml:space="preserve">
-    <value>*Performance may be degraded.</value>
+    <value>Performance may be degraded</value>
   </data>
   <data name="Settings_Label_IsDark" xml:space="preserve">
     <value>Dark mode</value>
@@ -145,7 +145,7 @@
     <value>Save previous state</value>
   </data>
   <data name="Exception_NoPermissions" xml:space="preserve">
-    <value>Please enable the following permissions and run again.</value>
+    <value>Please enable the following permissions and run again</value>
   </data>
   <data name="Exception_NoPermissions_Camera" xml:space="preserve">
     <value>Camera</value>
@@ -211,10 +211,10 @@
     <value>Edit</value>
   </data>
   <data name="Alert_Text_EditMessage" xml:space="preserve">
-    <value>Edit title.</value>
+    <value>Edit title</value>
   </data>
   <data name="Alert_EditResultMessage" xml:space="preserve">
-    <value>The title has been updated.</value>
+    <value>The title has been updated</value>
   </data>
   <data name="Toolbar_Label_NewCheckList" xml:space="preserve">
     <value>New checklist</value>
@@ -226,6 +226,6 @@
     <value>Swipe each checklist to the right to display the edit and delete buttons.</value>
   </data>
   <data name="Alert_Text_HelpMessage2" xml:space="preserve">
-    <value>You can edit the checklist title using the edit button.</value>
+    <value>You can edit the checklist title using the edit button</value>
   </data>
 </root>
