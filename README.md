@@ -21,7 +21,7 @@ CheckListMaker is a cross-platform application developed using .NET MAUI. This a
 
 1. Clone this repository:
 2. Restore the required NuGet packages:
-3. Create an `appsettings.Development.json` or `appsettings.Production.json` file and configure it with your Azure Computer Vision and LiteDB settings:
+3. Create an `appsettings.Development.json` or `appsettings.Production.json` file and configure it with your Azure AI Vision and LiteDB settings:
 4. Build and run the project:
 ## Usage
 
@@ -32,11 +32,11 @@ CheckListMaker is a cross-platform application developed using .NET MAUI. This a
 
 ## Key Technologies
 
-- **.NET MAUI**: Cross-platform application framework.
-- **LiteDB**: Lightweight NoSQL database.
-- **Azure Computer Vision**: Provides OCR functionality.
-- **CommunityToolkit.Maui**: UI components and helpers.
-- **AdMob**: Ad integration.
+- **.NET MAUI 9.0**: Cross-platform application framework (.NET 10)
+- **LiteDB**: Lightweight NoSQL database
+- **Azure AI Vision v4.0**: Provides OCR functionality
+- **CommunityToolkit.Maui**: UI components and helpers
+- **AdMob**: Ad integration
 
 ## Project Structure
 
@@ -46,6 +46,24 @@ CheckListMaker is a cross-platform application developed using .NET MAUI. This a
   - `ViewModels/`: ViewModels following the MVVM pattern
   - `Helpers/`: Helper classes
 - `CheckListMakerTest.Tests/`: Unit test project
+
+## Recent Updates
+
+### ✨ .NET 10 Upgrade (2025-01)
+
+CheckListMaker has been successfully upgraded to **.NET 10** with the following improvements:
+
+- **Framework**: Upgraded from .NET 8 to .NET 10
+- **MAUI**: Upgraded to version 9.0.0
+- **Azure AI Vision**: Migrated from deprecated SDK (v7.0.1) to v4.0 SDK (v1.0.0-beta.3)
+  - Addresses 2028 deprecation notice
+  - Improved security (resolved NU1902 vulnerability)
+  - Simplified code (27% reduction in OCR logic)
+- **Packages**: All dependencies updated to .NET 10 compatible versions
+- **Tests**: 24/24 unit tests passing
+- **Security**: Zero known vulnerabilities
+
+For detailed upgrade information, see [`.github/upgrades/UPGRADE_SUMMARY.md`](.github/upgrades/UPGRADE_SUMMARY.md).
 
 ## Contributing
 

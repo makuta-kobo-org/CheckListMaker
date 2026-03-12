@@ -136,7 +136,7 @@
     <value>アイテムを削除しました</value>
   </data>
   <data name="Settings_Label_Annotation1" xml:space="preserve">
-    <value>※パフォーマンスが低下する場合があります。</value>
+    <value>パフォーマンスが低下する場合があります</value>
   </data>
   <data name="Settings_Label_IsDark" xml:space="preserve">
     <value>ダークモードにする</value>
