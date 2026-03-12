@@ -20,7 +20,7 @@ public sealed class CustomPopupService : ICustomPopupService
     /// <exception cref="NullReferenceException">Thrown if the current application or main page is null.</exception>
     public async Task ShowPopupAsync(Popup popup)
     {
-        Page ??= Application.Current?.MainPage ?? throw new NullReferenceException();
+        Page ??= Application.Current?.Windows[0].Page ?? throw new NullReferenceException();
         await Page.ShowPopupAsync(popup);
     }
 
@@ -31,7 +31,7 @@ public sealed class CustomPopupService : ICustomPopupService
     /// <exception cref="NullReferenceException">Thrown if the current application or main page is null.</exception>
     public void ShowPopup(Popup popup)
     {
-        Page ??= Application.Current?.MainPage ?? throw new NullReferenceException();
+        Page ??= Application.Current?.Windows[0].Page ?? throw new NullReferenceException();
         Page.ShowPopup(popup);
     }
 

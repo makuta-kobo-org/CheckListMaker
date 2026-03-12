@@ -189,7 +189,7 @@ public partial class MainViewModel : BaseViewModel
 
             CurrentCheckList = itemsList.Count > 0
                 ? itemsList.OrderByDescending(x => x.CreatedDateTime).FirstOrDefault()
-                : new();
+                : new ();
         }
         catch (Exception ex)
         {

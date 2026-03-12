@@ -6,7 +6,7 @@ namespace CheckListMaker.Helpers;
 /// <summary> SnackBarを表示するHelperクラス </summary>
 internal static class SnackbarViewer
 {
-    private static readonly SnackbarOptions _snackbarOptions = new()
+    private static readonly SnackbarOptions _snackbarOptions = new ()
     {
         CornerRadius = new CornerRadius(10),
         TextColor = Colors.White,

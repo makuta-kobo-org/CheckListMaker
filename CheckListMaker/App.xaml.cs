@@ -29,8 +29,7 @@ public partial class App : Application
         SetTheme(_isDark);
 
         _liteDbService = liteDbService;
-
-        MainPage = new AppShell(viewModel);
+        BindingContext = viewModel;
     }
 
     /// <summary>
@@ -50,6 +49,16 @@ public partial class App : Application
             SetTheme(_isDark);
             Preferences.Default.Set("is_dark", _isDark);
         }
+    }
+
+    /// <summary>
+    /// Creates the window for the application.
+    /// </summary>
+    /// <param name="activationState">The activation state.</param>
+    /// <returns>The created window.</returns>
+    protected override Window CreateWindow(IActivationState activationState)
+    {
+        return new Window(new AppShell((AppShellViewModel)BindingContext));
     }
 
     /// <summary>
