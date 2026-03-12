@@ -16,7 +16,7 @@ stages:
     - group: ForMauiRelease
     # メジャー＆マイナーバージョンコードを定義
     - name: appVersion
-      value: '1.5'
+      value: '1.6'
     - name: androidNdkPath
       value: 'C:\Microsoft\AndroidNDK64\android-ndk-r16b'
 
@@ -122,7 +122,7 @@ stages:
         projects: '**/CheckListMaker.csproj'
         arguments: >-
           -c Release
-          -f net8.0-android
+          -f net10.0-android
           -o $(Build.BinariesDirectory)
           --no-restore
           -p:ApplicationId=$(ApplicationId)
